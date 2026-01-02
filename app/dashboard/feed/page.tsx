@@ -34,7 +34,8 @@ export default function FeedPage() {
                 .order("timestamp", { ascending: true }) // Oldest first for chat flow
 
             if (error) {
-                console.error("Error fetching chats:", error)
+                console.error("Supabase Connection Error:", JSON.stringify(error, null, 2))
+                // Also alert visible to user in UI if needed (optional)
             } else {
                 setMessages(data || [])
 
