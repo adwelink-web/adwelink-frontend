@@ -1,0 +1,97 @@
+"use client"
+import { useState } from "react"
+import { createClient } from "@/lib/supabase"
+import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card, CardHeader, CardContent, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
+import { Loader2 } from "lucide-react"
+
+export default function LoginPage() {
+    const router = useRouter()
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setLoading(true)
+        setError(null)
+
+        const supabase = createClient()
+        const { error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        })
+
+        if (error) {
+            setError(error.message)
+            setLoading(false)
+        } else {
+            router.push("/dashboard")
+            router.refresh()
+        }
+    }
+
+    return (
+        <div className="flex min-h-screen items-center justify-center bg-[#0B0F19] p-4 text-white">
+            {/* Background Glow */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[500px] bg-purple-600/20 blur-[120px] rounded-full pointer-events-none" />
+
+            <Card className="w-full max-w-md bg-white/5 border-white/10 backdrop-blur-md relative z-10">
+                <CardHeader className="space-y-1 text-center">
+                    <CardTitle className="text-2xl font-bold text-white tracking-tight">Access Mission Control</CardTitle>
+                    <CardDescription className="text-slate-400">
+                        Adwelink AI Agent Management System
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handleLogin} className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="email">Email</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="admin@adwelink.com"
+                                className="bg-black/40 border-white/10 text-white placeholder:text-slate-600 focus:border-purple-500/50"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="password">Password</Label>
+                            <Input
+                                id="password"
+                                type="password"
+                                className="bg-black/40 border-white/10 text-white focus:border-purple-500/50"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+                        {error && (
+                            <div className="text-xs text-red-400 bg-red-500/10 p-2 rounded border border-red-500/20">
+                                {error}
+                            </div>
+                        )}
+                        <Button
+                            type="submit"
+                            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold shadow-lg shadow-purple-900/20"
+                            disabled={loading}
+                        >
+                            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Sign In"}
+                        </Button>
+                    </form>
+                </CardContent>
+                <CardFooter className="flex justify-center border-t border-white/5 pt-4">
+                    <p className="text-xs text-slate-500">
+                        Authorized Personnel Only. <span className="text-purple-400 hover:underline cursor-pointer">Forgot Password?</span>
+                    </p>
+                </CardFooter>
+            </Card>
+        </div>
+    )
+}

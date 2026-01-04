@@ -40,14 +40,21 @@ export function AppSidebar({ className, ...props }: SidebarProps) {
 
     const routes = [
         {
-            label: "Mission Control",
+            label: "Dashboard",
             icon: LayoutDashboard,
             href: "/dashboard",
             color: "text-sky-500",
             category: "global"
         },
         {
-            label: "Live Neural Feed",
+            label: "Leads", // MOVED UP: High Priority
+            icon: Users,
+            href: "/dashboard/leads",
+            color: "text-pink-500",
+            title: "Leads"
+        },
+        {
+            label: "Live Chat",
             icon: MessageSquare,
             href: "/dashboard/feed",
             color: "text-violet-500",
@@ -55,28 +62,22 @@ export function AppSidebar({ className, ...props }: SidebarProps) {
             isLive: true,
         },
         {
-            label: "Lead Pipeline",
-            icon: Users,
-            href: "/dashboard/leads",
-            color: "text-pink-500",
-            title: "Leads"
+            label: "Documents",
+            icon: GraduationCap,
+            href: "/dashboard/training",
+            color: "text-emerald-500",
+            title: "Training"
         },
+        // Hidden from Daily View, accessible if needed via other means or re-enabled
         {
-            label: "Brain Configuration",
+            label: "Agent Settings",
             icon: BrainCircuit,
             href: "/dashboard/brain",
             color: "text-orange-500",
             title: "Brain"
         },
         {
-            label: "Knowledge Base",
-            icon: GraduationCap,
-            href: "/dashboard/training",
-            color: "text-emerald-500",
-            title: "Training"
-        },
-        {
-            label: "Fee Collection",
+            label: "Fees",
             icon: Wallet,
             href: "/dashboard/fees",
             color: "text-green-500",
@@ -92,8 +93,8 @@ export function AppSidebar({ className, ...props }: SidebarProps) {
 
     // Define which routes are visible for each agent context
     const agentMenus: Record<string, string[]> = {
-        "Aditi": ["Feed", "Leads", "Brain", "Training"],
-        "Rahul Sir": ["Brain", "Training"],
+        "Aditi": ["Leads", "Feed"], // Removed 'Brain' to declutter
+        "Rahul Sir": ["Training", "Brain"],
         "Munim Ji": ["Fees"]
     }
 
