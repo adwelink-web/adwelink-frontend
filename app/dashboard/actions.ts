@@ -1,48 +1,47 @@
 "use server"
 
-import { createClient } from "@/lib/supabase"
+import { createServerClient } from "@/lib/supabase-server"
 import { cookies } from "next/headers"
 
 export async function getDashboardData() {
-    const cookieStore = cookies()
-    const supabase = createClient(cookieStore)
+    const supabase = await createServerClient()
 
     // 1. Get User Profile (Institute Name)
     const { data: { user } } = await supabase.auth.getUser()
 
-    // 2. Metrics: Total Leads
-    const { count: totalLeads } = await supabase
-        .from("leads")
-        .select("*", { count: "exact", head: true })
-
-    // 3. Metrics: Today's Leads (New Inquiries)
+    // PARALLEL EXECUTION START
     const today = new Date().toISOString().split('T')[0]
-    const { count: todayLeads } = await supabase
-        .from("leads")
-        .select("*", { count: "exact", head: true })
-        .gte("created_at", today)
 
-    // 4. Metrics: Pending Follow-ups
-    // Matches status containing 'follow' (case insensitive)
-    const { count: pendingFollowups } = await supabase
-        .from("leads")
-        .select("*", { count: "exact", head: true })
-        .ilike("status", "%follow%")
+    const [
+        totalLeadsResult,
+        todayLeadsResult,
+        pendingFollowupsResult,
+        recentLeadsResult
+    ] = await Promise.all([
+        // Query 1: Total Leads
+        supabase.from("leads").select("*", { count: "exact", head: true }),
 
-    // 5. Recent Leads List (Last 5)
-    const { data: recentLeads } = await supabase
-        .from("leads")
-        .select("id, name, phone, status, created_at, interested_course")
-        .order("created_at", { ascending: false })
-        .limit(5)
+        // Query 2: Today's Leads
+        supabase.from("leads").select("*", { count: "exact", head: true }).gte("created_at", today),
+
+        // Query 3: Pending Follow-ups
+        supabase.from("leads").select("*", { count: "exact", head: true }).ilike("status", "%follow%"),
+
+        // Query 4: Recent Leads
+        supabase.from("leads")
+            .select("id, name, phone, status, created_at, interested_course")
+            .order("created_at", { ascending: false })
+            .limit(5)
+    ])
+    // PARALLEL EXECUTION END
 
     return {
         user,
         stats: {
-            totalLeads: totalLeads || 0,
-            todayLeads: todayLeads || 0,
-            pendingFollowups: pendingFollowups || 0,
+            totalLeads: totalLeadsResult.count || 0,
+            todayLeads: todayLeadsResult.count || 0,
+            pendingFollowups: pendingFollowupsResult.count || 0,
         },
-        recentLeads: recentLeads || []
+        recentLeads: recentLeadsResult.data || []
     }
 }
