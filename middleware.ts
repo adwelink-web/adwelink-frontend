@@ -18,22 +18,38 @@ export async function middleware(request: NextRequest) {
                     return request.cookies.get(name)?.value
                 },
                 set(name: string, value: string, options: CookieOptions) {
-                    request.cookies.set(name, value)
+                    request.cookies.set({
+                        name,
+                        value,
+                        ...options,
+                    })
                     response = NextResponse.next({
                         request: {
                             headers: request.headers,
                         },
                     })
-                    response.cookies.set(name, value, options)
+                    response.cookies.set({
+                        name,
+                        value,
+                        ...options,
+                    })
                 },
                 remove(name: string, options: CookieOptions) {
-                    request.cookies.set(name, '', { ...options, maxAge: 0 })
+                    request.cookies.set({
+                        name,
+                        value: '',
+                        ...options,
+                    })
                     response = NextResponse.next({
                         request: {
                             headers: request.headers,
                         },
                     })
-                    response.cookies.set(name, '', { ...options, maxAge: 0 })
+                    response.cookies.set({
+                        name,
+                        value: '',
+                        ...options,
+                    })
                 },
             },
         }
@@ -42,8 +58,8 @@ export async function middleware(request: NextRequest) {
     // Refresh Session
     const { data: { user } } = await supabase.auth.getUser()
 
-    // Guard Dashboard Routes
-    if (request.nextUrl.pathname.startsWith('/dashboard')) {
+    // Guard Dashboard Routes and Root AMS
+    if (request.nextUrl.pathname.startsWith('/dashboard') || request.nextUrl.pathname === '/') {
         if (!user) {
             return NextResponse.redirect(new URL('/login', request.url))
         }
@@ -52,7 +68,7 @@ export async function middleware(request: NextRequest) {
     // Redirect Logged-In Users away from Login page
     if (request.nextUrl.pathname.startsWith('/login')) {
         if (user) {
-            return NextResponse.redirect(new URL('/dashboard', request.url))
+            return NextResponse.redirect(new URL('/', request.url))
         }
     }
 

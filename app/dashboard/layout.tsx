@@ -43,7 +43,7 @@ export default function DashboardLayout({
                             <AppSidebar />
                         </SheetContent>
                     </Sheet>
-                    <div className="font-semibold text-lg text-foreground">Mission Control</div>
+                    <div className="font-semibold text-lg text-foreground">Adwelink AMS</div>
                 </header>
 
                 {/* Scrollable Page Content */}

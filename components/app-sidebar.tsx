@@ -36,7 +36,22 @@ interface SidebarProps extends React.ComponentProps<"div"> { }
 
 export function AppSidebar({ className, ...props }: SidebarProps) {
     const pathname = usePathname()
+    // Default to Aditi, but try to read from cookie/localStorage if available
     const [activeAgent, setActiveAgent] = React.useState("Aditi")
+
+    React.useEffect(() => {
+        // Simple cookie reader
+        const match = document.cookie.match(new RegExp('(^| )activeAgent=([^;]+)'))
+        if (match) {
+            setActiveAgent(match[2])
+        }
+    }, [])
+
+    const handleAgentSwitch = (agentName: string) => {
+        setActiveAgent(agentName)
+        // Persist change
+        document.cookie = `activeAgent=${agentName}; path=/; max-age=604800`
+    }
 
     const routes = [
         {
@@ -112,7 +127,7 @@ export function AppSidebar({ className, ...props }: SidebarProps) {
 
             {/* 1. Sidebar Header (Brand + Agent Selector) */}
             <div className="px-6 py-6 border-b border-white/5">
-                <Link href="/dashboard" className="flex items-center pl-2 mb-6">
+                <Link href="/" className="flex items-center pl-2 mb-6" title="Back to AMS Headquarters">
                     <div className="relative h-8 w-32 mr-2">
                         <Image
                             src="/adwelink_white.svg"
@@ -142,11 +157,11 @@ export function AppSidebar({ className, ...props }: SidebarProps) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-[200px] bg-[#111625] border-white/10 text-white">
                         <DropdownMenuLabel className="text-xs text-muted-foreground">Switch Agent</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => setActiveAgent("Aditi")} className="cursor-pointer hover:bg-white/5 focus:bg-white/5">
+                        <DropdownMenuItem onClick={() => handleAgentSwitch("Aditi")} className="cursor-pointer hover:bg-white/5 focus:bg-white/5">
                             <BrainCircuit className="mr-2 h-4 w-4 text-purple-500" />
                             Aditi (Sales)
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setActiveAgent("Rahul Sir")} className="cursor-pointer hover:bg-white/5 focus:bg-white/5">
+                        <DropdownMenuItem onClick={() => handleAgentSwitch("Rahul Sir")} className="cursor-pointer hover:bg-white/5 focus:bg-white/5">
                             <GraduationCap className="mr-2 h-4 w-4 text-emerald-500" />
                             Rahul Sir (Tutor)
                         </DropdownMenuItem>

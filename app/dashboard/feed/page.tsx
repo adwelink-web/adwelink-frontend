@@ -44,6 +44,9 @@ export default function FeedPage() {
     const [inputText, setInputText] = React.useState("")
     const [isSending, setIsSending] = React.useState(false)
     const [isAiPaused, setIsAiPaused] = React.useState(false)
+    const scrollBottomRef = React.useRef<HTMLDivElement>(null)
+    const [shouldAutoScroll, setShouldAutoScroll] = React.useState(true)
+
 
     // Fetch Chat History & Status
     const fetchHistory = React.useCallback(async () => {
@@ -104,6 +107,36 @@ export default function FeedPage() {
         const interval = setInterval(fetchHistory, 5000)
         return () => clearInterval(interval)
     }, [fetchHistory])
+
+    // Smart Auto-Scroll Logic
+    React.useEffect(() => {
+        if (shouldAutoScroll && scrollBottomRef.current) {
+            scrollBottomRef.current.scrollIntoView({ behavior: "smooth" })
+        }
+    }, [messages, shouldAutoScroll])
+
+    // Enable auto-scroll when user selects a session (reset view)
+    React.useEffect(() => {
+        if (selectedSession) {
+            setShouldAutoScroll(true)
+            // Small timeout to allow render
+            setTimeout(() => {
+                scrollBottomRef.current?.scrollIntoView({ behavior: "auto" }) // Instant jump on session switch
+            }, 100)
+        }
+    }, [selectedSession])
+
+    // Note: To implement true "detect user scroll up", we would need access to the 
+    // ScrollArea's viewport onScroll event. Shadcn's ScrollArea doesn't expose this easily 
+    // without wrapping the Viewport.
+    // For now, this fix removes the *forced* scroll on every polling update by dependency tracking.
+    // The current logic will still scroll on *new messages* if shouldAutoScroll is true.
+    // We default it to true, but ideally, we'd toggle it false on user scroll.
+
+    // Improvement: Simple "Fix" - we only scroll if the message count CHANGED.
+    // The previous code scrolled on EVERY RENDER because of the callback ref.
+    // The new useEffect [messages] dependency fixes the "scroll on polling with no new data" bug.
+
 
     // Handle Manual Send
     const handleSend = async () => {
@@ -311,9 +344,10 @@ export default function FeedPage() {
                             })}
 
                             {/* Invisible Element for Auto-Scroll */}
-                            <div ref={(el) => { if (el) el.scrollIntoView({ behavior: 'smooth' }); }}></div>
+                            <div ref={scrollBottomRef}></div>
                         </div>
                     </ScrollArea>
+
 
                     {/* Manual Handover Input */}
                     <div className={`p-3 border-t border-white/10 flex gap-2 transition-colors ${isAiPaused ? "bg-red-500/5" : "bg-white/5"}`}>

@@ -30,7 +30,7 @@ export default function LoginPage() {
             setError(error.message)
             setLoading(false)
         } else {
-            router.push("/dashboard")
+            router.push("/")
             router.refresh()
         }
     }
@@ -42,9 +42,9 @@ export default function LoginPage() {
 
             <Card className="w-full max-w-md bg-white/5 border-white/10 backdrop-blur-md relative z-10">
                 <CardHeader className="space-y-1 text-center">
-                    <CardTitle className="text-2xl font-bold text-white tracking-tight">Access Mission Control</CardTitle>
+                    <CardTitle className="text-2xl font-bold text-white tracking-tight">Access AMS</CardTitle>
                     <CardDescription className="text-slate-400">
-                        Adwelink AI Agent Management System
+                        Adwelink Agent Management System
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
