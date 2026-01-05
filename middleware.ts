@@ -59,7 +59,7 @@ export async function middleware(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser()
 
     // Guard Dashboard Routes and Root AMS
-    if (request.nextUrl.pathname.startsWith('/dashboard') || request.nextUrl.pathname === '/') {
+    if (request.nextUrl.pathname.startsWith('/workspace') || request.nextUrl.pathname === '/') {
         if (!user) {
             return NextResponse.redirect(new URL('/login', request.url))
         }

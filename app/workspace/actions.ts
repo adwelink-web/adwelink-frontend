@@ -29,7 +29,7 @@ export async function getDashboardData() {
 
         // Query 4: Recent Leads
         supabase.from("leads")
-            .select("id, name, phone, status, created_at, interested_course")
+            .select("id, name, phone, status, created_at, interested_course, source, next_followup")
             .order("created_at", { ascending: false })
             .limit(5)
     ])

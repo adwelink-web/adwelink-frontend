@@ -84,6 +84,7 @@ export async function POST(request: Request) {
         // 5. Log to Chat History (So it shows in UI)
         const isValidUUID = (id: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)
         const finalSessionId = (session_id && isValidUUID(session_id)) ? session_id : crypto.randomUUID()
+        const metaId = metaResult.messages?.[0]?.id
 
         const { data: chatData, error: chatError } = await supabase
             .from('ai_chat_history')
@@ -94,7 +95,9 @@ export async function POST(request: Request) {
                     ai_response: message, // Outgoing message
                     user_message: null,
                     intent: 'Manual Override',
-                    sentiment: 'Neutral'
+                    sentiment: 'Neutral',
+                    whatsapp_message_id: metaId,
+                    status: 'sent' // Initial status
                 }
             ])
             .select()

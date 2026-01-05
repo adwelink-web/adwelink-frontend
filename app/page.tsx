@@ -2,129 +2,182 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { BrainCircuit, GraduationCap, Wallet, ArrowRight, CheckCircle2 } from "lucide-react"
-import { useState } from "react"
+import {
+  BrainCircuit,
+  ArrowRight,
+  CheckCircle2,
+  TrendingUp,
+  Users,
+  DollarSign,
+  Activity,
+  AlertCircle,
+  MessageSquare,
+  CalendarDays,
+  Settings,
+  Store
+} from "lucide-react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-// We will use a server action or simple cookie handling. For client simplicity, we can set cookie via JS first.
+import { getHomeStats } from "@/app/actions/get-home-stats"
 
-export default function SelectAgentPage() {
+export default function AMSHomePage() {
   const router = useRouter()
   const [loading, setLoading] = useState<string | null>(null)
+  const [currentDate, setCurrentDate] = useState<string>("")
+  const [stats, setStats] = useState<any>(null)
 
-  const agents = [
-    {
-      id: "Aditi",
-      name: "Aditi",
-      role: "Counselor Agent",
-      desc: "Manages Leads, Sales, and Inquiries.",
-      icon: BrainCircuit,
-      color: "text-purple-400",
-      bg: "bg-purple-500/10",
-      border: "hover:border-purple-500/50"
-    },
-    {
-      id: "Rahul Sir",
-      name: "Rahul Sir",
-      role: "Teacher Agent",
-      desc: "Manages Classes, Exams, and Documents.",
-      icon: GraduationCap,
-      color: "text-emerald-400",
-      bg: "bg-emerald-500/10",
-      border: "hover:border-emerald-500/50"
-    },
-    {
-      id: "Munim Ji",
-      name: "Munim Ji",
-      role: "Accountant Agent",
-      desc: "Manages Fees, Invoices, and Payments.",
-      icon: Wallet,
-      color: "text-amber-400",
-      bg: "bg-amber-500/10",
-      border: "hover:border-amber-500/50"
+  useEffect(() => {
+    // 1. Set Date
+    const now = new Date()
+    const options: Intl.DateTimeFormatOptions = { weekday: 'long', month: 'short', day: 'numeric' }
+    setCurrentDate(now.toLocaleDateString('en-US', options))
+
+    // 2. Fetch Real Stats
+    const fetchStats = async () => {
+      try {
+        const data = await getHomeStats()
+        setStats(data)
+      } catch (error) {
+        console.error("Failed to fetch stats", error)
+      }
     }
-  ]
+    fetchStats()
+  }, [])
 
-  const handleSelect = (agentId: string) => {
-    setLoading(agentId)
-    // Set Cookie for Persistence (Expires in 7 days)
-    document.cookie = `activeAgent=${agentId}; path=/; max-age=604800`
-
-    // Simulate loading for effect
+  const handleSelect = () => {
+    setLoading("Aditi")
+    document.cookie = `activeAgent=Aditi; path=/; max-age=604800`
     setTimeout(() => {
-      router.push("/dashboard")
+      router.push("/workspace")
     }, 800)
   }
 
+  // Real or Fallback Metrics (Only Leads & Students)
+  const metrics = stats ? [
+    { label: "Total Leads", value: stats.leads.value, change: stats.leads.change, icon: Users, color: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20" },
+    { label: "Total Students", value: stats.students.value, change: stats.students.change, icon: CheckCircle2, color: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20" },
+  ] : [
+    // Loading Skeletons
+    { label: "Total Leads", value: "...", change: "...", icon: Users, color: "text-slate-600", bg: "bg-white/5", border: "border-white/5" },
+    { label: "Students", value: "...", change: "...", icon: CheckCircle2, color: "text-slate-600", bg: "bg-white/5", border: "border-white/5" },
+  ]
+
+  // Use Real Feed or Empty State
+  const liveActivity = stats?.activityFeed || [
+    { time: "...", text: "Fetching Live Pulse...", type: "warning" },
+  ]
+
   return (
-    <div className="min-h-screen bg-[#0B0F19] flex flex-col items-center justify-center p-4 relative overflow-hidden">
+    <div className="flex-1 flex flex-col p-8 relative overflow-y-auto h-full max-w-7xl mx-auto gap-8 animate-in fade-in duration-700">
 
-      {/* Ambient Background */}
-      <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-purple-500/10 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-cyan-500/10 blur-[120px] pointer-events-none" />
-
-      {/* Global Header */}
-      <div className="absolute top-6 right-6 z-20">
-        <Link href="/dashboard/settings">
-          <Button variant="outline" className="border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10">
-            Manage Institute (Global)
-          </Button>
-        </Link>
+      {/* 1. Header & Welcome */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-white tracking-tight">AMS Control Center</h1>
+          <p className="text-slate-400 flex items-center gap-2 mt-1">
+            <CalendarDays className="h-4 w-4 opacity-70" />
+            {currentDate || "Loading Date..."} • <span className="text-emerald-400">System Connected</span>
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" className="border-white/10 text-slate-300 hover:text-white bg-transparent hover:bg-white/5">View Reports</Button>
+          <Button className="bg-white text-black hover:bg-slate-200 font-semibold" onClick={handleSelect}>Open Aditi's Workspace</Button>
+        </div>
       </div>
 
-      <div className="relative z-10 max-w-4xl w-full space-y-8 text-center">
+      {/* 2. Key Business Metrics (2 Column Layout) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {metrics.map((m, i) => (
+          <Card key={i} className={`bg-white/5 border-white/5 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${m.border} group`}>
+            <CardContent className="p-6 flex items-center justify-between">
+              <div>
+                <p className="text-sm text-slate-400 font-medium mb-1 group-hover:text-slate-300 transition-colors">{m.label}</p>
+                <h3 className="text-2xl font-bold text-white tracking-tight">{m.value}</h3>
+                <span className={`text-xs font-medium ${m.change.startsWith('+') ? 'text-emerald-400' : 'text-rose-400'}`}>
+                  {m.change} <span className="text-slate-500 opacity-60 ml-1">vs last month</span>
+                </span>
+              </div>
+              <div className={`p-3 rounded-xl ${m.bg} ${m.color} ring-1 ring-inset ring-white/10`}>
+                <m.icon className="h-5 w-5" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
-        <div className="space-y-2">
-          <h1 className="text-4xl font-bold tracking-tight text-white">Select Your AI Employee</h1>
-          <p className="text-slate-400 text-lg">Who do you want to work with today?</p>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        {/* 3. Live Institute Pulse (Activity Feed) */}
+        <Card className="bg-white/5 border-white/10 lg:col-span-2 shadow-xl backdrop-blur-sm">
+          <CardHeader className="border-b border-white/5 pb-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2 text-white text-lg">
+                  <Activity className="h-5 w-5 text-indigo-400" /> Live Institute Pulse
+                </CardTitle>
+                <CardDescription className="mt-1">Real-time actions performing by your AI employees.</CardDescription>
+              </div>
+              <div className="flex gap-1">
+                <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                <span className="text-[10px] uppercase text-emerald-500 font-bold tracking-wider">Live</span>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <div className="space-y-6 relative">
+              {/* Vertical Line */}
+              <div className="absolute left-[39px] top-2 bottom-2 w-[1px] bg-gradient-to-b from-white/10 via-white/5 to-transparent"></div>
+
+              {liveActivity.map((item: any, i: number) => (
+                <div key={i} className="flex gap-4 items-start group relative z-10">
+                  <div className="flex flex-col items-end gap-1 min-w-[70px] pt-1">
+                    <span className="text-xs text-slate-500 font-mono group-hover:text-slate-300 transition-colors">{item.time}</span>
+                  </div>
+                  <div className={`h-2 w-2 mt-2 rounded-full ring-4 ring-[#0a0a0a] ${i === 0 ? 'bg-indigo-400 animate-ping' : 'bg-slate-700'}`}></div>
+                  <div className="bg-white/5 p-3 rounded-lg w-full border border-white/5 text-sm text-slate-300 hover:bg-white/10 transition-colors hover:border-white/10">
+                    {item.text}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 4. Active Agent Snapshot Only (Shortcuts Removed) */}
+        <div className="space-y-6">
+
+          {/* Aditi Mini Card - Workforce */}
+          <Card className="bg-white/5 border-white/10 relative overflow-hidden group hover:border-purple-500/30 transition-all">
+            <div className="absolute top-0 left-0 w-1 h-full bg-purple-500 group-hover:w-1.5 transition-all"></div>
+            <div className="absolute -right-10 -bottom-10 h-32 w-32 bg-purple-500/20 blur-[50px] rounded-full group-hover:bg-purple-500/30 transition-all pointer-events-none"></div>
+
+            <CardHeader className="pb-2">
+              <CardTitle className="text-white text-lg flex justify-between items-center">
+                Active Workforce
+                <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20 uppercase tracking-wide">
+                  Running
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-4 relative z-10">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-900/20 flex items-center justify-center text-purple-400 shadow-inner ring-1 ring-white/10">
+                  <BrainCircuit className="h-7 w-7" />
+                </div>
+                <div>
+                  <h4 className="text-white font-semibold text-lg">Aditi</h4>
+                  <p className="text-xs text-purple-300 font-medium">Senior Counselor</p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">Automating Sales</p>
+                </div>
+              </div>
+              <Button onClick={handleSelect} className="w-full bg-white text-black hover:bg-indigo-50 font-semibold shadow-lg hover:shadow-indigo-500/20 transition-all py-5">
+                {loading === "Aditi" ? "Connecting..." : "Go to Workspace"}
+              </Button>
+            </CardContent>
+          </Card>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-          {agents.map((agent) => (
-            <Card
-              key={agent.id}
-              onClick={() => handleSelect(agent.id)}
-              className={`group cursor-pointer bg-white/5 border-white/10 transition-all duration-300 transform hover:-translate-y-2 ${agent.border} relative overflow-hidden`}
-            >
-              {/* Hover Glow */}
-              <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-b from-white/5 to-transparent pointer-events-none`} />
-
-              <CardHeader className="text-center pb-2">
-                <div className={`mx-auto h-16 w-16 rounded-full flex items-center justify-center mb-4 ${agent.bg} ${agent.color} ring-1 ring-white/10 group-hover:ring-white/30 transition-all`}>
-                  <agent.icon className="h-8 w-8" />
-                </div>
-                <CardTitle className="text-xl text-white">{agent.name}</CardTitle>
-                <CardDescription className="text-slate-400 font-medium uppercase text-[10px] tracking-widest">{agent.role}</CardDescription>
-              </CardHeader>
-
-              <CardContent className="text-center space-y-4">
-                <p className="text-sm text-slate-400 leading-relaxed">
-                  {agent.desc}
-                </p>
-                <Button
-                  disabled={loading !== null}
-                  variant="ghost"
-                  className={`w-full group-hover:bg-white/10 text-slate-300 group-hover:text-white transition-colors`}
-                >
-                  {loading === agent.id ? "Initializing..." : "Select Workspace"}
-                  {loading === agent.id ? null : <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-all transform group-hover:translate-x-1" />}
-                </Button>
-              </CardContent>
-
-              {/* Active Indicator (Fake Check) */}
-              {loading === agent.id && (
-                <div className="absolute top-4 right-4 text-emerald-500 animate-in fade-in zoom-in">
-                  <CheckCircle2 className="h-6 w-6" />
-                </div>
-              )}
-            </Card>
-          ))}
-        </div>
-
-        <p className="text-xs text-slate-600 mt-12">
-          Access Control: <span className="text-slate-500">Admin (Kashi Das)</span> •
-          System Status: <span className="text-emerald-500">Operational</span>
-        </p>
       </div>
     </div>
   )

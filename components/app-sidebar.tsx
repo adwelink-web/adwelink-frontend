@@ -11,10 +11,13 @@ import {
     BrainCircuit,
     GraduationCap,
     Wallet,
+    CreditCard,
+    UserPlus,
     ShieldCheck,
     ChevronDown,
     LogOut,
-    Sparkles
+    Sparkles,
+    Store
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -31,16 +34,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import Image from "next/image"
 
-// Restoring interface to satisfy Shadcn/React types
 interface SidebarProps extends React.ComponentProps<"div"> { }
 
 export function AppSidebar({ className, ...props }: SidebarProps) {
     const pathname = usePathname()
-    // Default to Aditi, but try to read from cookie/localStorage if available
     const [activeAgent, setActiveAgent] = React.useState("Aditi")
 
     React.useEffect(() => {
-        // Simple cookie reader
         const match = document.cookie.match(new RegExp('(^| )activeAgent=([^;]+)'))
         if (match) {
             setActiveAgent(match[2])
@@ -49,83 +49,108 @@ export function AppSidebar({ className, ...props }: SidebarProps) {
 
     const handleAgentSwitch = (agentName: string) => {
         setActiveAgent(agentName)
-        // Persist change
         document.cookie = `activeAgent=${agentName}; path=/; max-age=604800`
     }
 
-    const routes = [
+    // --- LOGIC: SEPARATE MENUS FOR INSTITUTE VS AGENT ---
+    // If we are at root OR any Institute Page, we are in "Institute Mode".
+    const isInstituteMode = pathname === "/" ||
+        pathname.startsWith("/billing") ||
+        pathname.startsWith("/market") ||
+        pathname.startsWith("/settings");
+
+    const instituteRoutes = [
         {
-            label: "Dashboard",
-            icon: LayoutDashboard,
-            href: "/dashboard",
-            color: "text-sky-500",
-            category: "global"
+            label: "Home",
+            icon: BrainCircuit,
+            href: "/",
+            color: "text-white",
         },
         {
-            label: "Leads", // MOVED UP: High Priority
+            label: "Recruit Employees",
+            icon: Store,
+            href: "/market",
+            color: "text-amber-400",
+        },
+        {
+            label: "Settings",
+            icon: Settings,
+            href: "/settings",
+            color: "text-slate-400",
+        }
+    ]
+
+    const agentRoutes = [
+        {
+            label: "Workspace",
+            icon: LayoutDashboard,
+            href: "/workspace",
+            color: "text-sky-500",
+            title: "Dashboard"
+        },
+        {
+            label: "Leads",
             icon: Users,
-            href: "/dashboard/leads",
+            href: "/workspace/leads",
             color: "text-pink-500",
             title: "Leads"
         },
         {
-            label: "Live Chat",
+            label: "Chat",
             icon: MessageSquare,
-            href: "/dashboard/feed",
+            href: "/workspace/feed",
             color: "text-violet-500",
             title: "Feed",
             isLive: true,
         },
         {
-            label: "Documents",
+            label: "Training",
             icon: GraduationCap,
-            href: "/dashboard/training",
+            href: "/workspace/training",
             color: "text-emerald-500",
             title: "Training"
-        },
-        // Hidden from Daily View, accessible if needed via other means or re-enabled
-        {
-            label: "Agent Settings",
-            icon: BrainCircuit,
-            href: "/dashboard/brain",
-            color: "text-orange-500",
-            title: "Brain"
         },
         {
             label: "Fees",
             icon: Wallet,
-            href: "/dashboard/fees",
+            href: "/workspace/fees",
             color: "text-green-500",
             title: "Fees"
         },
         {
-            label: "Settings",
+            label: "Agent Settings",
             icon: Settings,
-            href: "/dashboard/settings",
-            category: "global"
-        },
+            href: "/workspace/brain",
+            color: "text-orange-500",
+            title: "Brain"
+        }
     ]
 
-    // Define which routes are visible for each agent context
-    const agentMenus: Record<string, string[]> = {
-        "Aditi": ["Leads", "Feed"], // Removed 'Brain' to declutter
-        "Rahul Sir": ["Training", "Brain"],
-        "Munim Ji": ["Fees"]
+    // Define which agent routes are visible for each agent type
+    const agentCapabilities: Record<string, string[]> = {
+        "Aditi": ["Dashboard", "Leads", "Feed"],
+        "Rahul Sir": ["Dashboard", "Training", "Brain"],
+        "Munim Ji": ["Dashboard", "Fees"]
     }
 
-    const filteredRoutes = routes.filter(route => {
-        // Always show Global routes
-        if (route.category === "global") return true
+    // Select the correct list based on mode
+    let displayRoutes = []
 
-        // Show route only if allowed for current agent
-        const allowedRoutes = agentMenus[activeAgent] || []
-        return route.title && allowedRoutes.includes(route.title)
-    })
+    if (isInstituteMode) {
+        displayRoutes = instituteRoutes
+    } else {
+        // In Agent Mode, filter based on the Active Agent's capabilities
+        const allowedCapabilities = agentCapabilities[activeAgent] || []
+        displayRoutes = agentRoutes.filter(route =>
+            // Show if it's a generic agent route OR matches capability
+            !route.title || allowedCapabilities.includes(route.title)
+        )
+    }
 
     return (
         <div className={cn("relative flex flex-col h-full bg-sidebar border-r border-white/10", className)}>
 
-            {/* 1. Sidebar Header (Brand + Agent Selector) */}
+            {/* 1. Sidebar Header */}
             <div className="px-6 py-6 border-b border-white/5">
                 <Link href="/" className="flex items-center pl-2 mb-6" title="Back to AMS Headquarters">
                     <div className="relative h-8 w-32 mr-2">
@@ -138,46 +163,20 @@ export function AppSidebar({ className, ...props }: SidebarProps) {
                     </div>
                 </Link>
 
-                {/* Agent Switcher */}
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="w-full justify-between border-white/10 bg-white/5 hover:bg-white/10 text-white">
-                            <div className="flex items-center gap-2">
-                                <Avatar className="h-6 w-6 border border-white/20">
-                                    <AvatarImage src="/agents/aditi-avatar.png" />
-                                    <AvatarFallback className="bg-gradient-to-br from-cyan-500 to-purple-500 text-[10px]">AI</AvatarFallback>
-                                </Avatar>
-                                <div className="flex flex-col items-start">
-                                    <span className="text-xs font-semibold">{activeAgent}</span>
-                                    <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Sales Agent</span>
-                                </div>
-                            </div>
-                            <ChevronDown className="h-4 w-4 opacity-50" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-[200px] bg-[#111625] border-white/10 text-white">
-                        <DropdownMenuLabel className="text-xs text-muted-foreground">Switch Agent</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => handleAgentSwitch("Aditi")} className="cursor-pointer hover:bg-white/5 focus:bg-white/5">
-                            <BrainCircuit className="mr-2 h-4 w-4 text-purple-500" />
-                            Aditi (Sales)
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleAgentSwitch("Rahul Sir")} className="cursor-pointer hover:bg-white/5 focus:bg-white/5">
-                            <GraduationCap className="mr-2 h-4 w-4 text-emerald-500" />
-                            Rahul Sir (Tutor)
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator className="bg-white/10" />
-                        <DropdownMenuItem className="cursor-pointer hover:bg-white/5 text-muted-foreground">
-                            <ShieldCheck className="mr-2 h-4 w-4" />
-                            Manage Agents
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                {/* Only show Agent Switcher if NOT in Institute Mode (optional, but keeping it for quick nav) */}
+                {/* User suggested distinct difference, maybe hide switcher on Root? 
+                    Let's keep it but maybe visually distinct. For now, standard behavior. */}
+                {/* Agent Switcher Removed as per request */}
+                {/* <div className="h-4"></div> */}
             </div>
 
             {/* 2. Navigation Routes */}
             <ScrollArea className="flex-1 px-4 py-4">
+                <div className="mb-2 px-2 text-[10px] uppercase text-slate-500 font-bold tracking-wider">
+                    {isInstituteMode ? "Institute Controls" : "Workspace Tools"}
+                </div>
                 <div className="space-y-1">
-                    {filteredRoutes.map((route) => (
+                    {displayRoutes.map((route) => (
                         <Link
                             key={route.href}
                             href={route.href}
@@ -189,7 +188,7 @@ export function AppSidebar({ className, ...props }: SidebarProps) {
                             <div className="flex items-center flex-1">
                                 <route.icon className={cn("h-5 w-5 mr-3", route.color)} />
                                 <span className="text-sm font-medium group-hover:text-white transition-colors">{route.label}</span>
-                                {route.isLive && (
+                                {(route as any).isLive && (
                                     <span className="ml-auto inline-flex h-2 w-2 animate-pulse rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>
                                 )}
                             </div>
@@ -200,8 +199,7 @@ export function AppSidebar({ className, ...props }: SidebarProps) {
 
             {/* 3. Footer (Plan & Profile) */}
             <div className="mt-auto p-4 border-t border-white/5 bg-black/20">
-
-                {/* Subscription Badge */}
+                {/* Only show plan details in Institute Mode? Or always? Always is fine. */}
                 <div className="mb-4 rounded-md bg-gradient-to-r from-amber-500/10 to-transparent p-3 border border-amber-500/20">
                     <div className="flex items-center justify-between mb-1">
                         <span className="text-xs font-bold text-amber-500 flex items-center gap-1">
@@ -209,12 +207,8 @@ export function AppSidebar({ className, ...props }: SidebarProps) {
                         </span>
                         <span className="text-[10px] text-muted-foreground">24d left</span>
                     </div>
-                    <div className="w-full bg-white/10 h-1 rounded-full overflow-hidden">
-                        <div className="bg-amber-500 h-full w-[80%] rounded-full" />
-                    </div>
                 </div>
 
-                {/* User Profile */}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-x-2">
                         <Avatar className="h-8 w-8 border border-white/10">
