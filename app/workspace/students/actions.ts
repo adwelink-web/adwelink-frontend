@@ -4,12 +4,12 @@ import { createServerClient } from "@/lib/supabase-server"
 import { revalidatePath } from "next/cache"
 import { getAuthenticatedInstituteId } from "@/lib/auth-utils"
 
-export async function getCourses() {
+export async function getStudents() {
     const supabase = await createServerClient()
     const institute_id = await getAuthenticatedInstituteId(supabase)
 
     const { data, error } = await supabase
-        .from("courses")
+        .from("students")
         .select("*")
         .eq("institute_id", institute_id)
         .order("name", { ascending: true })
@@ -21,62 +21,38 @@ export async function getCourses() {
     return data
 }
 
-export async function createCourse(data: any) {
-    const supabase = await createServerClient()
-
-    // Resilient institute identification
-    const institute_id = await getAuthenticatedInstituteId(supabase)
-
-    const { data: course, error } = await supabase
-        .from("courses")
-        .insert({
-            ...data,
-            institute_id
-        })
-        .select()
-        .single()
-
-    if (error) {
-        console.error("Create course error:", error)
-        throw new Error(error.message)
-    }
-
-    revalidatePath("/workspace/courses")
-    return { success: true, data: course }
-}
-
-export async function updateCourse(courseId: string, data: any) {
+export async function deleteStudent(studentId: string) {
     const supabase = await createServerClient()
     const institute_id = await getAuthenticatedInstituteId(supabase)
 
     const { error } = await supabase
-        .from("courses")
-        .update(data)
-        .eq("id", courseId)
+        .from("students")
+        .delete()
+        .eq("id", studentId)
         .eq("institute_id", institute_id)
 
     if (error) {
         throw new Error(error.message)
     }
 
-    revalidatePath("/workspace/courses")
+    revalidatePath("/workspace/students")
     return { success: true }
 }
 
-export async function deleteCourse(courseId: string) {
+export async function updateStudent(studentId: string, data: any) {
     const supabase = await createServerClient()
     const institute_id = await getAuthenticatedInstituteId(supabase)
 
     const { error } = await supabase
-        .from("courses")
-        .delete()
-        .eq("id", courseId)
+        .from("students")
+        .update(data)
+        .eq("id", studentId)
         .eq("institute_id", institute_id)
 
     if (error) {
         throw new Error(error.message)
     }
 
-    revalidatePath("/workspace/courses")
+    revalidatePath("/workspace/students")
     return { success: true }
 }

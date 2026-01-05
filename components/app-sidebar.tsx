@@ -55,16 +55,17 @@ export function AppSidebar({ className, ...props }: SidebarProps) {
 
     // --- LOGIC: SEPARATE MENUS FOR INSTITUTE VS AGENT ---
     // If we are at root OR any Institute Page, we are in "Institute Mode".
-    const isInstituteMode = pathname === "/" ||
+    const isInstituteMode = pathname === "/home" ||
         pathname.startsWith("/billing") ||
         pathname.startsWith("/market") ||
-        pathname.startsWith("/settings");
+        pathname.startsWith("/settings") ||
+        pathname === "/";
 
     const instituteRoutes = [
         {
             label: "Home",
             icon: BrainCircuit,
-            href: "/",
+            href: "/home",
             color: "text-white",
         },
         {
@@ -105,6 +106,13 @@ export function AppSidebar({ className, ...props }: SidebarProps) {
             isLive: true,
         },
         {
+            label: "Students",
+            icon: GraduationCap,
+            href: "/workspace/students",
+            color: "text-emerald-500",
+            title: "Students"
+        },
+        {
             label: "Academic Catalog",
             icon: GraduationCap,
             href: "/workspace/courses",
@@ -136,7 +144,7 @@ export function AppSidebar({ className, ...props }: SidebarProps) {
 
     // Define which agent routes are visible for each agent type
     const agentCapabilities: Record<string, string[]> = {
-        "Aditi": ["Dashboard", "Leads", "Feed", "Catalog"],
+        "Aditi": ["Dashboard", "Leads", "Feed", "Catalog", "Students"],
         "Rahul Sir": ["Dashboard", "Training", "Brain", "Catalog"],
         "Munim Ji": ["Dashboard", "Fees"]
     }
@@ -163,7 +171,7 @@ export function AppSidebar({ className, ...props }: SidebarProps) {
                 <Link href="/" className="flex items-center pl-2 mb-6" title="Back to AMS Headquarters">
                     <div className="relative h-8 w-32 mr-2">
                         <Image
-                            src="/adwelink_white.svg"
+                            src="/branding/adwelink.svg"
                             alt="Logo"
                             fill
                             className="object-contain object-left"

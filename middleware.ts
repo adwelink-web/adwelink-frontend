@@ -58,8 +58,14 @@ export async function middleware(request: NextRequest) {
     // Refresh Session
     const { data: { user } } = await supabase.auth.getUser()
 
-    // Guard Dashboard Routes and Root AMS
-    if (request.nextUrl.pathname.startsWith('/workspace') || request.nextUrl.pathname === '/') {
+    // Guard Dashboard Routes, Workspace, and Home
+    if (
+        request.nextUrl.pathname.startsWith('/workspace') ||
+        request.nextUrl.pathname.startsWith('/home') ||
+        request.nextUrl.pathname.startsWith('/settings') ||
+        request.nextUrl.pathname.startsWith('/market') ||
+        request.nextUrl.pathname.startsWith('/billing')
+    ) {
         if (!user) {
             return NextResponse.redirect(new URL('/login', request.url))
         }
@@ -68,7 +74,7 @@ export async function middleware(request: NextRequest) {
     // Redirect Logged-In Users away from Login page
     if (request.nextUrl.pathname.startsWith('/login')) {
         if (user) {
-            return NextResponse.redirect(new URL('/', request.url))
+            return NextResponse.redirect(new URL('/home', request.url))
         }
     }
 

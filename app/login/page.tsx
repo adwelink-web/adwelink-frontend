@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardContent, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Loader2 } from "lucide-react"
+import Image from "next/image"
 
 export default function LoginPage() {
     const router = useRouter()
@@ -30,21 +31,29 @@ export default function LoginPage() {
             setError(error.message)
             setLoading(false)
         } else {
-            router.push("/")
+            router.push("/home")
             router.refresh()
         }
     }
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-[#0B0F19] p-4 text-white">
+        <div className="h-[calc(100vh-40px)] w-full overflow-hidden flex items-center justify-center bg-[#0B0F19] p-4 text-white">
             {/* Background Glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[500px] bg-purple-600/20 blur-[120px] rounded-full pointer-events-none" />
 
             <Card className="w-full max-w-md bg-white/5 border-white/10 backdrop-blur-md relative z-10">
-                <CardHeader className="space-y-1 text-center">
-                    <CardTitle className="text-2xl font-bold text-white tracking-tight">Access AMS</CardTitle>
+                <CardHeader className="space-y-4 text-center">
+                    <div className="relative h-12 w-48 mx-auto">
+                        <Image
+                            src="/branding/adwelink.svg"
+                            alt="Adwelink"
+                            fill
+                            className="object-contain"
+                            priority
+                        />
+                    </div>
                     <CardDescription className="text-slate-400">
-                        Adwelink Agent Management System
+                        Agent Management System
                     </CardDescription>
                 </CardHeader>
                 <CardContent>

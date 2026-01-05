@@ -1,0 +1,42 @@
+<svg width="820" height="312" viewBox="0 0 820 312" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="820" height="312" fill="url(#bg-gradient)" />
+  <defs>
+    <linearGradient id="bg-gradient" x1="0" y1="0" x2="820" y2="312" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f172a" /> <!-- Slate 900 -->
+      <stop offset="100%" stop-color="#1e293b" /> <!-- Slate 800 -->
+    </linearGradient>
+  </defs>
+
+  <!-- Abstract Shapes for Tech feel -->
+  <circle cx="0" cy="0" r="200" fill="#3b82f6" opacity="0.05" />
+  <circle cx="820" cy="312" r="150" fill="#8b5cf6" opacity="0.05" />
+  <path d="M600 0 L820 0 L820 150 Z" fill="#3b82f6" opacity="0.03" />
+  <path d="M0 312 L200 312 L0 200 Z" fill="#8b5cf6" opacity="0.03" />
+
+  <!-- Grid Pattern overlay -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.03"/>
+  </pattern>
+  <rect width="820" height="312" fill="url(#grid)" />
+
+  <!-- Logo Group (Centered) -->
+  <g transform="translate(220, 106)">
+      <!-- Content from adwelink_white.svg -->
+      <g transform="translate(20, 20)">
+        <path d="M10 40 C 10 10, 50 10, 50 30 C 50 50, 10 50, 10 40 Z" 
+              fill="#ffffff" opacity="0.9" />
+        <path d="M30 10 C 50 10, 60 40, 40 55 C 20 70, 10 40, 30 10" 
+              fill="#ffffff" />
+        <circle cx="55" cy="15" r="5" fill="#ffffff" />
+      </g>
+      <text x="85" y="62" 
+            font-family="'Andromeda', 'Segoe UI', 'Roboto', sans-serif" 
+            font-weight="700" 
+            font-size="48" 
+            fill="#ffffff" 
+            letter-spacing="5">
+        adwelink
+      </text>
+  </g>
+</svg>
