@@ -166,87 +166,93 @@ export default function LeadsPage() {
     }
 
     return (
-        <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6">
-            <div className="flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 h-[calc(100vh-70px)] flex flex-col min-h-0 overflow-hidden">
+            <div className="flex-none flex items-center justify-between py-4 bg-[#0B0F19]/90 backdrop-blur-xl border-b border-white/10 transition-all">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight text-white">Lead Management</h2>
-                    <p className="text-muted-foreground mt-1">Track Visits, Follow-ups, and Admissions.</p>
+                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white">Lead Management</h2>
+                    <p className="text-muted-foreground text-xs md:text-sm">Track Visits, Follow-ups, and Admissions.</p>
                 </div>
-                <Button className="bg-white text-black hover:bg-slate-200" onClick={handleNewLead}>
-                    <Plus className="mr-2 h-4 w-4" /> Add Manual Lead
+                <Button className="bg-white text-black hover:bg-slate-200 h-9 px-4 text-xs font-bold rounded-xl shadow-lg" onClick={handleNewLead}>
+                    <Plus className="mr-2 h-4 w-4 stroke-[3px]" /> Add Manual Lead
                 </Button>
             </div>
 
-            <Card className="bg-white/5 border-white/10">
-                <CardHeader>
-                    <CardTitle className="text-white">Active Queue</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <Table>
-                        <TableHeader className="bg-slate-900/50">
-                            <TableRow className="border-white/10 hover:bg-transparent">
-                                <TableHead className="text-slate-300">Candidate</TableHead>
-                                <TableHead className="text-slate-300 w-[140px]">Source / City</TableHead>
-                                <TableHead className="text-slate-300">Interest</TableHead>
-                                <TableHead className="text-slate-300">Score</TableHead>
-                                <TableHead className="text-slate-300">Next Action</TableHead>
-                                <TableHead className="text-slate-300">Status</TableHead>
-                                <TableHead className="text-right text-slate-300">Actions</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {loading ? (
-                                <TableRow>
-                                    <TableCell colSpan={7} className="h-24 text-center text-slate-500">Loading Leads...</TableCell>
-                                </TableRow>
-                            ) : leads.map((lead) => (
-                                <TableRow key={lead.id} className="border-white/5 hover:bg-white/5 group cursor-pointer" onClick={() => { setSelectedLead(lead); setDialogOpen(true) }}>
-                                    <TableCell>
-                                        <div className="flex flex-col">
-                                            <span className="font-medium text-slate-200">{lead.name || "Unknown"}</span>
-                                            <span className="text-xs text-slate-500 font-mono mt-0.5">{lead.phone}</span>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex flex-col gap-1">
-                                            <span className="text-xs text-slate-400 capitalize">{lead.city || "-"}</span>
-                                            {lead.source && <span className="text-[10px] bg-white/5 px-1.5 py-0.5 rounded text-slate-500 w-fit uppercase">{lead.source}</span>}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="text-slate-400">
-                                        <div className="flex flex-col">
-                                            <span>{lead.interested_course}</span>
-                                            {lead.current_class && <span className="text-xs text-slate-600">{lead.current_class}</span>}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        {lead.lead_score ? (
-                                            <div className={`flex items-center gap-1 font-bold ${lead.lead_score > 80 ? 'text-green-400' : lead.lead_score > 50 ? 'text-amber-400' : 'text-slate-500'}`}>
-                                                {lead.lead_score}
-                                            </div>
-                                        ) : <span className="text-slate-700">-</span>}
-                                    </TableCell>
-                                    <TableCell>
-                                        {lead.next_followup ? (
-                                            <div className="text-xs text-slate-300">
-                                                {formatDate(lead.next_followup)}
-                                            </div>
-                                        ) : "-"}
-                                    </TableCell>
-                                    <TableCell>
-                                        {getStatusBadge(lead.status)}
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                            <ArrowUpRight className="h-4 w-4 text-slate-500" />
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </CardContent>
-            </Card>
+            <div className="flex-1 min-h-0 mt-4 pb-4 overflow-hidden">
+                <Card className="h-full bg-white/5 border-white/10 flex flex-col overflow-hidden">
+                    <CardContent className="flex-1 min-h-0 p-0 overflow-hidden">
+                        <div className="h-full overflow-y-auto custom-scrollbar">
+                            <table className="w-full text-sm border-collapse">
+                                <thead className="sticky top-0 z-30 bg-[#161B22] shadow-sm">
+                                    <tr className="bg-white/[0.02]">
+                                        <th colSpan={7} className="pt-1.5 pb-0 px-6 text-left">
+                                            <span className="text-[9px] font-bold uppercase tracking-widest text-slate-600">Active Student Queue</span>
+                                        </th>
+                                    </tr>
+                                    <tr className="border-b border-white/10 text-left bg-[#161B22]">
+                                        <th className="h-8 px-6 font-bold text-slate-400 text-[10px]">Candidate</th>
+                                        <th className="h-10 px-6 font-bold text-slate-400 text-xs w-[160px]">Source / City</th>
+                                        <th className="h-10 px-6 font-bold text-slate-400 text-xs">Interest</th>
+                                        <th className="h-10 px-6 font-bold text-slate-400 text-xs">Score</th>
+                                        <th className="h-10 px-6 font-bold text-slate-400 text-xs">Next Action</th>
+                                        <th className="h-10 px-6 font-bold text-slate-400 text-xs">Status</th>
+                                        <th className="h-10 px-6 font-bold text-slate-400 text-xs text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-white/5">
+                                    {loading ? (
+                                        <tr>
+                                            <td colSpan={7} className="h-32 text-center text-slate-500 text-xs">Syncing with Brain...</td>
+                                        </tr>
+                                    ) : leads.map((lead) => (
+                                        <tr key={lead.id} className="hover:bg-white/[0.05] group cursor-pointer border-b border-white/[0.03]" onClick={() => { setSelectedLead(lead); setDialogOpen(true) }}>
+                                            <td className="px-6 py-3">
+                                                <div className="flex flex-col">
+                                                    <span className="font-medium text-slate-200">{lead.name || "Unknown"}</span>
+                                                    <span className="text-[10px] text-slate-500 font-mono">{lead.phone}</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-3">
+                                                <div className="flex flex-col gap-0.5">
+                                                    <span className="text-[11px] text-slate-400 capitalize">{lead.city || "-"}</span>
+                                                    {lead.source && <span className="text-[9px] bg-white/5 px-1.5 py-0.5 rounded text-slate-500 w-fit uppercase">{lead.source}</span>}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-3">
+                                                <div className="flex flex-col">
+                                                    <span className="text-xs text-slate-300">{lead.interested_course}</span>
+                                                    {lead.current_class && <span className="text-[10px] text-slate-600">{lead.current_class}</span>}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-3">
+                                                {lead.lead_score ? (
+                                                    <div className={`font-bold ${lead.lead_score > 80 ? 'text-emerald-500' : lead.lead_score > 50 ? 'text-amber-500' : 'text-slate-500'}`}>
+                                                        {lead.lead_score}
+                                                    </div>
+                                                ) : <span className="text-slate-700">-</span>}
+                                            </td>
+                                            <td className="px-6 py-3">
+                                                {lead.next_followup ? (
+                                                    <div className="text-[11px] text-slate-400">
+                                                        {formatDate(lead.next_followup)}
+                                                    </div>
+                                                ) : <span className="text-slate-700">-</span>}
+                                            </td>
+                                            <td className="px-6 py-3">
+                                                {getStatusBadge(lead.status)}
+                                            </td>
+                                            <td className="px-6 py-3 text-right">
+                                                <Button variant="ghost" size="sm" className="h-7 w-7 p-0 hover:bg-white/10">
+                                                    <ArrowUpRight className="h-3.5 w-3.5 text-slate-500" />
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
 
             {/* REFACTORED MODAL DIALOG (POPUP) */}
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -355,8 +361,8 @@ export default function LeadsPage() {
                             </DialogHeader>
 
                             {/* DIALOG BODY */}
-                            <ScrollArea className="h-[calc(85vh-130px)] pr-4">
-                                <div className="p-8 pb-24 space-y-6">
+                            <ScrollArea className="h-[calc(85vh-130px)]">
+                                <div className="p-5 pb-20 space-y-5">
 
                                     {/* 1. AI Insights */}
                                     <section>

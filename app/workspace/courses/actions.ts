@@ -5,29 +5,43 @@ import { revalidatePath } from "next/cache"
 
 /**
  * Fetches the institute_id for the current authenticated user.
+ * Implements a fallback strategy for single-institute setups.
  */
 async function getAuthenticatedInstituteId(supabase: any) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error("Unauthorized: Please log in.")
 
-    const { data: profile, error } = await supabase
+    // 1. Try to find the user in the staff_members table
+    const { data: profile, error: profileError } = await supabase
         .from("staff_members")
         .select("institute_id")
         .eq("id", user.id)
         .single()
 
-    if (error || !profile?.institute_id) {
-        console.error("Profile lookup error:", error)
-        throw new Error("Could not identify your institute. Please contact support.")
+    if (profile?.institute_id) {
+        return profile.institute_id
     }
 
-    return profile.institute_id
+    // 2. Fallback: If not in staff_members, check if there is only one institute in the system
+    // This handles cases where the owner/admin hasn't been added to staff_members yet.
+    const { data: institutes, error: instError } = await supabase
+        .from("institutes")
+        .select("id")
+        .limit(2) // We only need to know if there's exactly one
+
+    if (institutes && institutes.length === 1) {
+        console.warn(`User ${user.id} not found in staff_members. Falling back to single institute: ${institutes[0].id}`)
+        return institutes[0].id
+    }
+
+    // 3. Fail if multiple institutes exist and we can't map the user
+    console.error("Profile identification failed:", { userId: user.id, profileError, instError })
+    throw new Error("Could not identify your institute. Please ensure you are added as a Staff Member.")
 }
 
 export async function getCourses() {
     const supabase = await createServerClient()
 
-    // RLS handles filtering, but we could explicitly filter by institute_id here too
     const { data, error } = await supabase
         .from("courses")
         .select("*")
@@ -43,7 +57,7 @@ export async function getCourses() {
 export async function createCourse(data: any) {
     const supabase = await createServerClient()
 
-    // Auto-fetch institute_id to ensure data integrity
+    // Resilient institute identification
     const institute_id = await getAuthenticatedInstituteId(supabase)
 
     const { data: course, error } = await supabase
@@ -67,8 +81,6 @@ export async function createCourse(data: any) {
 export async function updateCourse(courseId: string, data: any) {
     const supabase = await createServerClient()
 
-    // We don't necessarily need to reinject institute_id on update 
-    // as it should already be tied to the record.
     const { error } = await supabase
         .from("courses")
         .update(data)

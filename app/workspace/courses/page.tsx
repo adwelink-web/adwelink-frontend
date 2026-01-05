@@ -59,6 +59,7 @@ export default function CoursesPage() {
     const [isEditing, setIsEditing] = React.useState(false)
     const [formData, setFormData] = React.useState<Partial<Course>>({})
     const [searchQuery, setSearchQuery] = React.useState("")
+    const [deletingIds, setDeletingIds] = React.useState<Set<string>>(new Set())
 
     const fetchData = async () => {
         setLoading(true)
@@ -82,7 +83,7 @@ export default function CoursesPage() {
             name: "",
             total_fee: 0,
             duration_months: 12,
-            mode: "offline",
+            mode: "Offline", // DB expects Capitalized 'Offline'
             registration_fee: 0,
             target_class: "",
         })
@@ -100,11 +101,24 @@ export default function CoursesPage() {
     const handleDeleteCourse = async (courseId: string) => {
         if (!confirm("Are you sure you want to delete this course? This action cannot be undone.")) return
 
+        setDeletingIds(prev => new Set(prev).add(courseId))
         try {
             await deleteCourse(courseId)
             setCourses(courses.filter(c => c.id !== courseId))
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to delete course:", error)
+            // Show a more helpful error message
+            if (error.message?.includes("fk") || error.message?.includes("violates foreign key constraint")) {
+                alert("Cannot delete this course because it is linked to active batches. Please delete or move the batches first.")
+            } else {
+                alert("Failed to delete course: " + (error.message || "Unknown error"))
+            }
+        } finally {
+            setDeletingIds(prev => {
+                const next = new Set(prev)
+                next.delete(courseId)
+                return next
+            })
         }
     }
 
@@ -191,10 +205,11 @@ export default function CoursesPage() {
                                 <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-slate-500 flex items-center gap-1.5 leading-none">
                                     <Hash className="h-3 w-3" /> {course.id.slice(0, 8)}
                                 </CardTitle>
-                                <div className="flex items-center gap-1.5 opacity-40 group-hover:opacity-100 transition-opacity">
+                                <div className="flex items-center gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
                                     <Button
                                         variant="ghost"
                                         size="sm"
+                                        disabled={deletingIds.has(course.id)}
                                         onClick={() => handleEditCourse(course)}
                                         className="h-7 w-7 p-0 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg"
                                         title="Edit"
@@ -204,11 +219,16 @@ export default function CoursesPage() {
                                     <Button
                                         variant="ghost"
                                         size="sm"
+                                        disabled={deletingIds.has(course.id)}
                                         onClick={() => handleDeleteCourse(course.id)}
-                                        className="h-7 w-7 p-0 text-slate-600 hover:text-red-400 hover:bg-red-500/10 rounded-lg"
+                                        className={`h-7 w-7 p-0 rounded-lg transition-colors ${deletingIds.has(course.id) ? 'bg-red-500/20 text-red-400 animate-pulse' : 'text-slate-600 hover:text-red-400 hover:bg-red-500/10'}`}
                                         title="Delete"
                                     >
-                                        <Trash2 className="h-3.5 w-3.5" />
+                                        {deletingIds.has(course.id) ? (
+                                            <Clock className="h-3.5 w-3.5 animate-spin" />
+                                        ) : (
+                                            <Trash2 className="h-3.5 w-3.5" />
+                                        )}
                                     </Button>
                                 </div>
                             </CardHeader>
@@ -308,16 +328,16 @@ export default function CoursesPage() {
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600 ml-1">Study Mode</label>
                                     <Select
-                                        value={formData.mode || "offline"}
+                                        value={formData.mode || "Offline"}
                                         onValueChange={(val) => setFormData({ ...formData, mode: val })}
                                     >
                                         <SelectTrigger className="bg-white/[0.03] border-white/10 text-white h-12 text-sm font-bold rounded-xl capitalize">
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent className="bg-[#161B22] border-white/10 text-white rounded-xl">
-                                            <SelectItem value="offline">Offline</SelectItem>
-                                            <SelectItem value="online">Online</SelectItem>
-                                            <SelectItem value="hybrid">Hybrid</SelectItem>
+                                            <SelectItem value="Offline">Offline</SelectItem>
+                                            <SelectItem value="Online">Online</SelectItem>
+                                            <SelectItem value="Hybrid">Hybrid</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
