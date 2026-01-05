@@ -17,7 +17,8 @@ import {
     ChevronDown,
     LogOut,
     Sparkles,
-    Store
+    Store,
+    BookOpen
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -104,6 +105,13 @@ export function AppSidebar({ className, ...props }: SidebarProps) {
             isLive: true,
         },
         {
+            label: "Academic Catalog",
+            icon: GraduationCap,
+            href: "/workspace/courses",
+            color: "text-orange-400",
+            title: "Catalog"
+        },
+        {
             label: "Training",
             icon: GraduationCap,
             href: "/workspace/training",
@@ -128,8 +136,8 @@ export function AppSidebar({ className, ...props }: SidebarProps) {
 
     // Define which agent routes are visible for each agent type
     const agentCapabilities: Record<string, string[]> = {
-        "Aditi": ["Dashboard", "Leads", "Feed"],
-        "Rahul Sir": ["Dashboard", "Training", "Brain"],
+        "Aditi": ["Dashboard", "Leads", "Feed", "Catalog"],
+        "Rahul Sir": ["Dashboard", "Training", "Brain", "Catalog"],
         "Munim Ji": ["Dashboard", "Fees"]
     }
 

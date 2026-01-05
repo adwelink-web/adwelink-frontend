@@ -42,6 +42,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { updateLead, createLead } from "./actions"
+import { getCourses } from "../courses/actions"
 import { format } from "date-fns" // We might need to install date-fns or use native Intl
 
 type Lead = Database["public"]["Tables"]["leads"]["Row"]
@@ -53,6 +54,7 @@ export default function LeadsPage() {
     const [dialogOpen, setDialogOpen] = React.useState(false)
     const [isEditing, setIsEditing] = React.useState(false)
     const [isCreating, setIsCreating] = React.useState(false)
+    const [courses, setCourses] = React.useState<any[]>([])
     const [formData, setFormData] = React.useState<Partial<Lead>>({})
 
     const handleEditToggle = () => {
@@ -117,26 +119,32 @@ export default function LeadsPage() {
     }, [dialogOpen])
 
     React.useEffect(() => {
-        const fetchData = async () => {
-            const supabase = createClient()
+        const fetchInitialData = async () => {
             setLoading(true)
+            const supabase = createClient()
 
-            // Direct Fetch - Respecting the Schema
-            const { data, error } = await supabase
-                .from("leads")
-                .select("*")
-                .order("updated_at", { ascending: false })
-                .limit(50)
+            try {
+                // Fetch Leads and Courses in parallel
+                const [leadsResponse, coursesData] = await Promise.all([
+                    supabase.from("leads").select("*").order("updated_at", { ascending: false }).limit(50),
+                    getCourses()
+                ])
 
-            if (error) {
-                console.error("Supabase Error:", error)
-            } else {
-                setLeads(data || [])
+                if (leadsResponse.error) {
+                    console.error("Supabase Error:", leadsResponse.error)
+                } else {
+                    setLeads(leadsResponse.data || [])
+                }
+
+                setCourses(coursesData || [])
+            } catch (error) {
+                console.error("Failed to fetch initial data:", error)
+            } finally {
+                setLoading(false)
             }
-            setLoading(false)
         }
 
-        fetchData()
+        fetchInitialData()
     }, [])
 
     const getStatusBadge = (status: string | null) => {
@@ -379,11 +387,19 @@ export default function LeadsPage() {
                                             <div>
                                                 <label className="text-[9px] text-slate-500 uppercase font-semibold">Interested Course</label>
                                                 {isEditing ? (
-                                                    <Input
-                                                        className="h-6 text-sm bg-black/20 border-white/10 mt-0.5 px-2"
+                                                    <Select
                                                         value={formData.interested_course || ""}
-                                                        onChange={(e) => setFormData({ ...formData, interested_course: e.target.value })}
-                                                    />
+                                                        onValueChange={(val) => setFormData({ ...formData, interested_course: val })}
+                                                    >
+                                                        <SelectTrigger className="h-6 text-sm bg-black/20 border-white/10 mt-0.5 px-2">
+                                                            <SelectValue placeholder="Select Course" />
+                                                        </SelectTrigger>
+                                                        <SelectContent className="bg-[#161B22] border-white/10 text-white">
+                                                            {courses.map(course => (
+                                                                <SelectItem key={course.id} value={course.name}>{course.name}</SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
                                                 ) : (
                                                     <div className="text-sm font-medium text-white mt-0.5 truncate">{selectedLead?.interested_course || <span className="text-slate-600">Not Specified</span>}</div>
                                                 )}
