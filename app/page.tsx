@@ -118,29 +118,40 @@ export default function LandingPage() {
                 <div className="h-3 w-3 rounded-full bg-emerald-500/50" />
                 <div className="ml-4 h-6 w-64 bg-white/5 rounded-full" />
               </div>
-              <img
-                src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=2000&auto=format&fit=crop"
-                alt="Dashboard Preview"
-                className="w-full h-auto rounded-2xl grayscale-[0.2] border border-white/5 hover:grayscale-0 transition-all"
-              />
+              {/* UI Placeholder for Dashboard */}
+              <div className="w-full h-[600px] bg-[#020617] relative flex items-center justify-center border-t border-white/5">
+                <div className="text-center space-y-4">
+                  <div className="h-20 w-20 bg-cyan-500/10 rounded-2xl flex items-center justify-center mx-auto ring-1 ring-cyan-500/30 animate-pulse">
+                    <MessageSquare className="h-10 w-10 text-cyan-400" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white">Aditi's Workspace</h3>
+                  <p className="text-slate-400 max-w-sm mx-auto">Live Lead Nurturing & Admission Management</p>
+                </div>
+                {/* Decorative UI Lines */}
+                <div className="absolute left-10 top-10 h-2 w-32 bg-white/10 rounded-full" />
+                <div className="absolute left-10 top-20 h-2 w-48 bg-white/5 rounded-full" />
+                <div className="absolute right-10 bottom-10 h-12 w-12 rounded-full border border-white/10 flex items-center justify-center">
+                  <div className="h-2 w-2 bg-emerald-500 rounded-full animate-ping" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 🛠️ Technical Prowess Section */}
+      {/* 🛠️ Operational Excellence Section */}
       <section id="features" className="py-32 px-6 relative">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">Engineered for Reliability.</h2>
-            <p className="text-slate-400 max-w-xl mx-auto">We don't just build chatbots. We build autonomous systems with memory, logic, and deep integration.</p>
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6">Enterprise Reliability for Institutes.</h2>
+            <p className="text-slate-400 max-w-xl mx-auto">Built on the same technology used by Fortune 500 companies. Secure, private, and always online.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { title: "DaaB Architecture", icon: Cpu, desc: "Database-as-Brain. Every agent action is logically mapped and logged in our secure Postgres core.", color: "text-cyan-400" },
-              { title: "n8n Workflow Core", icon: Zap, desc: "Complex multi-step reasoning powered by industry-standard automation engines.", color: "text-amber-400" },
-              { title: "Multi-tenant Defense", icon: Lock, desc: "Enterprise-grade isolation ensuring your institute's data remains only yours.", color: "text-blue-400" }
+              { title: "Bank-Grade Security", icon: ShieldCheck, desc: "Your student data is encrypted and isolated. Only you have the key.", color: "text-cyan-400" },
+              { title: "Zero Downtime Logic", icon: Zap, desc: "Our automation engine handles thousands of queries simultaneously without crashing.", color: "text-amber-400" },
+              { title: "Ownership Guarantee", icon: Lock, desc: "You own your data. We never sell, share, or market to your students.", color: "text-blue-400" }
             ].map((feat, i) => (
               <Card key={i} className="bg-white/5 border-white/5 hover:bg-white/[0.07] transition-all p-8 group relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-1 h-0 bg-gradient-to-b from-cyan-400 to-blue-600 group-hover:h-full transition-all duration-500" />

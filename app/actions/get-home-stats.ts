@@ -42,6 +42,7 @@ export async function getHomeStats() {
         const totalLeads = leadsResult.count || 0
         const totalStudents = studentsResult.count || 0
 
+
         // Format Currency Helper
         const formatCurrency = (amount: number) => {
             if (amount >= 100000) return `₹${(amount / 100000).toFixed(1)}L`
