@@ -26,7 +26,7 @@ export default function EarlyAccessPage() {
 
         // Simulate API call
         setTimeout(() => {
-            if (code === "ADWELINK2026") {
+            if (code === "ADWELINK_IND") {
                 setStatus("success")
                 // Success State: Redirect after short delay
                 setTimeout(() => {

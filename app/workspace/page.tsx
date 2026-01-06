@@ -1,4 +1,4 @@
-"use server"
+// Workspace Dashboard Page
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, Phone, CalendarDays, ArrowUpRight, PlusCircle, Bell, UserPlus, GraduationCap } from "lucide-react"

@@ -66,6 +66,11 @@ export async function proxy(request: NextRequest) {
     // Refresh Session
     const { data: { user } } = await supabase.auth.getUser()
 
+    // Handle legacy /dashboard redirect
+    if (request.nextUrl.pathname === '/dashboard') {
+        return NextResponse.redirect(new URL('/', request.url))
+    }
+
     // Guard Dashboard Routes, Workspace, and Home
     if (
         request.nextUrl.pathname.startsWith('/workspace') ||
