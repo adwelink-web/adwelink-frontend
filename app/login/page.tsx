@@ -1,20 +1,31 @@
 "use client"
 import { useState } from "react"
 import { createClient } from "@/lib/supabase"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardContent, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { Loader2 } from "lucide-react"
+import { Loader2, Sparkles } from "lucide-react"
+import { useEffect } from "react"
 import Image from "next/image"
 
 export default function LoginPage() {
     const router = useRouter()
+    const searchParams = useSearchParams()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
+
+    // Handle Demo Mode
+    useEffect(() => {
+        const demo = searchParams.get("demo")
+        if (demo === "sharma") {
+            setEmail("sharma.demo@gmail.com")
+            setPassword("sharma123")
+        }
+    }, [searchParams])
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -55,6 +66,12 @@ export default function LoginPage() {
                     <CardDescription className="text-slate-400">
                         Agent Management System
                     </CardDescription>
+
+                    {searchParams.get("demo") === "sharma" && (
+                        <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-[10px] text-amber-500 font-bold uppercase tracking-widest animate-pulse">
+                            <Sparkles className="h-3 w-3" /> Access Granted: Sharma Classes Demo
+                        </div>
+                    )}
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleLogin} className="space-y-4">

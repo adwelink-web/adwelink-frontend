@@ -12,9 +12,11 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import Link from "next/link"
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 
 export default function EarlyAccessPage() {
+    const router = useRouter()
     const [code, setCode] = useState("")
     const [status, setStatus] = useState<"idle" | "verifying" | "error" | "success">("idle")
 
@@ -26,6 +28,10 @@ export default function EarlyAccessPage() {
         setTimeout(() => {
             if (code === "ADWELINK2026") {
                 setStatus("success")
+                // Success State: Redirect after short delay
+                setTimeout(() => {
+                    router.push("/login?demo=sharma")
+                }, 1000)
             } else {
                 setStatus("error")
             }

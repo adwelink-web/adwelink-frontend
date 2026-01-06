@@ -104,9 +104,9 @@ export default function LandingPage() {
                     <Image src="/branding/adwelink.svg" alt="Adwelink" width={120} height={30} className="object-contain" priority />
                 </div>
 
-                <div className="flex items-center gap-4 text-xs font-medium uppercase tracking-widest text-slate-500">
-                    <Link href="/manifesto" className="hidden md:flex items-center gap-1 hover:text-white transition-colors mr-2">
-                        <FileText className="h-3 w-3" /> Our Vision
+                <div className="flex items-center gap-3 md:gap-4 text-xs font-medium uppercase tracking-widest text-slate-500">
+                    <Link href="/manifesto" className="flex items-center gap-1 hover:text-white transition-colors">
+                        <FileText className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Our</span> Vision
                     </Link>
 
                     <Link href="/early-access">
