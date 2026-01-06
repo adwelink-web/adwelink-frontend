@@ -6,10 +6,21 @@ import { Textarea } from "@/components/ui/textarea"
 import { ArrowLeft, MessageSquare, Send, Star } from "lucide-react"
 import Link from "next/link"
 import React, { useState } from "react"
+import { createClient } from "@/lib/supabase"
 
 export default function FeedbackPage() {
     const [rating, setRating] = useState(0)
     const [submitted, setSubmitted] = useState(false)
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+    React.useEffect(() => {
+        const checkUser = async () => {
+            const supabase = createClient()
+            const { data: { user } } = await supabase.auth.getUser()
+            setIsLoggedIn(!!user)
+        }
+        checkUser()
+    }, [])
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
@@ -27,7 +38,7 @@ export default function FeedbackPage() {
                 <p className="text-slate-400 max-w-md mb-8">
                     Your feedback has been sent directly to our Founder. We read every single message.
                 </p>
-                <Link href="/">
+                <Link href={isLoggedIn ? "/home" : "/"}>
                     <Button variant="outline" className="border-white/10 text-white hover:bg-white/10">
                         Back to Home
                     </Button>
@@ -46,7 +57,7 @@ export default function FeedbackPage() {
 
             <div className="w-full max-w-lg relative z-10">
 
-                <Link href="/" className="inline-flex items-center text-slate-500 hover:text-white mb-8 transition-colors text-sm">
+                <Link href={isLoggedIn ? "/home" : "/"} className="inline-flex items-center text-slate-500 hover:text-white mb-8 transition-colors text-sm">
                     <ArrowLeft className="h-4 w-4 mr-2" /> Cancel & Return
                 </Link>
 

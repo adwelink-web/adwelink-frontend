@@ -49,7 +49,7 @@ export function SidebarWrapper({ children, user }: SidebarWrapperProps) {
         <div className="flex h-screen overflow-hidden relative">
             {/* Desktop Sidebar */}
             <div className="hidden md:flex w-64 flex-col bg-sidebar border-r border-border shrink-0">
-                <AppSidebar />
+                <AppSidebar user={user} />
             </div>
 
             {/* Main Content Area */}
@@ -65,7 +65,7 @@ export function SidebarWrapper({ children, user }: SidebarWrapperProps) {
                             </Button>
                         </SheetTrigger>
                         <SheetContent side="left" className="p-0 border-r border-white/10 w-72 bg-[#0B0F19]">
-                            <AppSidebar />
+                            <AppSidebar user={user} />
                         </SheetContent>
                     </Sheet>
                     <div className="font-semibold text-lg text-foreground">Adwelink AMS</div>

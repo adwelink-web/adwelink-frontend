@@ -5,9 +5,12 @@ import { Users, Phone, CalendarDays, ArrowUpRight, PlusCircle, Bell, UserPlus, G
 import Link from "next/link"
 import { getDashboardData } from "./actions"
 import { Button } from "@/components/ui/button"
+import { cookies } from "next/headers"
 
 export default async function DashboardPage() {
     const { user, stats, recentLeads } = await getDashboardData()
+    const cookieStore = await cookies()
+    const activeAgent = cookieStore.get("activeAgent")?.value || "Aditi"
 
     return (
         <div className="h-[calc(100vh-40px)] w-full overflow-hidden flex flex-col">
@@ -23,7 +26,7 @@ export default async function DashboardPage() {
                                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
                                     <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
                                 </span>
-                                <span className="text-emerald-400">Aditi Online</span>
+                                <span className="text-emerald-400">{activeAgent} Online</span>
                             </span>
                         </h2>
                         <p className="text-muted-foreground mt-1 text-sm md:text-base">Here is your business summary for today.</p>

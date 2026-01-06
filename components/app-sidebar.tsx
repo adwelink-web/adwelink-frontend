@@ -25,6 +25,8 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { createClient } from "@/lib/supabase"
+import { useRouter } from "next/navigation"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -35,11 +37,21 @@ import {
 } from "@/components/ui/dropdown-menu"
 import Image from "next/image"
 
-interface SidebarProps extends React.ComponentProps<"div"> { }
+interface SidebarProps extends React.ComponentProps<"div"> {
+    user: any
+}
 
-export function AppSidebar({ className, ...props }: SidebarProps) {
+export function AppSidebar({ className, user, ...props }: SidebarProps) {
     const pathname = usePathname()
+    const router = useRouter()
     const [activeAgent, setActiveAgent] = React.useState("Aditi")
+
+    const handleLogout = async () => {
+        const supabase = createClient()
+        await supabase.auth.signOut()
+        router.push("/")
+        router.refresh()
+    }
 
     React.useEffect(() => {
         const match = document.cookie.match(new RegExp('(^| )activeAgent=([^;]+)'))
@@ -79,6 +91,12 @@ export function AppSidebar({ className, ...props }: SidebarProps) {
             icon: Settings,
             href: "/settings",
             color: "text-slate-400",
+        },
+        {
+            label: "Feedback",
+            icon: MessageSquare,
+            href: "/feedback",
+            color: "text-rose-400",
         }
     ]
 
@@ -228,14 +246,25 @@ export function AppSidebar({ className, ...props }: SidebarProps) {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-x-2">
                         <Avatar className="h-8 w-8 border border-white/10">
-                            <AvatarFallback className="bg-white/10 text-xs">KD</AvatarFallback>
+                            <AvatarFallback className="bg-white/10 text-xs">
+                                {user?.user_metadata?.first_name?.charAt(0) || user?.email?.charAt(0).toUpperCase() || "A"}
+                            </AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col">
-                            <span className="text-sm font-semibold text-white">Kashi Das</span>
-                            <span className="text-[10px] text-muted-foreground">Admin</span>
+                            <span className="text-sm font-semibold text-white truncate max-w-[120px]">
+                                {user?.user_metadata?.first_name
+                                    ? `${user.user_metadata.first_name}${user.user_metadata.last_name ? ' ' + user.user_metadata.last_name : ''}`
+                                    : user?.email?.split('@')[0] || "User"}
+                            </span>
+                            <span className="text-[10px] text-muted-foreground">Authorized System</span>
                         </div>
                     </div>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-white/5 hover:text-red-400">
+                    <Button
+                        onClick={handleLogout}
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 hover:bg-white/5 hover:text-red-400"
+                    >
                         <LogOut className="h-4 w-4" />
                     </Button>
                 </div>
