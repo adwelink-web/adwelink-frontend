@@ -6,6 +6,14 @@ import { AppSidebar } from "./app-sidebar"
 import { Menu, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+} from "@/components/ui/dialog"
 
 interface SidebarWrapperProps {
     children: React.ReactNode
@@ -14,10 +22,20 @@ interface SidebarWrapperProps {
 
 export function SidebarWrapper({ children, user }: SidebarWrapperProps) {
     const [open, setOpen] = useState(false)
+    const [showBetaPopup, setShowBetaPopup] = useState(false)
     const pathname = usePathname()
 
     // Logic: Hide sidebar on Public Landing and Login pages
     const isPublicPage = pathname === "/" || pathname?.startsWith("/login") || pathname?.startsWith("/manifesto") || pathname?.startsWith("/early-access") || pathname?.startsWith("/feedback")
+
+    useEffect(() => {
+        // Show beta popup once per session/device
+        const hasShown = localStorage.getItem("ams_beta_popup_shown")
+        if (!hasShown && !isPublicPage) {
+            setShowBetaPopup(true)
+            localStorage.setItem("ams_beta_popup_shown", "true")
+        }
+    }, [isPublicPage])
 
     useEffect(() => {
         if (open) setOpen(false)
@@ -62,13 +80,41 @@ export function SidebarWrapper({ children, user }: SidebarWrapperProps) {
                         {/* ⚠️ Beta Warning Banner */}
                         <div className="flex-none bg-amber-500/10 border-b border-amber-500/20 px-4 py-2 flex items-center justify-center gap-2 text-[10px] md:text-xs font-medium text-amber-200/80">
                             <AlertCircle className="h-3.5 w-3.5 text-amber-500 animate-pulse" />
-                            <span>AMS is under development. Bugs ho sakte hain, please humein feedback dijiye.</span>
+                            <span>AMS is under development. You may encounter bugs; please share your feedback.</span>
                         </div>
 
                         <div className="flex-1 overflow-auto">
                             {children}
                         </div>
                     </div>
+
+                    {/* 🎁 Beta Welcome Popup */}
+                    <Dialog open={showBetaPopup} onOpenChange={setShowBetaPopup}>
+                        <DialogContent className="bg-[#0B0F19] border-white/10 text-white sm:max-w-md rounded-3xl">
+                            <DialogHeader>
+                                <div className="h-12 w-12 rounded-2xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20 mb-4 mx-auto">
+                                    <AlertCircle className="h-6 w-6 text-amber-500" />
+                                </div>
+                                <DialogTitle className="text-2xl font-bold tracking-tight text-center">Welcome to AMS Beta</DialogTitle>
+                                <DialogDescription className="text-slate-400 text-center pt-2">
+                                    We are currently in active development. You might encounter some bugs or incomplete features while we build the future of AI workforce.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="py-4 text-center">
+                                <p className="text-sm font-medium text-slate-300 italic">
+                                    "Your feedback is our most valuable asset."
+                                </p>
+                            </div>
+                            <div className="flex justify-center pb-4">
+                                <Button
+                                    onClick={() => setShowBetaPopup(false)}
+                                    className="w-full max-w-[200px] bg-white text-black hover:bg-slate-200 font-bold h-12 rounded-xl"
+                                >
+                                    I Understand
+                                </Button>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
                 </main>
             </div>
         </div>

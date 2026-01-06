@@ -168,7 +168,7 @@ export function AppSidebar({ className, ...props }: SidebarProps) {
 
             {/* 1. Sidebar Header */}
             <div className="px-6 py-6 border-b border-white/5">
-                <Link href="/" className="flex items-center pl-2 mb-6" title="Back to AMS Headquarters">
+                <Link href="/home" className="flex items-center pl-2 mb-6" title="Back to AMS Headquarters">
                     <div className="relative h-8 w-32 mr-2">
                         <Image
                             src="/branding/adwelink.svg"
