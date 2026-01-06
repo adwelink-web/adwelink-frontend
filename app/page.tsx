@@ -26,6 +26,8 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import Link from "next/link"
+import React, { useState, useEffect } from "react"
+import Image from "next/image"
 import { createClient } from "@/lib/supabase"
 
 export default function LandingPage() {
@@ -66,7 +68,7 @@ export default function LandingPage() {
         try {
             const supabase = createClient()
             const { error } = await supabase
-                .from('waitlist')
+                .from('waitlist' as any)
                 .insert([
                     {
                         full_name: formData.name,
