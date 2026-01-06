@@ -45,20 +45,20 @@ export default function EarlyAccessPage() {
             {/* 💎 Glass Card Container */}
             <div className="w-full max-w-md relative z-10 animate-in fade-in zoom-in duration-700">
 
-                <div className="backdrop-blur-2xl bg-white/5 border border-white/10 rounded-[40px] p-8 shadow-2xl relative overflow-hidden">
+                <div className="backdrop-blur-2xl bg-white/5 border border-white/10 rounded-[40px] p-6 md:p-8 shadow-2xl relative overflow-hidden">
 
                     {/* Inner Glow */}
                     <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
                     {/* Header */}
-                    <div className="text-center mb-10">
-                        <div className="inline-flex items-center justify-center h-20 w-20 rounded-3xl bg-gradient-to-br from-amber-500/20 to-transparent border border-amber-500/20 mb-6 shadow-[0_0_30px_-10px_rgba(245,158,11,0.3)]">
-                            <Lock className="h-10 w-10 text-amber-500" />
+                    <div className="text-center mb-8 md:mb-10">
+                        <div className="inline-flex items-center justify-center h-16 w-16 md:h-20 md:w-20 rounded-2xl md:rounded-3xl bg-gradient-to-br from-amber-500/20 to-transparent border border-amber-500/20 mb-4 md:mb-6 shadow-[0_0_30px_-10px_rgba(245,158,11,0.3)]">
+                            <Lock className="h-8 w-8 md:h-10 md:w-10 text-amber-500" />
                         </div>
-                        <h1 className="text-4xl font-bold mb-3 tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
+                        <h1 className="text-3xl md:text-4xl font-bold mb-3 tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
                             Restricted Access
                         </h1>
-                        <p className="text-sm text-slate-400 font-medium">Invitation Required for Pilot 1.0</p>
+                        <p className="text-[11px] md:text-sm text-slate-400 font-medium">Invitation Required for Pilot 1.0</p>
                     </div>
 
                     {/* Input Area */}
@@ -71,8 +71,8 @@ export default function EarlyAccessPage() {
                                     setCode(e.target.value.toUpperCase())
                                     setStatus("idle")
                                 }}
-                                placeholder="ENTER ACCESS KEY"
-                                className="relative bg-black border-white/10 text-center text-xl font-mono tracking-[0.2em] h-16 uppercase placeholder:text-slate-700 focus-visible:ring-0 focus-visible:border-amber-500/50 rounded-xl"
+                                placeholder="ENTER KEY"
+                                className="relative bg-black border-white/10 text-center text-lg md:text-xl font-mono tracking-[0.15em] md:tracking-[0.2em] h-14 md:h-16 uppercase placeholder:text-slate-700 focus-visible:ring-0 focus-visible:border-amber-500/50 rounded-xl"
                             />
                         </div>
 
@@ -80,8 +80,8 @@ export default function EarlyAccessPage() {
                             onClick={handleVerify}
                             disabled={status === "verifying" || !code}
                             className={`w-full h-14 rounded-xl font-bold text-base transition-all shadow-[0_0_20px_-5px_rgba(255,255,255,0.1)] ${status === "error" ? "bg-red-500 hover:bg-red-600 animate-shake" :
-                                    status === "success" ? "bg-emerald-500 hover:bg-emerald-600" :
-                                        "bg-white text-black hover:bg-slate-200"
+                                status === "success" ? "bg-emerald-500 hover:bg-emerald-600" :
+                                    "bg-white text-black hover:bg-slate-200"
                                 }`}
                         >
                             {status === "verifying" ? (

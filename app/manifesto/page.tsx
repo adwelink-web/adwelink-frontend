@@ -25,9 +25,9 @@ export default function ManifestoPage() {
             </div>
 
             {/* 🧭 Navbar */}
-            <nav className="w-full max-w-6xl mx-auto px-6 py-8 flex items-center gap-4 relative z-20">
+            <nav className="w-full max-w-6xl mx-auto px-6 py-6 md:py-8 flex items-center gap-4 relative z-20">
                 <Link href="/" className="hover:opacity-70 transition-opacity">
-                    <Button variant="ghost" className="text-slate-400 pl-0 hover:text-white hover:bg-transparent">
+                    <Button variant="ghost" className="text-slate-400 pl-0 hover:text-white hover:bg-transparent text-xs">
                         <ArrowLeft className="mr-2 h-4 w-4" /> Back to Hype
                     </Button>
                 </Link>
@@ -40,13 +40,13 @@ export default function ManifestoPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-32">
 
                     {/* Left: Text */}
-                    <div>
-                        <span className="text-cyan-400 text-xs font-bold tracking-widest uppercase mb-4 block animate-in fade-in slide-in-from-bottom-4 duration-700">The Vision</span>
-                        <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-8 leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
+                    <div className="text-center lg:text-left">
+                        <span className="text-cyan-400 text-[10px] md:text-xs font-bold tracking-widest uppercase mb-4 block animate-in fade-in slide-in-from-bottom-4 duration-700">The Vision</span>
+                        <h1 className="text-4xl md:text-7xl font-bold tracking-tighter mb-8 leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
                             Why we are building <br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-500">Humanoids, not Bots.</span>
                         </h1>
-                        <p className="text-xl text-slate-400 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+                        <p className="text-lg md:text-xl text-slate-400 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
                             The "Chatbot Era" failed us. Institutes need empathy, not scripts. They need memory, not sessions. They need an Employee.
                         </p>
                     </div>
@@ -140,7 +140,7 @@ export default function ManifestoPage() {
                         </div>
 
                         {/* Right: Humanoid (New) */}
-                        <div className="p-8 rounded-3xl bg-gradient-to-b from-cyan-950/20 to-black border border-cyan-500/20 text-left relative overflow-hidden group">
+                        <div className="p-6 md:p-8 rounded-3xl bg-gradient-to-b from-cyan-950/20 to-black border border-cyan-500/20 text-left relative overflow-hidden group">
                             <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-cyan-500/10 blur-[100px] rounded-full pointer-events-none" />
 
                             <div className="flex items-center gap-4 mb-8">
@@ -148,30 +148,30 @@ export default function ManifestoPage() {
                                     <BrainCircuit className="h-6 w-6 text-cyan-400" />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-bold text-white">Adwelink Humanoid</h3>
-                                    <p className="text-xs text-cyan-400 uppercase tracking-widest">NEXT GEN EMPLOYEES</p>
+                                    <h3 className="text-xl font-bold text-white uppercase tracking-tight">Adwelink Humanoid</h3>
+                                    <p className="text-[10px] text-cyan-400 uppercase tracking-widest">NEXT GEN EMPLOYEES</p>
                                 </div>
                             </div>
-                            <ul className="space-y-6">
+                            <ul className="space-y-6 px-1">
                                 <li className="flex gap-4">
-                                    <div className="h-6 w-px bg-cyan-500 mx-2 shadow-[0_0_10px_cyan]" />
+                                    <div className="h-6 w-px bg-cyan-500 mx-1 shadow-[0_0_10px_cyan]" />
                                     <div>
-                                        <strong className="block text-white text-sm mb-1">Lifetime Memory</strong>
-                                        <p className="text-slate-400 text-xs">Remembers talks from 6 months ago. Just like a human.</p>
+                                        <strong className="block text-white text-[13px] mb-1">Lifetime Memory</strong>
+                                        <p className="text-slate-400 text-[11px] leading-relaxed">Remembers talks from 6 months ago. Just like a human.</p>
                                     </div>
                                 </li>
                                 <li className="flex gap-4">
-                                    <div className="h-6 w-px bg-cyan-500 mx-2 shadow-[0_0_10px_cyan]" />
+                                    <div className="h-6 w-px bg-cyan-500 mx-1 shadow-[0_0_10px_cyan]" />
                                     <div>
-                                        <strong className="block text-white text-sm mb-1">Emotional Intelligence</strong>
-                                        <p className="text-slate-400 text-xs">Uses "Hinglish", empathy, and slang. Connects.</p>
+                                        <strong className="block text-white text-[13px] mb-1">Emotional Intelligence</strong>
+                                        <p className="text-slate-400 text-[11px] leading-relaxed">Uses "Hinglish", empathy, and slang. Connects.</p>
                                     </div>
                                 </li>
                                 <li className="flex gap-4">
-                                    <div className="h-6 w-px bg-cyan-500 mx-2 shadow-[0_0_10px_cyan]" />
+                                    <div className="h-6 w-px bg-cyan-500 mx-1 shadow-[0_0_10px_cyan]" />
                                     <div>
-                                        <strong className="block text-white text-sm mb-1">Proactive Agent</strong>
-                                        <p className="text-slate-400 text-xs">Chases leads, schedules calls, and closes deals automatically.</p>
+                                        <strong className="block text-white text-[13px] mb-1">Proactive Agent</strong>
+                                        <p className="text-slate-400 text-[11px] leading-relaxed">Chases leads, schedules calls, and closes deals automatically.</p>
                                     </div>
                                 </li>
                             </ul>
@@ -180,9 +180,9 @@ export default function ManifestoPage() {
                 </section>
 
                 {/* Founder Note */}
-                <div className="border-t border-white/10 pt-20">
+                <div className="border-t border-white/10 pt-16 md:pt-20">
                     <Quote className="h-8 w-8 text-cyan-500 mb-6 opacity-50" />
-                    <p className="text-2xl md:text-3xl text-white font-light leading-snug mb-8">
+                    <p className="text-xl md:text-3xl text-white font-light leading-snug mb-8">
                         "We didn't just want to build software. We wanted to build a colleague. Someone who cares about your admissions as much as you do."
                     </p>
                     <div className="flex items-center gap-4">

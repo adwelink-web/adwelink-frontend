@@ -13,15 +13,26 @@ import {
     CalendarDays,
 
     FileText,
-    MessageSquare
+    MessageSquare,
+    User,
+    CheckCircle
 } from "lucide-react"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 import Link from "next/link"
-import React, { useState, useEffect } from "react"
-import Image from "next/image"
+import { createClient } from "@/lib/supabase"
 
 export default function LandingPage() {
     const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, mins: 0, secs: 0 })
     const [mounted, setMounted] = useState(false)
+    const [waitlistStatus, setWaitlistStatus] = useState<"idle" | "submitting" | "success" | "error">("idle")
+    const [formData, setFormData] = useState({ name: "", contact: "" })
 
     // Hydration fix
     useEffect(() => {
@@ -48,8 +59,34 @@ export default function LandingPage() {
         return () => clearInterval(timer)
     }, [])
 
+    const handleWaitlistSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setWaitlistStatus("submitting")
+
+        try {
+            const supabase = createClient()
+            const { error } = await supabase
+                .from('waitlist')
+                .insert([
+                    {
+                        full_name: formData.name,
+                        contact: formData.contact,
+                        source: 'landing'
+                    }
+                ])
+
+            if (error) throw error
+
+            setWaitlistStatus("success")
+            setFormData({ name: "", contact: "" })
+        } catch (error) {
+            console.error("Waitlist error:", error)
+            setWaitlistStatus("error")
+        }
+    }
+
     return (
-        <div className="min-h-screen h-[100dvh] bg-black text-white font-sans overflow-hidden flex flex-col items-center relative selection:bg-cyan-500/30">
+        <div className="min-h-[100dvh] bg-black text-white font-sans flex flex-col items-center relative selection:bg-cyan-500/30 overflow-x-hidden">
 
             {/* 🌌 Background: Subtle Starfield / Noise */}
             <div className="fixed inset-0 pointer-events-none">
@@ -60,7 +97,7 @@ export default function LandingPage() {
 
             {/* 🧭 Navbar: Primary Logo & Location */}
             <nav className="w-full max-w-7xl mx-auto px-6 py-6 flex justify-between items-center relative z-20 shrink-0">
-                <div className="relative h-10 w-40 bg-white/5 rounded-full px-4 border border-white/5 backdrop-blur-md flex items-center justify-center">
+                <div className="relative h-9 md:h-10 w-32 md:w-40 bg-white/5 rounded-full px-4 border border-white/5 backdrop-blur-md flex items-center justify-center">
                     {/* Primary Logo Used Here - Wrapped in subtle background for contrast if needed */}
                     <Image src="/branding/adwelink.svg" alt="Adwelink" width={120} height={30} className="object-contain" priority />
                 </div>
@@ -89,34 +126,97 @@ export default function LandingPage() {
                 </div>
 
                 {/* Hero Headline */}
-                <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter mb-4 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-200 leading-none">
+                <h1 className="text-5xl md:text-8xl lg:text-9xl font-bold tracking-tighter mb-4 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-200 leading-[0.9]">
                     Aditi is Coming.
                 </h1>
 
-                <p className="text-lg md:text-xl text-slate-400 max-w-xl mx-auto mb-8 font-light animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
+                <p className="text-base md:text-xl text-slate-400 max-w-xl mx-auto mb-8 font-light animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300 px-4">
                     The first <strong className="text-white font-medium">WhatsApp-First Humanoid AI Employee</strong> for Indore. <br className="hidden md:block" />
                     <span className="text-white/60">Not a Chatbot. She works directly in your WhatsApp.</span>
                 </p>
 
                 {/* Primary CTA: Invite Code & Waitlist */}
-                <div className="max-w-sm w-full flex flex-col items-center gap-3 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-500">
-                    <Link href="/dashboard" className="w-full">
-                        <Button className="w-full h-12 bg-white text-black hover:bg-slate-200 rounded-xl font-bold transition-all flex items-center justify-center gap-2 group text-base shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)]">
-                            Join Priority Waitlist <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                        </Button>
-                    </Link>
+                <div className="max-w-xs md:max-w-sm w-full flex flex-col items-center gap-3 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-500 px-6">
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button className="w-full h-12 md:h-14 bg-white text-black hover:bg-slate-200 rounded-xl font-bold transition-all flex items-center justify-center gap-2 group text-base shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)]">
+                                Join Priority Waitlist <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="bg-black/90 backdrop-blur-2xl border border-white/10 text-white sm:max-w-[425px] rounded-[32px] p-8 shadow-2xl">
+                            <DialogHeader>
+                                <DialogTitle className="text-3xl font-bold tracking-tighter">Priority Waitlist</DialogTitle>
+                                <DialogDescription className="text-slate-400 text-sm pt-2">
+                                    Secure your spot for the Jan 10 Launch. We'll reach out when we're ready for your institute.
+                                </DialogDescription>
+                            </DialogHeader>
+
+                            {waitlistStatus === "success" ? (
+                                <div className="py-10 flex flex-col items-center text-center space-y-4">
+                                    <div className="h-16 w-16 rounded-full bg-emerald-500/20 flex items-center justify-center border border-emerald-500/20">
+                                        <CheckCircle className="h-8 w-8 text-emerald-500" />
+                                    </div>
+                                    <h3 className="text-xl font-bold">Registration Successful</h3>
+                                    <p className="text-xs text-slate-500">Boro, aapka slot book ho gaya hai. <br />Hum jald hi WhatsApp karenge.</p>
+                                </div>
+                            ) : (
+                                <form onSubmit={handleWaitlistSubmit} className="space-y-6 py-4">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-1">Full Name</label>
+                                        <div className="relative group">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                                                <User className="h-4 w-4" />
+                                            </div>
+                                            <Input
+                                                required
+                                                value={formData.name}
+                                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                                placeholder="Enter your name"
+                                                className="bg-white/5 border-white/10 pl-10 h-14 rounded-xl focus-visible:ring-1 focus-visible:ring-white/20"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-1">WhatsApp / Email</label>
+                                        <div className="relative group">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                                                <MessageSquare className="h-4 w-4" />
+                                            </div>
+                                            <Input
+                                                required
+                                                value={formData.contact}
+                                                onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+                                                placeholder="8305105008 or email@id"
+                                                className="bg-white/5 border-white/10 pl-10 h-14 rounded-xl focus-visible:ring-1 focus-visible:ring-white/20"
+                                            />
+                                        </div>
+                                    </div>
+                                    <Button
+                                        type="submit"
+                                        disabled={waitlistStatus === "submitting"}
+                                        className="w-full h-14 bg-white text-black hover:bg-slate-200 font-bold rounded-xl transition-all"
+                                    >
+                                        {waitlistStatus === "submitting" ? "Registering..." : "Confirm My Priority Slot"}
+                                    </Button>
+                                    <p className="text-[10px] text-center text-slate-600">
+                                        🔒 Private & Secure. No Spam.
+                                    </p>
+                                </form>
+                            )}
+                        </DialogContent>
+                    </Dialog>
                 </div>
 
                 {/* 🕒 Footer Countdown */}
-                <div className="mt-12 grid grid-cols-4 gap-6 text-center">
+                <div className="mt-8 md:mt-12 grid grid-cols-2 md:grid-cols-4 gap-x-8 md:gap-x-12 gap-y-6 text-center">
                     {[
                         { l: "DAYS", v: timeLeft.days },
                         { l: "HRS", v: timeLeft.hours },
                         { l: "MINS", v: timeLeft.mins },
                         { l: "SECS", v: timeLeft.secs },
                     ].map((t, i) => (
-                        <div key={i} className="flex flex-col">
-                            <span className="text-xl font-mono font-bold text-white tabular-nums">{String(t.v).padStart(2, '0')}</span>
+                        <div key={i} className="flex flex-col min-w-[60px]">
+                            <span className="text-2xl md:text-xl font-mono font-bold text-white tabular-nums drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">{String(t.v).padStart(2, '0')}</span>
                             <span className="text-[10px] text-slate-600 font-bold tracking-widest">{t.l}</span>
                         </div>
                     ))}
