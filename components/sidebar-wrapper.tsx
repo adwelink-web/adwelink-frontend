@@ -17,7 +17,7 @@ export function SidebarWrapper({ children, user }: SidebarWrapperProps) {
     const pathname = usePathname()
 
     // Logic: Hide sidebar on Public Landing and Login pages
-    const isPublicPage = pathname === "/" || pathname?.startsWith("/login")
+    const isPublicPage = pathname === "/" || pathname?.startsWith("/login") || pathname?.startsWith("/manifesto") || pathname?.startsWith("/early-access") || pathname?.startsWith("/feedback")
 
     useEffect(() => {
         if (open) setOpen(false)
