@@ -109,7 +109,7 @@ export function AppSidebar({ className, user }: SidebarProps) {
             icon: LayoutDashboard,
             href: "/workspace",
             color: "text-sky-500",
-            title: "Dashboard"
+            title: "AMS"
         },
         {
             label: "Leads",
@@ -171,9 +171,9 @@ export function AppSidebar({ className, user }: SidebarProps) {
 
     // Define which agent routes are visible for each agent type
     const agentCapabilities: Record<string, string[]> = {
-        "Aditi": ["Dashboard", "Leads", "Feed", "Catalog"],
-        "Rahul Sir": ["Dashboard", "Training", "Catalog"],
-        "Munim Ji": ["Dashboard", "Fees"]
+        "Aditi": ["AMS", "Leads", "Feed", "Catalog"],
+        "Rahul Sir": ["AMS", "Training", "Catalog"],
+        "Munim Ji": ["AMS", "Fees"]
     }
 
     // Select the correct list based on mode

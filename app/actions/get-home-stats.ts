@@ -1,25 +1,28 @@
 "use server"
 
 import { createServerClient } from "@/lib/supabase-server"
+import { getAuthenticatedInstituteId } from "@/lib/auth-utils"
 
 export async function getHomeStats() {
     try {
         const supabase = await createServerClient()
+        const institute_id = await getAuthenticatedInstituteId(supabase)
 
-        // Execute queries in parallel for maximum speed
-        const [leadsRes, studentsRes, revenueRes, activityRes] = await Promise.all([
+        // Execute queries in parallel for maximum speed - FILTERED BY INSTITUTE
+        const [leadsRes, studentsRes, chatsRes, activityRes] = await Promise.all([
             // 1. Total Leads
-            supabase.from('leads').select('*', { count: 'exact', head: true }),
+            supabase.from('leads').select('*', { count: 'exact', head: true }).eq("institute_id", institute_id),
 
             // 2. Total Students
-            supabase.from('students').select('*', { count: 'exact', head: true }),
+            supabase.from('students').select('*', { count: 'exact', head: true }).eq("institute_id", institute_id),
 
-            // 3. Revenue (Get all payments to sum up) - TODO: Optimize with a DB function later for large datasets
-            supabase.from('fee_payments').select('amount_paid'),
+            // 3. Total Chats Handled by Aditi (count from ai_chat_history)
+            supabase.from('ai_chat_history').select('*', { count: 'exact', head: true }).eq("institute_id", institute_id),
 
-            // 4. Activity Feed (Latest 3)
+            // 4. Activity Feed (Filtered)
             supabase.from('ai_chat_history')
                 .select('*')
+                .eq("institute_id", institute_id)
                 .order('created_at', { ascending: false })
                 .limit(3)
         ])
@@ -27,16 +30,7 @@ export async function getHomeStats() {
         // Process Results
         const totalLeads = leadsRes.count || 0
         const totalStudents = studentsRes.count || 0
-
-        // Calculate Revenue
-        const totalRevenue = revenueRes.data?.reduce((sum, record) => sum + (record.amount_paid || 0), 0) || 0
-
-        // Format Revenue (e.g., 1.5L, 15k)
-        const formatMoney = (amount: number) => {
-            if (amount >= 100000) return (amount / 100000).toFixed(1) + "L"
-            if (amount >= 1000) return (amount / 1000).toFixed(1) + "k"
-            return amount.toString()
-        }
+        const totalChats = chatsRes.count || 0
 
         // Process Activity Feed
         const activityFeed = activityRes.data?.map(item => ({
@@ -59,7 +53,7 @@ export async function getHomeStats() {
         return {
             leads: { value: totalLeads.toLocaleString(), change: "+Live" }, // Change % placeholder
             students: { value: totalStudents.toLocaleString(), change: "+Live" },
-            revenue: { value: formatMoney(totalRevenue), raw: totalRevenue },
+            chatsHandled: { value: totalChats.toLocaleString(), count: totalChats },
             activityFeed,
             userName: "Director", // Can fetch real user name if passed context
             businessName: "Adwelink Institute"
@@ -71,7 +65,7 @@ export async function getHomeStats() {
         return {
             leads: { value: "-", change: "Err" },
             students: { value: "-", change: "Err" },
-            revenue: { value: "-", raw: 0 },
+            chatsHandled: { value: "-", count: 0 },
             activityFeed: [{ type: 'error', text: 'Database Connection Failed', time: 'Now' }],
             userName: "Director",
             businessName: "Adwelink Institute"

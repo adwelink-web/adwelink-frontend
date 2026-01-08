@@ -167,7 +167,7 @@ export default function LeadsPage() {
         if (!dateString) return <span className="text-slate-600">N/A</span>
         try {
             return new Date(dateString).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-        } catch (e) {
+        } catch {
             return <span className="text-red-400">Invalid Date</span>
         }
     }

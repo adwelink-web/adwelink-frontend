@@ -52,34 +52,54 @@ export default function SettingsClient({ initialSettings }: SettingsClientProps)
     }
 
     return (
-        <div className="h-full w-full overflow-hidden flex flex-col">
-            <div className="flex-1 flex flex-col w-full max-w-7xl mx-auto p-4 md:p-8 min-h-0">
-                <Tabs defaultValue="general" className="flex-1 flex flex-col min-h-0">
-                    <div className="flex-none space-y-6 mb-8">
-                        <div className="flex flex-col gap-1">
-                            <h1 className="text-3xl font-bold text-white tracking-tight">Institute Settings</h1>
-                            <p className="text-slate-400">Mission Control for your Organization. Manage everything from Branding to Security.</p>
+        <div className="h-full w-full overflow-hidden flex flex-col relative">
+            {/* 🌌 Ambient Background Glows - Optimized */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                <div className="absolute top-[-10%] right-[-10%] w-[300px] h-[300px] bg-violet-600/5 blur-[80px] rounded-full" />
+            </div>
+
+            {/* Fixed Container - No Page Scroll */}
+            <div className="flex-1 w-full h-full relative z-10 max-w-7xl mx-auto flex flex-col">
+                <Tabs defaultValue="general" className="h-full">
+
+                    {/* Sticky Blurred Header Section (with Tabs) */}
+                    <div className="sticky top-0 z-50 backdrop-blur-xl px-4 md:px-8 py-6 mb-2">
+                        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                            <div>
+                                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white flex flex-wrap items-center gap-3">
+                                    <Building className="h-8 w-8 text-violet-500" />
+                                    Institute Settings
+                                    <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-normal whitespace-nowrap">
+                                        <span className="relative flex h-2 w-2">
+                                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
+                                            <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
+                                        </span>
+                                        <span className="text-emerald-400">Configured</span>
+                                    </span>
+                                </h2>
+                                <p className="text-muted-foreground mt-1 text-sm md:text-base">Mission Control for your Organization. Manage everything from Branding to Security.</p>
+                            </div>
                         </div>
-                        <TabsList className="bg-white/5 border border-white/10 p-1 mb-8 w-full justify-start h-auto">
-                            <TabsTrigger value="general" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white py-2">
-                                <Building className="h-4 w-4 mr-2" /> General & Branding
+                        <TabsList className="bg-white/5 border border-white/10 p-1 mt-6 w-full justify-start h-12 rounded-xl backdrop-blur-md">
+                            <TabsTrigger value="general" className="data-[state=active]:bg-white data-[state=active]:text-black rounded-lg py-2 px-6 font-bold transition-all">
+                                <Building className="h-4 w-4 mr-2" /> General
                             </TabsTrigger>
 
-                            <TabsTrigger value="integrations" className="data-[state=active]:bg-sky-500 data-[state=active]:text-white py-2">
+                            <TabsTrigger value="integrations" className="data-[state=active]:bg-white data-[state=active]:text-black rounded-lg py-2 px-6 font-bold transition-all">
                                 <Smartphone className="h-4 w-4 mr-2" /> Integrations
                             </TabsTrigger>
-                            <TabsTrigger value="security" className="data-[state=active]:bg-red-500 data-[state=active]:text-white py-2">
-                                <ShieldAlert className="h-4 w-4 mr-2" /> Security & Access
+                            <TabsTrigger value="security" className="data-[state=active]:bg-red-500 data-[state=active]:text-white rounded-lg py-2 px-6 font-bold transition-all">
+                                <ShieldAlert className="h-4 w-4 mr-2" /> Security
                             </TabsTrigger>
                         </TabsList>
                     </div>
 
-                    {/* Tabs Content (Scrollable) */}
-                    <div className="flex-1 overflow-y-auto custom-scrollbar min-h-0 pr-2 pb-10">
+                    {/* Content Section - Fixed, No Page Scroll */}
+                    <div className="flex-1 px-4 md:px-8 pr-2 pb-4 min-h-0">
                         {/* TAB 1: GENERAL */}
-                        <TabsContent value="general" className="space-y-6">
-                            <Card className="bg-white/5 border-white/10">
-                                <CardHeader className="flex flex-row items-center justify-between">
+                        <TabsContent value="general" className="h-full outline-none">
+                            <Card className="bg-gradient-to-br from-white/[0.03] to-transparent border-white/10 border-violet-500/10 backdrop-blur-md shadow-2xl rounded-2xl overflow-hidden h-full flex flex-col">
+                                <CardHeader className="flex flex-row items-center justify-between flex-shrink-0">
                                     <div>
                                         <CardTitle className="text-white">Institute Profile</CardTitle>
                                         <CardDescription>Details displayed on student invoices and portals.</CardDescription>
@@ -94,7 +114,7 @@ export default function SettingsClient({ initialSettings }: SettingsClientProps)
                                         </Button>
                                     )}
                                 </CardHeader>
-                                <CardContent className="space-y-4">
+                                <CardContent className="space-y-4 flex-1 overflow-y-auto custom-scrollbar">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="space-y-2">
                                             <Label className="text-slate-300">Institute Name</Label>
@@ -163,15 +183,15 @@ export default function SettingsClient({ initialSettings }: SettingsClientProps)
 
 
                         {/* TAB 3: INTEGRATIONS */}
-                        <TabsContent value="integrations" className="space-y-6">
-                            <Card className="bg-white/5 border-white/10">
-                                <CardHeader>
+                        <TabsContent value="integrations" className="h-full outline-none">
+                            <Card className="bg-gradient-to-br from-white/[0.03] to-transparent border-white/10 border-emerald-500/10 backdrop-blur-md shadow-2xl rounded-2xl overflow-hidden h-full flex flex-col">
+                                <CardHeader className="flex-shrink-0">
                                     <CardTitle className="text-white flex items-center gap-2">
                                         <Smartphone className="h-5 w-5 text-emerald-500" /> WhatsApp Business API
                                     </CardTitle>
                                     <CardDescription>Centralized number for all AI Agents.</CardDescription>
                                 </CardHeader>
-                                <CardContent>
+                                <CardContent className="flex-1 overflow-y-auto custom-scrollbar">
                                     <div className="flex items-center justify-between p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg mb-4">
                                         <div className="flex items-center gap-3">
                                             <div className="h-10 w-10 bg-emerald-500/20 rounded-full flex items-center justify-center">
@@ -195,15 +215,15 @@ export default function SettingsClient({ initialSettings }: SettingsClientProps)
                         </TabsContent>
 
                         {/* TAB 4: SECURITY */}
-                        <TabsContent value="security" className="space-y-6">
-                            <Card className="bg-red-500/5 border-red-500/20">
-                                <CardHeader>
+                        <TabsContent value="security" className="h-full outline-none">
+                            <Card className="bg-gradient-to-br from-red-500/[0.03] to-transparent border-red-500/20 backdrop-blur-md shadow-2xl rounded-2xl overflow-hidden h-full flex flex-col">
+                                <CardHeader className="flex-shrink-0">
                                     <CardTitle className="text-red-500 flex items-center gap-2">
                                         <Lock className="h-5 w-5" /> Danger Zone
                                     </CardTitle>
                                     <CardDescription className="text-red-200/50">Irreversible actions.</CardDescription>
                                 </CardHeader>
-                                <CardContent className="flex gap-4">
+                                <CardContent className="flex gap-4 flex-1 overflow-y-auto custom-scrollbar">
                                     <Button variant="destructive">Pause All Agents</Button>
                                     <Button variant="ghost" className="text-red-400 hover:bg-red-500/10 hover:text-red-500">Delete Institute Account</Button>
                                 </CardContent>

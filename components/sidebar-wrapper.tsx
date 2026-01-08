@@ -81,7 +81,7 @@ export function SidebarWrapper({ children, user }: SidebarWrapperProps) {
                                     <span className="sr-only">Toggle menu</span>
                                 </Button>
                             </SheetTrigger>
-                            <SheetContent side="left" className="p-0 border-r border-white/10 w-72 bg-[#0B0F19]">
+                            <SheetContent side="left" className="p-0 border-r border-white/10 w-72 bg-[#030712]">
                                 <SheetTitle className="sr-only">Mobile Navigation</SheetTitle>
                                 <AppSidebar user={user} />
                             </SheetContent>

@@ -1,4 +1,4 @@
-// Workspace Dashboard Page
+// AMS (Agent Management System) Workspace
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, Phone, CalendarDays, Bell, UserPlus, LayoutDashboard, Sparkles, GraduationCap } from "lucide-react"
@@ -17,7 +17,7 @@ interface DashboardStats {
     pendingFollowups: number
 }
 
-export default async function DashboardPage() {
+export default async function AMSWorkspacePage() {
     const { user, stats: rawStats, recentLeads: rawRecentLeads } = await getDashboardData()
     const stats = rawStats as DashboardStats
     const recentLeads = rawRecentLeads as unknown as Lead[]

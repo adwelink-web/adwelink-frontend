@@ -76,7 +76,7 @@
   --radius: 0.5rem;
 
   /* Sidebar Specifics */
-  --sidebar: #0B0F19;
+  --sidebar: #030712;
   --sidebar-foreground: #F8FAFC;
   --sidebar-primary: #7C3AED;
   --sidebar-primary-foreground: #FFFFFF;
@@ -107,7 +107,7 @@
   --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.1);
   --ring: #7C3AED;
-  --sidebar: #0B0F19;
+  --sidebar: #030712;
   --sidebar-foreground: #F8FAFC;
   --sidebar-primary: #7C3AED;
   --sidebar-primary-foreground: #FFFFFF;
