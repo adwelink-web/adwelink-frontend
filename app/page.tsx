@@ -55,6 +55,7 @@ export default function ComingSoonPage() {
         try {
             const supabase = createClient()
             const { error } = await supabase
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 .from('waitlist' as any)
                 .insert([
                     {

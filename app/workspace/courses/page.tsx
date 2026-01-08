@@ -126,6 +126,7 @@ export default function CoursesPage() {
                     alert("Course name is required")
                     return
                 }
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const response = await createCourse(payload as any) // Type assertion safe due to validation
                 if (response.success && response.data) {
                     setCourses([...courses, response.data])

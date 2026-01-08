@@ -22,7 +22,7 @@ export default function Error({
             </div>
             <h2 className="text-2xl font-bold mb-2">Something went wrong!</h2>
             <p className="text-slate-400 mb-8 max-w-md">
-                Don't worry, even AI needs a moment sometimes. We've logged this issue.
+                Don&apos;t worry, even AI needs a moment sometimes. We&apos;ve logged this issue.
             </p>
             <div className="flex gap-4">
                 <Button

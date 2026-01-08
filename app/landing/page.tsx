@@ -91,7 +91,7 @@ export default function ClientLandingPage() {
                     <div className="mb-8 animate-fade-in-up">
                         <span className="px-4 py-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 text-[11px] font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-2">
                             <Star className="h-3 w-3 fill-emerald-400" />
-                            Trusted by Indore & Bhopal's Top Institutes
+                            Trusted by Indore & Bhopal&apos;s Top Institutes
                         </span>
                     </div>
 

@@ -6,10 +6,6 @@
 F:\Adwelink\AMS\app\api\webhooks\whatsapp\route.ts
   40:19  warning  'timestamp' is assigned a value but never used  @typescript-eslint/no-unused-vars
 
-F:\Adwelink\AMS\app\error.tsx
-  25:20  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
-  25:66  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
-
 F:\Adwelink\AMS\app\feedback\page.tsx
   6:46  warning  'Building2' is defined but never used      @typescript-eslint/no-unused-vars
   6:57  warning  'MessageSquare' is defined but never used  @typescript-eslint/no-unused-vars
@@ -17,8 +13,7 @@ F:\Adwelink\AMS\app\feedback\page.tsx
   9:10  warning  'createClient' is defined but never used   @typescript-eslint/no-unused-vars
 
 F:\Adwelink\AMS\app\landing\page.tsx
-   5:5   warning  'ChevronRight' is defined but never used                         @typescript-eslint/no-unused-vars
-  94:55  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  5:5  warning  'ChevronRight' is defined but never used  @typescript-eslint/no-unused-vars
 
 F:\Adwelink\AMS\app\login\page.tsx
   10:10  warning  'useEffect' is defined but never used  @typescript-eslint/no-unused-vars
@@ -31,7 +26,8 @@ F:\Adwelink\AMS\app\market\page.tsx
   4:10  warning  'HireAgentButton' is defined but never used  @typescript-eslint/no-unused-vars
 
 F:\Adwelink\AMS\app\page.tsx
-  58:37  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:13  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+  59:37  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
 
 F:\Adwelink\AMS\app\settings\settings-client.tsx
   12:5  warning  'ShieldAlert' is defined but never used  @typescript-eslint/no-unused-vars
@@ -47,7 +43,6 @@ F:\Adwelink\AMS\app\workspace\courses\page.tsx
   118:25  warning  'created_at' is assigned a value but never used    @typescript-eslint/no-unused-vars
   118:37  warning  'updated_at' is assigned a value but never used    @typescript-eslint/no-unused-vars
   118:49  warning  'institute_id' is assigned a value but never used  @typescript-eslint/no-unused-vars
-  129:64  error    Unexpected any. Specify a different type           @typescript-eslint/no-explicit-any
 
 F:\Adwelink\AMS\app\workspace\leads\page.tsx
    21:10  warning  'format' is defined but never used                 @typescript-eslint/no-unused-vars
@@ -55,8 +50,7 @@ F:\Adwelink\AMS\app\workspace\leads\page.tsx
    46:25  warning  'created_at' is assigned a value but never used    @typescript-eslint/no-unused-vars
    46:37  warning  'updated_at' is assigned a value but never used    @typescript-eslint/no-unused-vars
    46:49  warning  'institute_id' is assigned a value but never used  @typescript-eslint/no-unused-vars
-   53:65  error    Unexpected any. Specify a different type           @typescript-eslint/no-explicit-any
-  103:18  warning  'e' is defined but never used                      @typescript-eslint/no-unused-vars
+  104:18  warning  'e' is defined but never used                      @typescript-eslint/no-unused-vars
 
 F:\Adwelink\AMS\app\workspace\page.tsx
    4:38  warning  'Bell' is defined but never used                  @typescript-eslint/no-unused-vars
@@ -81,5 +75,6 @@ F:\Adwelink\AMS\components\app-sidebar.tsx
 F:\Adwelink\AMS\components\home-client-container.tsx
   6:41  warning  'Sparkles' is defined but never used  @typescript-eslint/no-unused-vars
 
-Γ£û 44 problems (6 errors, 38 warnings)
+Γ£û 40 problems (1 error, 39 warnings)
+  0 errors and 1 warning potentially fixable with the `--fix` option.
 

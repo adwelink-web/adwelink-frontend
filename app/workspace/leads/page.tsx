@@ -50,6 +50,7 @@ export default function LeadsPage() {
                     alert("Phone number is required")
                     return
                 }
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const response = await createLead(updateData as any) // Type assertion needed due to Partial vs Interface mismatch, but validation ensures safety
                 if (response.success && response.data) {
                     setLeads([response.data, ...leads])

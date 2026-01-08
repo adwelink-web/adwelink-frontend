@@ -25,7 +25,7 @@ export default function TrainingPage() {
                         <p className="text-slate-400 text-sm leading-relaxed mb-8">
                             The ultimate AI Tutor is currently under <span className="text-purple-400 font-semibold">Training</span>.
                             <br />
-                            "Rahul Sir" will soon solve student doubts, conduct tests, and generate performance reports 24/7.
+                            &quot;Rahul Sir&quot; will soon solve student doubts, conduct tests, and generate performance reports 24/7.
                         </p>
 
                         <div className="flex items-center justify-center gap-3">
