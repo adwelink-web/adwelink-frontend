@@ -3,15 +3,8 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
-    Sparkles,
-    ChevronRight,
     ArrowRight,
-    Lock,
     Ticket,
-    Users,
-    MapPin,
-    CalendarDays,
-
     FileText,
     MessageSquare,
     User,
@@ -32,14 +25,8 @@ import { createClient } from "@/lib/supabase"
 
 export default function LandingPage() {
     const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, mins: 0, secs: 0 })
-    const [mounted, setMounted] = useState(false)
     const [waitlistStatus, setWaitlistStatus] = useState<"idle" | "submitting" | "success" | "error">("idle")
     const [formData, setFormData] = useState({ name: "", contact: "" })
-
-    // Hydration fix
-    useEffect(() => {
-        setMounted(true)
-    }, [])
 
     // Countdown to Jan 10, 2026
     useEffect(() => {
@@ -141,7 +128,7 @@ export default function LandingPage() {
                 <div className="max-w-xs md:max-w-sm w-full flex flex-col items-center gap-3 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-500 px-6">
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button className="w-full h-12 md:h-14 bg-white text-black hover:bg-slate-200 rounded-xl font-bold transition-all flex items-center justify-center gap-2 group text-base shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)]">
+                            <Button suppressHydrationWarning className="w-full h-12 md:h-14 bg-white text-black hover:bg-slate-200 rounded-xl font-bold transition-all flex items-center justify-center gap-2 group text-base shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)]">
                                 Join Priority Waitlist <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                             </Button>
                         </DialogTrigger>
@@ -149,7 +136,7 @@ export default function LandingPage() {
                             <DialogHeader>
                                 <DialogTitle className="text-3xl font-bold tracking-tighter">Priority Waitlist</DialogTitle>
                                 <DialogDescription className="text-slate-400 text-sm pt-2">
-                                    Secure your spot for the Jan 10 Launch. We'll reach out when we're ready for your institute.
+                                    Secure your spot for the Jan 10 Launch. We&apos;ll reach out when we&apos;re ready for your institute.
                                 </DialogDescription>
                             </DialogHeader>
 

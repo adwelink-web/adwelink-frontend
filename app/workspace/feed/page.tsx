@@ -3,21 +3,15 @@
 import * as React from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardDescription,
-} from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Badge } from "@/components/ui/badge"
-import { MessageSquare, Hand, Send, Check, CheckCheck, AlertCircle } from "lucide-react"
+
+
+import { MessageSquare, Hand, Send, Check, CheckCheck, Users, Sparkles, Search, Smile, ThumbsDown, ChevronDown, Plus, Image as ImageIcon } from "lucide-react"
 import { createClient } from "@/lib/supabase"
 
 // Define the shape of our "Flat" DB row
 type ChatRow = {
     id: string
-    created_at: string | null | null
+    created_at: string | null
     phone_number: string | null
     session_id: string | null
     user_message: string | null
@@ -25,6 +19,8 @@ type ChatRow = {
     sentiment: string | null
     intent: string | null
     status?: 'sent' | 'delivered' | 'read' | 'failed' | null
+    message_meta?: Record<string, unknown> | null
+    is_read?: boolean
 }
 
 // Define the shape of a "Visual" message Bubble
@@ -36,9 +32,27 @@ type VisualMessage = {
     sentiment?: string
     isManual?: boolean
     status?: 'sent' | 'delivered' | 'read' | 'failed' | null
+    mediaUrl?: string
 }
 
 
+
+// Helper to format date separators like WhatsApp
+const formatDateDivider = (dateString: string) => {
+    const date = new Date(dateString);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) return "Today";
+    if (date.toDateString() === yesterday.toDateString()) return "Yesterday";
+
+    return date.toLocaleDateString([], {
+        day: 'numeric',
+        month: 'long',
+        year: today.getFullYear() !== date.getFullYear() ? 'numeric' : undefined
+    });
+};
 
 export default function FeedPage() {
     const [messages, setMessages] = React.useState<ChatRow[]>([])
@@ -48,8 +62,10 @@ export default function FeedPage() {
     const [inputText, setInputText] = React.useState("")
     const [isSending, setIsSending] = React.useState(false)
     const [isAiPaused, setIsAiPaused] = React.useState(false)
+    const [sessionSearch, setSessionSearch] = React.useState("")
     const scrollBottomRef = React.useRef<HTMLDivElement>(null)
-    const [shouldAutoScroll, setShouldAutoScroll] = React.useState(true)
+    const scrollContainerRef = React.useRef<HTMLDivElement>(null)
+    const [showScrollButton, setShowScrollButton] = React.useState(false)
 
 
     const [userMap, setUserMap] = React.useState<Record<string, string>>({})
@@ -65,33 +81,45 @@ export default function FeedPage() {
             .order("created_at", { ascending: true })
 
         if (msgError) {
-            console.error("Chat Fetch Error:", msgError)
+            console.error("Chat Fetch Error Detailed:", JSON.stringify(msgError, null, 2))
         } else {
             setMessages(msgData || [])
-            const uniqueIds = Array.from(new Set(
-                (msgData || []).map((m: ChatRow) => m.phone_number || m.session_id || "Unknown")
-            )).filter(Boolean).reverse() as string[]
 
-            setSessions(uniqueIds)
+            // 1. Group by session/phone and find latest activity time
+            const sessionMap: Record<string, string> = {}
+            msgData?.forEach((m: ChatRow) => {
+                const sid = m.phone_number || m.session_id || "Unknown"
+                const mTime = m.created_at || "0"
+                if (!sessionMap[sid] || mTime > sessionMap[sid]) {
+                    sessionMap[sid] = mTime
+                }
+            })
+
+            // 2. Sort sessions by latest activity
+            const sortedIds = Object.keys(sessionMap).sort((a, b) => {
+                return sessionMap[b].localeCompare(sessionMap[a])
+            })
+
+            setSessions(sortedIds)
 
             // 1.5 Fetch User Names if we have IDs
-            if (uniqueIds.length > 0) {
+            if (sortedIds.length > 0) {
                 const { data: leadData } = await supabase
                     .from("leads")
                     .select("name, phone")
-                    .in("phone", uniqueIds)
+                    .in("phone", sortedIds)
 
                 if (leadData) {
                     const newMap: Record<string, string> = {}
-                    leadData.forEach((l: any) => {
-                        if (l.phone) newMap[l.phone] = l.name
+                    leadData.forEach((l: { phone: string | null; name: string | null }) => {
+                        if (l.phone && l.name) newMap[l.phone] = l.name
                     })
                     setUserMap(prev => ({ ...prev, ...newMap }))
                 }
             }
 
-            if (uniqueIds.length > 0 && !selectedSession) {
-                setSelectedSession(uniqueIds[0])
+            if (sortedIds.length > 0 && !selectedSession) {
+                setSelectedSession(sortedIds[0])
             }
         }
 
@@ -125,6 +153,41 @@ export default function FeedPage() {
         }
     }
 
+    // Mark Messages as Read
+    const markAsRead = React.useCallback(async (sessionId: string) => {
+        const supabase = createClient()
+
+        // Smarter Filter: Don't compare phone numbers to UUID columns (prevents 22P02 error)
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(sessionId);
+
+        let query = supabase
+            .from("ai_chat_history")
+            .update({
+                is_read: true,
+                updated_at: new Date().toISOString()
+            } as any) // eslint-disable-line @typescript-eslint/no-explicit-any
+            .eq("is_read", false);
+
+        if (isUuid) {
+            query = query.or(`phone_number.eq.${sessionId},session_id.eq.${sessionId}`);
+        } else {
+            query = query.eq("phone_number", sessionId);
+        }
+
+        const { error } = await query;
+
+        if (!error) {
+            fetchHistory()
+        } else {
+            console.error("MarkAsRead Error:", {
+                message: error.message,
+                details: error.details,
+                hint: error.hint,
+                code: error.code
+            })
+        }
+    }, [fetchHistory])
+
     React.useEffect(() => {
         fetchHistory()
         // Poll for updates every 5 seconds (Simple Real-time)
@@ -132,23 +195,36 @@ export default function FeedPage() {
         return () => clearInterval(interval)
     }, [fetchHistory])
 
+    // When session changes, mark as read
+    React.useEffect(() => {
+        if (selectedSession) {
+            markAsRead(selectedSession)
+        }
+    }, [selectedSession, markAsRead])
+
+    const scrollToBottom = () => {
+        scrollBottomRef.current?.scrollIntoView({ behavior: "smooth" })
+    }
+
     // Smart Auto-Scroll Logic - DISABLED per user request
     React.useEffect(() => {
-        // if (shouldAutoScroll && scrollBottomRef.current) {
+        // if (scrollBottomRef.current) {
         //     scrollBottomRef.current.scrollIntoView({ behavior: "smooth" })
         // }
-    }, [messages, shouldAutoScroll])
+    }, [messages])
 
     // Enable auto-scroll when user selects a session (reset view)
     React.useEffect(() => {
         if (selectedSession) {
-            setShouldAutoScroll(true)
-            // Small timeout to allow render
-            setTimeout(() => {
-                scrollBottomRef.current?.scrollIntoView({ behavior: "auto" }) // Instant jump on session switch
-            }, 100)
+            setTimeout(scrollToBottom, 100)
         }
     }, [selectedSession])
+
+    const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+        const target = e.currentTarget
+        const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 100
+        setShowScrollButton(!isAtBottom)
+    }
 
     // Handle Manual Send
     const handleSend = async () => {
@@ -159,7 +235,8 @@ export default function FeedPage() {
         setInputText("") // Optimistic clear
 
         try {
-            await fetch('/api/chat/send', {
+            console.log("Sending message to:", selectedSession)
+            const res = await fetch('/api/chat/send', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -168,11 +245,24 @@ export default function FeedPage() {
                     session_id: selectedSession
                 })
             })
-            // Since sending auto-pauses AI, we should update status
-            setIsAiPaused(true)
-            await fetchHistory()
+
+            const data = await res.json()
+            console.log("Send API Response:", data)
+
+            if (!res.ok) {
+                console.error("Send Failed:", data)
+                alert(`Message failed: ${data.error || "Unknown Error"}`)
+                // Revert text if failed (optional, but good UX)
+                setInputText(textToSend)
+            } else {
+                // Since sending auto-pauses AI, we should update status
+                setIsAiPaused(true)
+                await fetchHistory()
+            }
         } catch (error) {
-            console.error("Send failed", error)
+            console.error("Send Network Error", error)
+            alert("Network Error: Could not reach server.")
+            setInputText(textToSend)
         } finally {
             setIsSending(false)
         }
@@ -195,7 +285,9 @@ export default function FeedPage() {
                     id: `${row.id}_user`,
                     role: "user",
                     content: row.user_message,
-                    timestamp: row.created_at || new Date().toISOString()
+                    timestamp: row.created_at || new Date().toISOString(),
+                    status: row.status,
+                    mediaUrl: (row.message_meta as any)?.media_url || (row.message_meta as any)?.image_url // eslint-disable-line @typescript-eslint/no-explicit-any
                 })
             }
             // Push AI/Manual Response (if exists)
@@ -208,7 +300,8 @@ export default function FeedPage() {
                     timestamp: row.created_at || new Date().toISOString(),
                     sentiment: row.sentiment || undefined,
                     isManual: isManual,
-                    status: row.status
+                    status: row.status,
+                    mediaUrl: (row.message_meta as any)?.media_url || (row.message_meta as any)?.image_url // eslint-disable-line @typescript-eslint/no-explicit-any
                 })
             }
         })
@@ -219,189 +312,326 @@ export default function FeedPage() {
     const activeVisuals = getActiveVisualMessages()
 
     return (
-        <div className="h-[calc(100vh-40px)] w-full overflow-hidden flex flex-col">
-            <div className="px-2 md:px-4 max-w-[98%] mx-auto flex-1 flex flex-col min-h-0 pt-4 md:pt-10 pb-4">
-                <div className="grid gap-6 md:grid-cols-4 flex-1 min-h-0">
-                    {/* Chat List (Left Sidebar) */}
-                    <Card className="col-span-1 bg-white/5 border-white/10 flex flex-col overflow-hidden hidden md:flex">
-                        <CardHeader className="py-4 border-b border-white/10">
-                            <CardTitle className="text-sm font-medium text-slate-200">Recent Inquiries ({sessions.length})</CardTitle>
-                        </CardHeader>
-                        <ScrollArea className="flex-1 min-h-0">
-                            <div className="p-2 space-y-1">
-                                {loading ? (
-                                    <div className="text-center p-4 text-xs text-slate-500">Syncing...</div>
-                                ) : sessions.length === 0 ? (
-                                    <div className="text-center p-4 text-xs text-slate-500">No active conversations.</div>
-                                ) : (
-                                    sessions.map((sessionId, i) => (
-                                        <div
-                                            key={i}
-                                            onClick={() => setSelectedSession(sessionId)}
-                                            className={`flex items-center gap-3 p-3 rounded-md cursor-pointer transition ${selectedSession === sessionId ? "bg-white/10 border border-white/5" : "hover:bg-white/5 opacity-60"}`}
-                                        >
-                                            <Avatar className="h-8 w-8 border border-white/10">
-                                                <AvatarFallback className="bg-gradient-to-br from-blue-500 to-cyan-500 text-[10px]">
-                                                    {sessionId.charAt(0)}
-                                                </AvatarFallback>
-                                            </Avatar>
-                                            <div className="flex flex-col overflow-hidden">
-                                                <span className="text-sm font-medium text-white truncate w-full">
-                                                    {userMap[sessionId] || sessionId}
-                                                </span>
-                                                {userMap[sessionId] && <span className="text-[10px] text-muted-foreground">{sessionId}</span>}
-                                                <span className="text-[10px] text-muted-foreground mt-0.5">Aditi is Active</span>
-                                            </div>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
-                        </ScrollArea>
-                    </Card>
+        <div className="h-full w-full flex flex-col overflow-hidden bg-transparent">
 
-                    {/* Main Conversation View */}
-                    <Card className="col-span-4 md:col-span-3 bg-[#0B0F19] border-white/10 flex flex-col overflow-hidden shadow-2xl py-0 gap-0">
-                        <div className="py-3 px-4 border-b border-white/10 flex flex-row items-center justify-between bg-[#111623]">
-                            <div className="flex items-center gap-3">
-                                <Avatar className="h-9 w-9 border border-white/10">
-                                    <AvatarFallback className="bg-cyan-600 text-white font-bold">
-                                        {selectedSession ? (userMap[selectedSession]?.charAt(0) || selectedSession.charAt(0)) : "?"}
-                                    </AvatarFallback>
-                                </Avatar>
-                                <div>
-                                    <CardTitle className="text-base text-white tracking-wide flex items-center gap-2">
-                                        {selectedSession ? (
-                                            <>
-                                                <span>{userMap[selectedSession] || selectedSession}</span>
-                                                {userMap[selectedSession] && <span className="text-xs text-slate-500 font-normal">{selectedSession}</span>}
-                                            </>
-                                        ) : "Select a Session"}
-                                    </CardTitle>
-                                    <div className="flex items-center gap-2">
-                                        <span className={`h-2 w-2 rounded-full ${isAiPaused ? "bg-red-500 animate-pulse" : "bg-green-500"}`} />
-                                        <span className="text-xs text-slate-400 font-medium">
-                                            {selectedSession
-                                                ? (isAiPaused ? "AI Paused" : "Aditi Active")
-                                                : "Offline"}
-                                        </span>
-                                    </div>
+            {/* Fixed Header Section (Standardized) */}
+            <div className="flex-none px-4 md:px-8 pt-10 pb-6 bg-transparent space-y-4 relative z-20">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div>
+                        <h2 className="text-xl md:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+                            <MessageSquare className="h-6 w-6 text-violet-500" />
+                            Live Chat Feed
+                        </h2>
+                        <p className="text-muted-foreground mt-1 text-xs md:text-sm">Monitor and intervene in Aditi&apos;s conversations.</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Content Section - Main Chat Interface */}
+            <div className="w-full px-4 md:px-8 pb-4 h-[calc(100vh-140px)]">
+                {/* The "Card" Container */}
+                <div className="w-full h-full bg-[#0F131E] border border-white/10 rounded-xl overflow-hidden flex relative shadow-2xl">
+
+                    {/* 1. SIDEBAR (Left) - Fixed Width Flex Item */}
+                    <div className="hidden md:flex flex-col w-[300px] shrink-0 border-r border-white/10 bg-[#0B0F19] h-full relative z-10">
+                        {/* Sidebar Header + Search */}
+                        <div className="flex flex-col border-b border-white/10 bg-[#111623] shrink-0 shadow-sm relative z-20">
+                            <div className="h-16 flex items-center px-5 justify-between">
+                                <h2 className="text-sm font-bold text-white tracking-wide uppercase flex items-center gap-2">
+                                    <Users className="h-4 w-4 text-violet-400" /> Inquiries <span className="text-violet-200/50">({sessions.length})</span>
+                                </h2>
+                            </div>
+                            <div className="px-4 pb-3">
+                                <div className="relative">
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-500" />
+                                    <input
+                                        className="w-full bg-white/5 border border-white/10 rounded-lg py-1.5 pl-9 pr-3 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-violet-500/50"
+                                        placeholder="Search by name or phone..."
+                                        value={sessionSearch}
+                                        onChange={(e) => setSessionSearch(e.target.value)}
+                                    />
                                 </div>
                             </div>
-                            <div className="flex gap-2">
+                        </div>
+                        <div className="flex-1 min-h-0 w-full overflow-y-auto custom-scrollbar">
+                            <div className="p-0">
+                                {loading ? (
+                                    <div className="text-center p-8 text-xs text-slate-500">Syncing...</div>
+                                ) : sessions.length === 0 ? (
+                                    <div className="text-center p-8 text-xs text-slate-500">No active chats.</div>
+                                ) : (
+                                    sessions
+                                        .filter(sid => {
+                                            const name = (userMap[sid] || "").toLowerCase();
+                                            const phone = sid.toLowerCase();
+                                            const search = sessionSearch.toLowerCase();
+                                            return name.includes(search) || phone.includes(search);
+                                        })
+                                        .map((sessionId, i) => {
+                                            // Get latest sentiment for this session
+                                            const sessionMsgs = messages.filter(m => m.phone_number === sessionId || m.session_id === sessionId);
+                                            const latestMsg = sessionMsgs[sessionMsgs.length - 1];
+                                            const sentiment = latestMsg?.sentiment?.toLowerCase();
+                                            // Real functional unread logic
+                                            const isUnread = sessionMsgs.some(m => m.user_message && !m.is_read);
+
+                                            return (
+                                                <div
+                                                    key={i}
+                                                    onClick={() => setSelectedSession(sessionId)}
+                                                    className={`flex items-center gap-3 p-4 border-b border-white/5 cursor-pointer transition-all ${selectedSession === sessionId ? "bg-white/10 border-l-2 border-l-violet-500" : "hover:bg-white/[0.05] border-l-2 border-l-transparent"}`}
+                                                >
+                                                    <div className="relative shrink-0">
+                                                        <Avatar className="h-10 w-10 border border-white/10">
+                                                            <AvatarFallback className="bg-gradient-to-br from-slate-800 to-slate-900 text-slate-300 text-xs font-bold">
+                                                                {(userMap[sessionId] || sessionId).charAt(0)}
+                                                            </AvatarFallback>
+                                                        </Avatar>
+                                                        {/* Sentiment Indicator (Keep it small and clean on avatar) */}
+                                                        {sentiment && (
+                                                            <div className={`absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-[#0B0F19] flex items-center justify-center
+                                                                ${sentiment === 'positive' ? 'bg-emerald-500' : sentiment === 'negative' ? 'bg-red-500' : 'bg-slate-500'}`}>
+                                                                {sentiment === 'positive' ? <Smile className="h-2 w-2 text-white" /> : sentiment === 'negative' ? <ThumbsDown className="h-2 w-2 text-white" /> : null}
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    <div className="flex flex-col overflow-hidden gap-0.5 flex-1 text-left">
+                                                        <div className="flex justify-between items-center w-full">
+                                                            <span className={`text-sm tracking-tight ${selectedSession === sessionId ? "text-white font-semibold" : isUnread ? "text-white font-bold" : "text-slate-300 font-medium"} truncate`}>
+                                                                {userMap[sessionId] || sessionId}
+                                                            </span>
+                                                            {latestMsg?.created_at && (
+                                                                <span className={`text-[10px] ${isUnread ? "text-emerald-500 font-bold" : "text-slate-500"}`}>
+                                                                    {new Date(latestMsg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        <div className="flex justify-between items-center w-full gap-2">
+                                                            <span className={`text-[11px] truncate flex-1 ${isUnread ? "text-slate-200 font-semibold" : "text-slate-500"}`}>
+                                                                {latestMsg?.user_message || latestMsg?.ai_response || "No messages"}
+                                                            </span>
+                                                            {/* WhatsApp Style Unread Badge */}
+                                                            {isUnread && (
+                                                                <div className="min-w-[18px] h-[18px] bg-emerald-500 rounded-full flex items-center justify-center px-1">
+                                                                    <span className="text-[10px] text-white font-bold leading-none">
+                                                                        {sessionMsgs.filter(m => m.user_message && !m.is_read).length}
+                                                                    </span>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 2. MAIN CHAT AREA (Right) */}
+                    <div className="flex-1 flex flex-col min-w-0 bg-[#0F131E] h-full relative">
+                        {/* Floating Chat Header - Glassmorphism */}
+                        <div className="absolute top-0 left-0 right-0 h-16 border-b border-white/10 flex items-center justify-between px-6 bg-[#0F131E]/60 backdrop-blur-lg shrink-0 z-30 shadow-sm">
+                            <div className="flex items-center gap-4">
+                                {selectedSession ? (
+                                    <>
+                                        <div className="relative">
+                                            <Avatar className="h-9 w-9 border border-white/10">
+                                                <AvatarFallback className="bg-violet-600 text-white font-bold">
+                                                    {userMap[selectedSession!]?.charAt(0) || selectedSession!.charAt(0)}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                            <span className={`absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5 rounded-full border-2 border-[#111623] ${isAiPaused ? "bg-red-500" : "bg-emerald-500"}`} />
+                                        </div>
+
+                                        <div>
+                                            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                                                {userMap[selectedSession!] || selectedSession}
+                                            </h3>
+                                            <p className="text-[10px] font-medium flex items-center gap-1.5">
+                                                {isAiPaused ? (
+                                                    <span className="text-amber-400 flex items-center gap-1"><Hand className="h-3 w-3" /> Manual Control</span>
+                                                ) : (
+                                                    <span className="text-emerald-400 flex items-center gap-1"><Sparkles className="h-3 w-3" /> Aditi Active</span>
+                                                )}
+                                            </p>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div className="flex items-center gap-2 text-slate-400">
+                                        <MessageSquare className="h-5 w-5" />
+                                        <span className="text-sm font-medium">Select a conversation</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="flex items-center gap-3">
                                 {isAiPaused && (
                                     <Button
                                         size="sm"
                                         variant="ghost"
-                                        className="h-8 text-green-400 hover:text-green-300 hover:bg-green-500/10"
+                                        className="h-8 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 text-xs uppercase tracking-wider font-bold border border-emerald-500/20"
                                         onClick={handleResume}
                                     >
-                                        Resume AI
+                                        <Check className="mr-1.5 h-3 w-3" /> Resume AI
                                     </Button>
                                 )}
-                                {activeVisuals.some(m => m.isManual) && !isAiPaused && (
-                                    <Badge variant="secondary" className="bg-blue-500/10 text-blue-400 border-blue-500/20 text-[10px]">
-                                        Handover Ready
-                                    </Badge>
-                                )}
                             </div>
                         </div>
 
-                        <ScrollArea className="flex-1 min-h-0 px-4 pt-0 bg-[#0B0F19]">
-                            <div className="space-y-6 py-4">
-                                {activeVisuals.length === 0 && !loading && (
-                                    <div className="flex h-full flex-col items-center justify-center text-slate-500 text-sm gap-2 opacity-50">
-                                        <MessageSquare className="h-10 w-10" />
-                                        <span>Select a session to start monitoring</span>
-                                    </div>
-                                )}
+                        {/* Messages Body */}
+                        <div className="flex-1 relative min-h-0 bg-transparent overflow-hidden">
+                            {/* Scroll to Bottom Button - Centered & Small */}
+                            {selectedSession && showScrollButton && (
+                                <button
+                                    onClick={scrollToBottom}
+                                    className="absolute bottom-24 left-1/2 -translate-x-1/2 z-50 bg-violet-600/90 hover:bg-violet-700 text-white p-2 rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.3)] border border-white/10 transition-all hover:scale-110 active:scale-95 flex items-center justify-center backdrop-blur-sm"
+                                    title="Scroll to bottom"
+                                >
+                                    <ChevronDown className="h-4 w-4" />
+                                </button>
+                            )}
 
-                                {activeVisuals.map((msg) => {
-                                    const isAi = msg.role === "assistant";
-                                    return (
-                                        <div key={msg.id} className={`flex ${isAi ? "justify-end" : "justify-start"}`}>
-                                            <div className={`flex gap-3 max-w-[85%] ${isAi ? "flex-row-reverse" : "flex-row"}`}>
-                                                {!isAi && (
-                                                    <Avatar className="h-8 w-8 shrink-0 mt-1">
-                                                        <AvatarFallback className="bg-slate-800 text-slate-400 text-xs">U</AvatarFallback>
-                                                    </Avatar>
-                                                )}
-                                                {isAi && (
-                                                    <Avatar className="h-8 w-8 shrink-0 mt-1 border border-purple-500/40">
-                                                        <AvatarImage src="/agents/aditi-avatar.png" />
-                                                        <AvatarFallback className="bg-purple-900/50 text-purple-200 text-xs">AI</AvatarFallback>
-                                                    </Avatar>
-                                                )}
+                            <div
+                                ref={scrollContainerRef}
+                                onScroll={handleScroll}
+                                className="h-full overflow-y-auto custom-scrollbar p-4 pt-20 pb-24"
+                            >
 
-                                                <div className={`flex flex-col ${isAi ? "items-end" : "items-start"}`}>
-                                                    <div className={`py-2 px-4 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap break-words max-w-full ${isAi
-                                                        ? (msg.isManual
-                                                            ? "bg-blue-600 text-white"
-                                                            : "bg-[#2E3545] text-slate-100 border border-white/5")
-                                                        : "bg-[#1E293B] text-slate-200 border border-white/5"
-                                                        }`}>
-                                                        {msg.content}
-                                                    </div>
-                                                    <div className="flex items-center gap-2 mt-1 px-1">
-                                                        <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wide">
-                                                            {msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now"}
-                                                        </span>
-                                                        {isAi && msg.sentiment && (
-                                                            <span className={`text-[9px] px-1 rounded-sm bg-black/20 ${msg.isManual ? "text-blue-300" : "text-purple-300"}`}>
-                                                                {msg.sentiment}
-                                                            </span>
-                                                        )}
-                                                        {isAi && (
-                                                            <span className="ml-1 flex items-center">
-                                                                {(() => {
-                                                                    // Legacy/Null status -> Assume Read (Blue) for cleanliness of past history
-                                                                    const s = msg.status || 'read';
-
-                                                                    if (s === 'failed') return <AlertCircle className="h-3 w-3 text-red-400" />
-                                                                    if (s === 'sent') return <Check className="h-3 w-3 text-slate-400" />
-                                                                    if (s === 'delivered') return <CheckCheck className="h-3 w-3 text-slate-400" />
-                                                                    return <CheckCheck className="h-3 w-3 text-blue-400" /> // read or default
-                                                                })()}
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </div>
+                                <div className="max-w-3xl mx-auto space-y-6 py-2">
+                                    {activeVisuals.length === 0 && !loading && (
+                                        <div className="flex flex-col items-center justify-center p-12 opacity-20">
+                                            <MessageSquare className="h-16 w-16 mb-4" />
+                                            <p>No messages yet</p>
                                         </div>
-                                    )
-                                })}
+                                    )}
 
-                                {/* Invisible Element for Auto-Scroll */}
-                                <div ref={scrollBottomRef}></div>
+                                    {(() => {
+                                        let lastDate = "";
+                                        return activeVisuals.map((msg) => {
+                                            const isAi = msg.role === "assistant";
+                                            const currentDate = new Date(msg.timestamp).toDateString();
+                                            const showDivider = currentDate !== lastDate;
+                                            lastDate = currentDate;
+
+                                            return (
+                                                <React.Fragment key={msg.id}>
+                                                    {showDivider && (
+                                                        <div className="flex justify-center my-6">
+                                                            <div className="bg-[#111623]/80 backdrop-blur-md border border-white/5 py-1 px-4 rounded-lg text-[10px] font-bold text-slate-400 uppercase tracking-widest shadow-sm">
+                                                                {formatDateDivider(msg.timestamp)}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                    <div className={`flex ${isAi ? "justify-end" : "justify-start"}`}>
+                                                        <div className={`flex gap-3 max-w-[85%] ${isAi ? "flex-row-reverse" : "flex-row"}`}>
+
+                                                            {/* Avatar for Message */}
+                                                            {!isAi && (
+                                                                <Avatar className="h-8 w-8 border border-white/5 mt-1 shrink-0 opacity-70">
+                                                                    <AvatarFallback className="bg-slate-800 text-slate-400 text-[10px]">{userMap[selectedSession!]?.charAt(0) || "U"}</AvatarFallback>
+                                                                </Avatar>
+                                                            )}
+                                                            {isAi && (
+                                                                <Avatar className="h-8 w-8 border border-white/5 mt-1 shrink-0 opacity-70">
+                                                                    <AvatarImage src="/avatars/aditi.png" />
+                                                                    <AvatarFallback className="bg-violet-900/50 text-violet-300 text-[10px]">AI</AvatarFallback>
+                                                                </Avatar>
+                                                            )}
+
+                                                            <div className={`flex flex-col ${isAi ? "items-end" : "items-start"} min-w-[100px]`}>
+                                                                <div className={`py-3 px-5 text-sm leading-relaxed whitespace-pre-wrap shadow-lg ${isAi
+                                                                    ? (msg.isManual
+                                                                        ? "bg-blue-600 text-white rounded-2xl rounded-tr-sm"
+                                                                        : "bg-gradient-to-br from-[#2E3545] to-[#232936] text-slate-100 border border-white/5 rounded-2xl rounded-tr-sm")
+                                                                    : "bg-[#1E293B] text-slate-200 border border-white/5 rounded-2xl rounded-tl-sm"
+                                                                    }`}>
+                                                                    {msg.mediaUrl && (
+                                                                        <div className="mb-2 rounded-lg overflow-hidden border border-white/10 bg-black/20">
+                                                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                                            <img src={msg.mediaUrl} alt="Message attachment" className="max-w-full h-auto object-contain max-h-[300px]" />
+                                                                        </div>
+                                                                    )}
+                                                                    {msg.content}
+                                                                </div>
+                                                                <div className="flex items-center gap-2 mt-1 px-1 opacity-50 text-[10px]">
+                                                                    <span className="font-medium text-slate-400">
+                                                                        {msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now"}
+                                                                    </span>
+                                                                    {msg.role === "assistant" && (
+                                                                        <span>
+                                                                            {msg.status === 'read' ? (
+                                                                                <CheckCheck className="h-3.5 w-3.5 text-[#53bdeb]" strokeWidth={2.5} />
+                                                                            ) : msg.status === 'delivered' ? (
+                                                                                <CheckCheck className="h-3.5 w-3.5 text-slate-400" strokeWidth={2.5} />
+                                                                            ) : (
+                                                                                <Check className="h-3.5 w-3.5 text-slate-400" strokeWidth={2.5} />
+                                                                            )}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </React.Fragment>
+                                            );
+                                        });
+                                    })()}
+                                    <div ref={scrollBottomRef}></div>
+                                </div>
                             </div>
-                        </ScrollArea>
+                        </div>
 
+                        {/* Input Area */}
+                        {/* Floating Input Area - True Floating Effect (No Blur Bar) */}
+                        <div className="absolute bottom-0 left-0 right-0 p-4 bg-transparent shrink-0 z-30 pointer-events-none">
+                            <div className="max-w-4xl mx-auto flex items-center gap-3 pointer-events-auto">
+                                {/* The Input Pill */}
+                                <div className="flex-1 flex items-center bg-[#111623] border border-white/10 rounded-full px-4 min-h-[52px] shadow-[0_10px_40px_rgba(0,0,0,0.5)] focus-within:border-violet-500/50 focus-within:ring-1 focus-within:ring-violet-500/30 transition-all duration-300 hover:translate-y-[-2px]">
+                                    <div className="flex items-center gap-1 sm:gap-2 mr-2">
+                                        <button className="p-2 text-slate-500 hover:text-violet-400 transition-colors shrink-0">
+                                            <Smile className="h-6 w-6" />
+                                        </button>
+                                        <button className="p-2 text-slate-500 hover:text-violet-400 transition-colors shrink-0">
+                                            <Plus className="h-6 w-6" />
+                                        </button>
+                                    </div>
 
-                        {/* Footer: Compact & Tighter */}
-                        <div className="px-3 pt-2 pb-1 bg-[#111623] border-t border-white/10 shrink-0">
-                            <div className={`flex gap-3 items-center rounded-lg border px-2 py-2 transition-colors ${isAiPaused ? "bg-red-500/5 border-red-900/30" : "bg-[#0B0F19] border-white/10 focus-within:border-white/20"}`}>
-                                <input
-                                    className="flex-1 bg-transparent px-2 text-sm text-white focus:outline-none h-full placeholder:text-slate-600"
-                                    placeholder={selectedSession ? (isAiPaused ? "AI Silent. Type your reply..." : "Type to intervene...") : "Select a chat to react..."}
-                                    disabled={!selectedSession || isSending}
-                                    value={inputText}
-                                    onChange={(e) => setInputText(e.target.value)}
-                                    onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                                />
+                                    <input
+                                        className="flex-1 bg-transparent text-sm md:text-base text-white focus:outline-none placeholder:text-slate-600 py-3"
+                                        placeholder={selectedSession ? (isAiPaused ? "Type a reply to send manually..." : "Type to interrupt and take over...") : "Select a conversation"}
+                                        disabled={!selectedSession || isSending}
+                                        value={inputText}
+                                        onChange={(e) => setInputText(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                                    />
+
+                                    <div className="hidden sm:flex items-center ml-2">
+                                        <button className="p-2 text-slate-500 hover:text-violet-400 transition-colors shrink-0">
+                                            <ImageIcon className="h-5 w-5" />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Floating Circular Send Button - Completely Outside */}
                                 <Button
                                     disabled={!selectedSession || isSending || !inputText.trim()}
-                                    size="sm"
-                                    className={`h-8 px-4 transition-all ${isSending ? "bg-slate-600" : (isAiPaused ? "bg-red-600 hover:bg-red-700 shadow-red-900/20 shadow-lg" : "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-900/20 shadow-lg")}`}
+                                    className={`rounded-full h-[52px] w-[52px] shrink-0 p-0 shadow-2xl flex items-center justify-center transition-all duration-300 ${!inputText.trim()
+                                        ? "bg-[#111623] text-slate-600 cursor-not-allowed border border-white/5"
+                                        : "bg-violet-600 hover:bg-violet-700 text-white hover:scale-105 active:scale-95 shadow-violet-900/30"
+                                        }`}
                                     onClick={handleSend}
                                 >
-                                    {isSending ? <span className="animate-spin text-xs">⏳</span> : <Send className="h-4 w-4" />}
+                                    {isSending ? (
+                                        <div className="h-5 w-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                                    ) : (
+                                        <Send className="h-5 w-5 ml-0.5" />
+                                    )}
                                 </Button>
                             </div>
-                            <div className="text-[10px] text-slate-500 mt-1 mb-1 flex justify-between px-1">
-                                <span>Press <b>Enter</b> to send</span>
-                                {isAiPaused ? <span className="text-red-400">Manual Mode Active</span> : <span>AI Mode Active</span>}
-                            </div>
                         </div>
-                    </Card >
+                    </div>
                 </div>
             </div>
         </div>

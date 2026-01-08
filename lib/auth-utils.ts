@@ -1,4 +1,4 @@
-import { SupabaseClient } from "@supabase/supabase-js"
+import { SupabaseClient, User } from "@supabase/supabase-js"
 
 /**
  * CTO UTILITY: Centralized Authentication & Tenancy Helper
@@ -6,8 +6,8 @@ import { SupabaseClient } from "@supabase/supabase-js"
  * Fetches the institute_id for the current authenticated user from the staff_members table.
  * This is the cornerstone of our "Multi-tenant Defense" strategy.
  */
-export async function getAuthenticatedInstituteId(supabase: SupabaseClient): Promise<string> {
-    const { data: { user } } = await supabase.auth.getUser()
+export async function getAuthenticatedInstituteId(supabase: SupabaseClient, existingUser?: User | null): Promise<string> {
+    const user = existingUser || (await supabase.auth.getUser()).data.user
     if (!user) throw new Error("Unauthorized Access: User session not found.")
 
     const { data: profile, error } = await supabase

@@ -7,9 +7,9 @@ export default function FeesPage() {
             <div className="p-4 md:p-8 max-w-7xl mx-auto flex-1 flex items-center justify-center overflow-hidden">
                 <div className="relative w-full max-w-lg">
                     {/* Glow Effect */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-32 w-32 bg-emerald-500/20 blur-[100px] rounded-full pointer-events-none" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-32 w-32 bg-violet-500/20 blur-[100px] rounded-full pointer-events-none" />
 
-                    <div className="relative bg-white/5 border border-white/10 rounded-2xl p-8 text-center backdrop-blur-sm overflow-hidden group">
+                    <div className="relative bg-gradient-to-br from-violet-500/10 to-transparent border border-white/10 border-violet-500/20 rounded-2xl p-8 text-center backdrop-blur-md shadow-2xl overflow-hidden group">
                         {/* Locked Banner */}
                         <div className="absolute top-0 right-0 bg-white/5 px-3 py-1 rounded-bl-xl border-b border-l border-white/5">
                             <Lock className="h-4 w-4 text-slate-500" />
@@ -25,7 +25,7 @@ export default function FeesPage() {
                         <p className="text-slate-400 text-sm leading-relaxed mb-8">
                             Our advanced financial AI is currently in <span className="text-emerald-400 font-semibold">Beta Testing</span>.
                             <br />
-                            Soon, "Munim Ji" will handle your fee collection, generate invoices, and track revenue automatically.
+                            Soon, &quot;Munim Ji&quot; will handle your fee collection, generate invoices, and track revenue automatically.
                         </p>
 
                         <div className="flex items-center justify-center gap-3">

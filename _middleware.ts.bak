@@ -1,0 +1,6 @@
+import { proxy } from './proxy'
+
+// Delegate the middleware logic to the tech proxy
+export default proxy
+
+export { config } from './proxy'

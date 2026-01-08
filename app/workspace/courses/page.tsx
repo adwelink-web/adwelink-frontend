@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { createClient } from "@/lib/supabase"
 import { Database } from "@/lib/database.types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -26,20 +25,10 @@ import {
     BookOpen,
     Plus,
     Clock,
-    Banknote,
-    Sparkles,
-    MonitorPlay,
-    Building2,
-    Users2,
     ArrowRight,
     Search,
-    GraduationCap,
-    Trophy,
-    Target,
     Calendar,
     Hash,
-    ChevronRight,
-    UserCircle2,
     Edit3,
     Trash2,
     Save,
@@ -66,6 +55,7 @@ export default function CoursesPage() {
         try {
             const data = await getCourses()
             setCourses(data || [])
+            // end-mock-injection
         } catch (error) {
             console.error("Failed to fetch courses:", error)
         } finally {
@@ -105,13 +95,14 @@ export default function CoursesPage() {
         try {
             await deleteCourse(courseId)
             setCourses(courses.filter(c => c.id !== courseId))
-        } catch (error: any) {
+        } catch (error) {
             console.error("Failed to delete course:", error)
+            const msg = (error as any)?.message || "Unknown error"
             // Show a more helpful error message
-            if (error.message?.includes("fk") || error.message?.includes("violates foreign key constraint")) {
+            if (msg.includes("fk") || msg.includes("violates foreign key constraint")) {
                 alert("Cannot delete this course because it is linked to active batches. Please delete or move the batches first.")
             } else {
-                alert("Failed to delete course: " + (error.message || "Unknown error"))
+                alert("Failed to delete course: " + msg)
             }
         } finally {
             setDeletingIds(prev => {
@@ -148,12 +139,15 @@ export default function CoursesPage() {
 
     return (
         <div className="h-[calc(100vh-40px)] w-full overflow-hidden flex flex-col">
-            <div className="flex-1 flex flex-col w-full max-w-7xl mx-auto p-4 md:p-8 min-h-0">
-                {/* Header & Filter Section (Frozen) */}
-                <div className="flex-none space-y-6 mb-6">
-                    <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            {/* Main Scrollable Container */}
+            <div className="flex-1 w-full h-full overflow-y-auto custom-scrollbar relative">
+
+                {/* Header Section (Transparent & Static) */}
+                <div className="px-4 md:px-8 py-6 mb-6">
+                    <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 max-w-7xl mx-auto">
                         <div className="space-y-1">
                             <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white flex items-center gap-3">
+                                <BookOpen className="h-8 w-8 text-emerald-500" />
                                 Courses & Fees
                                 <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 text-[10px] py-0 px-2 uppercase tracking-widest hidden sm:inline-flex">
                                     {courses.length} Active
@@ -172,21 +166,21 @@ export default function CoursesPage() {
                         </div>
                     </div>
 
-                    <div className="relative z-10 flex flex-col sm:flex-row gap-4">
+                    <div className="relative z-10 flex flex-col sm:flex-row gap-4 mt-6 max-w-7xl mx-auto">
                         <div className="relative flex-1 group">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-white transition-colors" />
                             <Input
                                 placeholder="Search by name, batch or standard..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="bg-white/5 border-white/10 pl-10 h-10 rounded-xl text-white text-sm"
+                                className="bg-black/20 border-white/10 pl-10 h-10 rounded-xl text-white text-sm focus:bg-black/40 transition-colors"
                             />
                         </div>
                     </div>
                 </div>
 
-                {/* Data Cards (Scrollable) */}
-                <div className="flex-1 overflow-y-auto custom-scrollbar min-h-0 pb-20">
+                {/* Data Cards (Scrollable Content) */}
+                <div className="pb-20 px-4 md:px-8 max-w-7xl mx-auto">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                         {loading ? (
                             [1, 2, 3].map(i => (
@@ -202,7 +196,7 @@ export default function CoursesPage() {
                             filteredCourses.map((course) => (
                                 <Card
                                     key={course.id}
-                                    className="bg-gradient-to-br from-white/10 to-white/5 border-white/10 backdrop-blur-md shadow-xl hover:border-primary/50 transition-all group relative overflow-hidden rounded-2xl"
+                                    className="bg-gradient-to-br from-violet-500/10 to-transparent border-white/10 border-violet-500/20 backdrop-blur-md shadow-xl hover:border-primary/50 hover:scale-[1.02] transition-all group relative overflow-hidden rounded-2xl"
                                 >
                                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                                         <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-slate-500 flex items-center gap-1.5 leading-none">

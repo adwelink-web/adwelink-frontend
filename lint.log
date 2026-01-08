@@ -1,0 +1,198 @@
+
+> dashboard@0.1.0 lint
+> eslint
+
+
+F:\Adwelink\AMS\app\api\chat\resume\route.ts
+  17:17  warning  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  34:14  warning  'e' is defined but never used              @typescript-eslint/no-unused-vars
+
+F:\Adwelink\AMS\app\api\chat\send\route.ts
+   16:14  warning  'err' is defined but never used           @typescript-eslint/no-unused-vars
+   16:19  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   82:18  warning  'e' is defined but never used             @typescript-eslint/no-unused-vars
+  144:17  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+F:\Adwelink\AMS\app\api\webhooks\whatsapp\route.ts
+  40:19  warning  'timestamp' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+F:\Adwelink\AMS\app\early-access\page.tsx
+    5:27  warning  'Mail' is defined but never used                                 @typescript-eslint/no-unused-vars
+   15:27  warning  'useEffect' is defined but never used                            @typescript-eslint/no-unused-vars
+  110:81  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+F:\Adwelink\AMS\app\feedback\page.tsx
+  6:46  warning  'Building2' is defined but never used      @typescript-eslint/no-unused-vars
+  6:57  warning  'MessageSquare' is defined but never used  @typescript-eslint/no-unused-vars
+  6:82  warning  'CheckCircle2' is defined but never used   @typescript-eslint/no-unused-vars
+  9:10  warning  'createClient' is defined but never used   @typescript-eslint/no-unused-vars
+
+F:\Adwelink\AMS\app\login\page.tsx
+   7:41  warning  'CardTitle' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+  25:13  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+F:\Adwelink\AMS\app\login\page.tsx:25:13
+  23 |         const demo = searchParams.get("demo")
+  24 |         if (demo === "sharma") {
+> 25 |             setEmail("sharma.demo@gmail.com")
+     |             ^^^^^^^^ Avoid calling setState() directly within an effect
+  26 |             setPassword("sharma123")
+  27 |         }
+  28 |     }, [searchParams])  react-hooks/set-state-in-effect
+
+F:\Adwelink\AMS\app\manifesto\page.tsx
+    8:5    warning  'MessageSquare' is defined but never used                        @typescript-eslint/no-unused-vars
+    9:5    warning  'Zap' is defined but never used                                  @typescript-eslint/no-unused-vars
+   50:33   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+   50:45   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  129:79   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  129:96   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  167:104  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  167:113  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  186:25   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  186:33   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  186:155  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+F:\Adwelink\AMS\app\market\page.tsx
+  60:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+F:\Adwelink\AMS\app\page.tsx
+    6:5    warning  'Sparkles' is defined but never used                             @typescript-eslint/no-unused-vars
+    7:5    warning  'ChevronRight' is defined but never used                         @typescript-eslint/no-unused-vars
+    9:5    warning  'Lock' is defined but never used                                 @typescript-eslint/no-unused-vars
+   11:5    warning  'Users' is defined but never used                                @typescript-eslint/no-unused-vars
+   12:5    warning  'MapPin' is defined but never used                               @typescript-eslint/no-unused-vars
+   13:5    warning  'CalendarDays' is defined but never used                         @typescript-eslint/no-unused-vars
+   35:12   warning  'mounted' is assigned a value but never used                     @typescript-eslint/no-unused-vars
+   72:37   error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  153:79   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  153:100  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+F:\Adwelink\AMS\app\reports\page.tsx
+   3:29  warning  'CardDescription' is defined but never used                      @typescript-eslint/no-unused-vars
+   3:46  warning  'CardHeader' is defined but never used                           @typescript-eslint/no-unused-vars
+   3:58  warning  'CardTitle' is defined but never used                            @typescript-eslint/no-unused-vars
+  14:84  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+F:\Adwelink\AMS\app\settings\actions.ts
+  21:53  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+F:\Adwelink\AMS\app\settings\settings-client.tsx
+  21:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  25:68  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  26:52  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+F:\Adwelink\AMS\app\workspace\brain\page.tsx
+  26:68   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  47:105  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+F:\Adwelink\AMS\app\workspace\courses\actions.ts
+  24:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  48:60  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+F:\Adwelink\AMS\app\workspace\courses\page.tsx
+    4:10  warning  'createClient' is defined but never used           @typescript-eslint/no-unused-vars
+   11:5   warning  'CardDescription' is defined but never used        @typescript-eslint/no-unused-vars
+   21:5   warning  'DialogTrigger' is defined but never used          @typescript-eslint/no-unused-vars
+   29:5   warning  'Banknote' is defined but never used               @typescript-eslint/no-unused-vars
+   30:5   warning  'Sparkles' is defined but never used               @typescript-eslint/no-unused-vars
+   31:5   warning  'MonitorPlay' is defined but never used            @typescript-eslint/no-unused-vars
+   32:5   warning  'Building2' is defined but never used              @typescript-eslint/no-unused-vars
+   33:5   warning  'Users2' is defined but never used                 @typescript-eslint/no-unused-vars
+   34:5   warning  'ArrowRight' is defined but never used             @typescript-eslint/no-unused-vars
+   36:5   warning  'GraduationCap' is defined but never used          @typescript-eslint/no-unused-vars
+   37:5   warning  'Trophy' is defined but never used                 @typescript-eslint/no-unused-vars
+   38:5   warning  'Target' is defined but never used                 @typescript-eslint/no-unused-vars
+   41:5   warning  'ChevronRight' is defined but never used           @typescript-eslint/no-unused-vars
+   42:5   warning  'UserCircle2' is defined but never used            @typescript-eslint/no-unused-vars
+  109:25  error    Unexpected any. Specify a different type           @typescript-eslint/no-explicit-any
+  128:21  warning  'id' is assigned a value but never used            @typescript-eslint/no-unused-vars
+  128:25  warning  'created_at' is assigned a value but never used    @typescript-eslint/no-unused-vars
+  128:37  warning  'updated_at' is assigned a value but never used    @typescript-eslint/no-unused-vars
+  128:49  warning  'institute_id' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+F:\Adwelink\AMS\app\workspace\feed\page.tsx
+  552:77  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+F:\Adwelink\AMS\app\workspace\fees\page.tsx
+  28:35  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  28:44  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+F:\Adwelink\AMS\app\workspace\leads\actions.ts
+   7:56  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  25:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+F:\Adwelink\AMS\app\workspace\leads\page.tsx
+    7:5    warning  'Table' is defined but never used                  @typescript-eslint/no-unused-vars
+    8:5    warning  'TableBody' is defined but never used              @typescript-eslint/no-unused-vars
+    9:5    warning  'TableCell' is defined but never used              @typescript-eslint/no-unused-vars
+   10:5    warning  'TableHead' is defined but never used              @typescript-eslint/no-unused-vars
+   11:5    warning  'TableHeader' is defined but never used            @typescript-eslint/no-unused-vars
+   12:5    warning  'TableRow' is defined but never used               @typescript-eslint/no-unused-vars
+   17:5    warning  'Card' is defined but never used                   @typescript-eslint/no-unused-vars
+   18:5    warning  'CardContent' is defined but never used            @typescript-eslint/no-unused-vars
+   19:5    warning  'CardDescription' is defined but never used        @typescript-eslint/no-unused-vars
+   20:5    warning  'CardHeader' is defined but never used             @typescript-eslint/no-unused-vars
+   21:5    warning  'CardTitle' is defined but never used              @typescript-eslint/no-unused-vars
+   24:5    warning  'DropdownMenu' is defined but never used           @typescript-eslint/no-unused-vars
+   25:5    warning  'DropdownMenuContent' is defined but never used    @typescript-eslint/no-unused-vars
+   26:5    warning  'DropdownMenuItem' is defined but never used       @typescript-eslint/no-unused-vars
+   27:5    warning  'DropdownMenuLabel' is defined but never used      @typescript-eslint/no-unused-vars
+   28:5    warning  'DropdownMenuSeparator' is defined but never used  @typescript-eslint/no-unused-vars
+   29:5    warning  'DropdownMenuTrigger' is defined but never used    @typescript-eslint/no-unused-vars
+   31:10   warning  'MoreHorizontal' is defined but never used         @typescript-eslint/no-unused-vars
+   31:32   warning  'Calendar' is defined but never used               @typescript-eslint/no-unused-vars
+   32:10   warning  'Avatar' is defined but never used                 @typescript-eslint/no-unused-vars
+   32:18   warning  'AvatarFallback' is defined but never used         @typescript-eslint/no-unused-vars
+   32:34   warning  'AvatarImage' is defined but never used            @typescript-eslint/no-unused-vars
+   39:5    warning  'DialogTrigger' is defined but never used          @typescript-eslint/no-unused-vars
+   46:10   warning  'format' is defined but never used                 @typescript-eslint/no-unused-vars
+   57:50   error    Unexpected any. Specify a different type           @typescript-eslint/no-explicit-any
+   70:21   warning  'id' is assigned a value but never used            @typescript-eslint/no-unused-vars
+   70:25   warning  'created_at' is assigned a value but never used    @typescript-eslint/no-unused-vars
+   70:37   warning  'updated_at' is assigned a value but never used    @typescript-eslint/no-unused-vars
+   70:49   warning  'institute_id' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  123:18   warning  'e' is defined but never used                      @typescript-eslint/no-unused-vars
+  164:32   error    Unexpected any. Specify a different type           @typescript-eslint/no-explicit-any
+  195:18   warning  'e' is defined but never used                      @typescript-eslint/no-unused-vars
+  347:119  error    Unexpected any. Specify a different type           @typescript-eslint/no-explicit-any
+
+F:\Adwelink\AMS\app\workspace\loading.tsx
+  2:10  warning  'Card' is defined but never used         @typescript-eslint/no-unused-vars
+  2:16  warning  'CardContent' is defined but never used  @typescript-eslint/no-unused-vars
+  2:29  warning  'CardHeader' is defined but never used   @typescript-eslint/no-unused-vars
+  2:41  warning  'CardTitle' is defined but never used    @typescript-eslint/no-unused-vars
+
+F:\Adwelink\AMS\app\workspace\page.tsx
+    4:38  warning  'ArrowUpRight' is defined but never used   @typescript-eslint/no-unused-vars
+    4:52  warning  'PlusCircle' is defined but never used     @typescript-eslint/no-unused-vars
+    4:80  warning  'GraduationCap' is defined but never used  @typescript-eslint/no-unused-vars
+   60:95  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+   74:95  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+   88:95  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+  102:95  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+  124:60  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+
+F:\Adwelink\AMS\app\workspace\students\actions.ts
+  42:62  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+F:\Adwelink\AMS\app\workspace\students\page.tsx
+   4:10  warning  'createClient' is defined but never used  @typescript-eslint/no-unused-vars
+   8:5   warning  'Card' is defined but never used          @typescript-eslint/no-unused-vars
+   9:5   warning  'CardContent' is defined but never used   @typescript-eslint/no-unused-vars
+  10:5   warning  'CardHeader' is defined but never used    @typescript-eslint/no-unused-vars
+  11:5   warning  'CardTitle' is defined but never used     @typescript-eslint/no-unused-vars
+  13:25  warning  'Phone' is defined but never used         @typescript-eslint/no-unused-vars
+  25:52  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  28:66  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  30:52  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  60:34  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+Γ£û 130 problems (44 errors, 86 warnings)
+

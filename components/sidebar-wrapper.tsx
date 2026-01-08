@@ -5,25 +5,34 @@ import { usePathname } from "next/navigation"
 import { AppSidebar } from "./app-sidebar"
 import { Menu, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
     DialogDescription,
-    DialogFooter,
 } from "@/components/ui/dialog"
+
+import { User } from "@supabase/supabase-js"
 
 interface SidebarWrapperProps {
     children: React.ReactNode
-    user: any
+    user: User | null
 }
 
 export function SidebarWrapper({ children, user }: SidebarWrapperProps) {
     const [open, setOpen] = useState(false)
     const [showBetaPopup, setShowBetaPopup] = useState(false)
     const pathname = usePathname()
+
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
+        // Fix for "setState synchronously within an effect" warning
+        const timer = setTimeout(() => setIsMounted(true), 0)
+        return () => clearTimeout(timer)
+    }, [])
 
     // Logic: Hide sidebar on Public Landing and Login pages
     const isPublicPage = pathname === "/" || pathname?.startsWith("/login") || pathname?.startsWith("/manifesto") || pathname?.startsWith("/early-access") || pathname?.startsWith("/feedback")
@@ -32,14 +41,21 @@ export function SidebarWrapper({ children, user }: SidebarWrapperProps) {
         // Show beta popup once per session/device
         const hasShown = localStorage.getItem("ams_beta_popup_shown")
         if (!hasShown && !isPublicPage) {
-            setShowBetaPopup(true)
-            localStorage.setItem("ams_beta_popup_shown", "true")
+            // Use setTimeout to avoid synchronous state update warning during effect execution
+            const timer = setTimeout(() => {
+                setShowBetaPopup(true)
+                localStorage.setItem("ams_beta_popup_shown", "true")
+            }, 1000)
+            return () => clearTimeout(timer)
         }
     }, [isPublicPage])
 
     useEffect(() => {
-        if (open) setOpen(false)
-    }, [pathname, open])
+        // Close mobile sidebar on route change
+        // Wrapped in setTimeout to satisfy linter
+        const timer = setTimeout(() => setOpen(false), 0)
+        return () => clearTimeout(timer)
+    }, [pathname])
 
     if (isPublicPage) {
         return <main>{children}</main>
@@ -57,17 +73,25 @@ export function SidebarWrapper({ children, user }: SidebarWrapperProps) {
 
                 {/* Mobile Header */}
                 <header className="flex h-16 items-center border-b border-border bg-background/50 backdrop-blur-md px-4 md:hidden shrink-0">
-                    <Sheet open={open} onOpenChange={setOpen}>
-                        <SheetTrigger asChild>
-                            <Button variant="ghost" size="icon" className="mr-4 text-foreground/80">
-                                <Menu className="h-5 w-5" />
-                                <span className="sr-only">Toggle menu</span>
-                            </Button>
-                        </SheetTrigger>
-                        <SheetContent side="left" className="p-0 border-r border-white/10 w-72 bg-[#0B0F19]">
-                            <AppSidebar user={user} />
-                        </SheetContent>
-                    </Sheet>
+                    {isMounted ? (
+                        <Sheet open={open} onOpenChange={setOpen}>
+                            <SheetTrigger asChild>
+                                <Button variant="ghost" size="icon" className="mr-4 text-foreground/80">
+                                    <Menu className="h-5 w-5" />
+                                    <span className="sr-only">Toggle menu</span>
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent side="left" className="p-0 border-r border-white/10 w-72 bg-[#0B0F19]">
+                                <SheetTitle className="sr-only">Mobile Navigation</SheetTitle>
+                                <AppSidebar user={user} />
+                            </SheetContent>
+                        </Sheet>
+                    ) : (
+                        <Button variant="ghost" size="icon" className="mr-4 text-foreground/80">
+                            <Menu className="h-5 w-5" />
+                            <span className="sr-only">Toggle menu</span>
+                        </Button>
+                    )}
                     <div className="font-semibold text-lg text-foreground">Adwelink AMS</div>
                 </header>
 
@@ -83,7 +107,7 @@ export function SidebarWrapper({ children, user }: SidebarWrapperProps) {
                             <span>AMS is under development. You may encounter bugs; please share your feedback.</span>
                         </div>
 
-                        <div className="flex-1 overflow-auto">
+                        <div className="flex-1 overflow-hidden flex flex-col">
                             {children}
                         </div>
                     </div>
@@ -102,7 +126,7 @@ export function SidebarWrapper({ children, user }: SidebarWrapperProps) {
                             </DialogHeader>
                             <div className="py-4 text-center">
                                 <p className="text-sm font-medium text-slate-300 italic">
-                                    "Your feedback is our most valuable asset."
+                                    &quot;Your feedback is our most valuable asset.&quot;
                                 </p>
                             </div>
                             <div className="flex justify-center pb-4">

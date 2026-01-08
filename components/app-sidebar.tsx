@@ -12,36 +12,26 @@ import {
     GraduationCap,
     Wallet,
     CreditCard,
-    UserPlus,
-    ShieldCheck,
-    ChevronDown,
     LogOut,
     Sparkles,
     Store,
-    BookOpen
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { createClient } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import Image from "next/image"
 
+import { User } from "@supabase/supabase-js"
+
 interface SidebarProps extends React.ComponentProps<"div"> {
-    user: any
+    user: User | null
 }
 
-export function AppSidebar({ className, user, ...props }: SidebarProps) {
+export function AppSidebar({ className, user }: SidebarProps) {
     const pathname = usePathname()
     const router = useRouter()
     const [activeAgent, setActiveAgent] = React.useState("Aditi")
@@ -60,10 +50,8 @@ export function AppSidebar({ className, user, ...props }: SidebarProps) {
         }
     }, [])
 
-    const handleAgentSwitch = (agentName: string) => {
-        setActiveAgent(agentName)
-        document.cookie = `activeAgent=${agentName}; path=/; max-age=604800`
-    }
+    // Agent Switcher logic removed as per request
+
 
     // --- LOGIC: SEPARATE MENUS FOR INSTITUTE VS AGENT ---
     // If we are at root OR any Institute Page, we are in "Institute Mode".
@@ -73,7 +61,16 @@ export function AppSidebar({ className, user, ...props }: SidebarProps) {
         pathname.startsWith("/settings") ||
         pathname === "/";
 
-    const instituteRoutes = [
+    interface Route {
+        label: string
+        icon: React.ElementType
+        href: string
+        color: string
+        title?: string
+        isLive?: boolean
+    }
+
+    const instituteRoutes: Route[] = [
         {
             label: "Home",
             icon: BrainCircuit,
@@ -93,6 +90,12 @@ export function AppSidebar({ className, user, ...props }: SidebarProps) {
             color: "text-slate-400",
         },
         {
+            label: "Billing",
+            icon: CreditCard,
+            href: "/billing",
+            color: "text-emerald-400",
+        },
+        {
             label: "Feedback",
             icon: MessageSquare,
             href: "/feedback",
@@ -100,7 +103,7 @@ export function AppSidebar({ className, user, ...props }: SidebarProps) {
         }
     ]
 
-    const agentRoutes = [
+    const agentRoutes: Route[] = [
         {
             label: "Workspace",
             icon: LayoutDashboard,
@@ -157,18 +160,24 @@ export function AppSidebar({ className, user, ...props }: SidebarProps) {
             href: "/workspace/brain",
             color: "text-orange-500",
             title: "Brain"
+        },
+        {
+            label: "Give Feedback",
+            icon: MessageSquare,
+            href: "/feedback",
+            color: "text-rose-400",
         }
     ]
 
     // Define which agent routes are visible for each agent type
     const agentCapabilities: Record<string, string[]> = {
-        "Aditi": ["Dashboard", "Leads", "Feed", "Catalog", "Students"],
-        "Rahul Sir": ["Dashboard", "Training", "Brain", "Catalog"],
+        "Aditi": ["Dashboard", "Leads", "Feed", "Catalog"],
+        "Rahul Sir": ["Dashboard", "Training", "Catalog"],
         "Munim Ji": ["Dashboard", "Fees"]
     }
 
     // Select the correct list based on mode
-    let displayRoutes = []
+    let displayRoutes: Route[] = []
 
     if (isInstituteMode) {
         displayRoutes = instituteRoutes
@@ -186,13 +195,13 @@ export function AppSidebar({ className, user, ...props }: SidebarProps) {
 
             {/* 1. Sidebar Header */}
             <div className="px-6 py-6 border-b border-white/5">
-                <Link href="/home" className="flex items-center pl-2 mb-6" title="Back to AMS Headquarters">
-                    <div className="relative h-8 w-32 mr-2">
+                <Link href="/home" className="flex items-center justify-center mb-6" title="Back to AMS Headquarters">
+                    <div className="relative h-12 w-48">
                         <Image
                             src="/branding/adwelink.svg"
                             alt="Logo"
                             fill
-                            className="object-contain object-left"
+                            className="object-contain object-center"
                         />
                     </div>
                 </Link>
@@ -222,7 +231,7 @@ export function AppSidebar({ className, user, ...props }: SidebarProps) {
                             <div className="flex items-center flex-1">
                                 <route.icon className={cn("h-5 w-5 mr-3", route.color)} />
                                 <span className="text-sm font-medium group-hover:text-white transition-colors">{route.label}</span>
-                                {(route as any).isLive && (
+                                {route.isLive && (
                                     <span className="ml-auto inline-flex h-2 w-2 animate-pulse rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>
                                 )}
                             </div>

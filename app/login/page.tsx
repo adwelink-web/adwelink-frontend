@@ -1,31 +1,34 @@
 "use client"
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import { createClient } from "@/lib/supabase"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardHeader, CardContent, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
+import { Card, CardHeader, CardContent, CardDescription, CardFooter } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Loader2, Sparkles } from "lucide-react"
 import { useEffect } from "react"
 import Image from "next/image"
 
 export default function LoginPage() {
+    return (
+        <Suspense fallback={<div className="h-screen w-full bg-[#0B0F19] flex items-center justify-center text-white">Loading...</div>}>
+            <LoginForm />
+        </Suspense>
+    )
+}
+
+function LoginForm() {
     const router = useRouter()
     const searchParams = useSearchParams()
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
+
+    // Handle Demo Mode (Initialize State Directly)
+    const isDemo = searchParams.get("demo") === "sharma"
+
+    const [email, setEmail] = useState(isDemo ? "sharma.demo@gmail.com" : "")
+    const [password, setPassword] = useState(isDemo ? "sharma123" : "")
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
-
-    // Handle Demo Mode
-    useEffect(() => {
-        const demo = searchParams.get("demo")
-        if (demo === "sharma") {
-            setEmail("sharma.demo@gmail.com")
-            setPassword("sharma123")
-        }
-    }, [searchParams])
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()

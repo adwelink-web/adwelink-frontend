@@ -41,16 +41,31 @@ export async function POST(request: Request) {
 
             console.log(`Status Update: ${newStatus} for ID: ${metaId}`)
 
-            // Update DB
-            const { error } = await supabase
+            // Update DB (Simple update, assumes columns added via SQL Editor)
+            let { error } = await supabase
                 .from('ai_chat_history')
-                .update({
-                    status: newStatus,
-                    updated_at: new Date(parseInt(timestamp) * 1000).toISOString()
-                })
+                .update({ status: newStatus })
                 .eq('whatsapp_message_id', metaId)
 
-            if (error) console.error("DB Update Error:", error)
+            if (error) {
+                console.error("Webhook DB Update Error (by whatsapp_message_id):", error)
+                // Fallback: Try updating by sessionId if whatsapp_message_id is not yet indexed or available
+                // This assumes 'from' in the message object corresponds to a sessionId in ai_chat_history
+                const sessionId = value.messages?.[0]?.from || value.contacts?.[0]?.wa_id;
+                if (sessionId) {
+                    console.log(`Attempting fallback update for sessionId: ${sessionId}`);
+                    ({ error } = await supabase
+                        .from('ai_chat_history')
+                        .update({ status: newStatus })
+                        .eq('session_id', sessionId)
+                        .order('created_at', { ascending: false }) // Update the most recent message for this session
+                        .limit(1)
+                        .single()); // Ensure only one record is updated
+                    if (error) {
+                        console.error("Webhook DB Update Error (by sessionId fallback):", error);
+                    }
+                }
+            }
         }
 
         // B. Handle Incoming Messages (Optional: If not handled by n8n)

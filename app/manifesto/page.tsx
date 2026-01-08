@@ -47,7 +47,7 @@ export default function ManifestoPage() {
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-500">Humanoids, not Bots.</span>
                         </h1>
                         <p className="text-lg md:text-xl text-slate-400 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
-                            The "Chatbot Era" failed us. Institutes need empathy, not scripts. They need memory, not sessions. They need an Employee.
+                            The &quot;Chatbot Era&quot; failed us. Institutes need empathy, not scripts. They need memory, not sessions. They need an Employee.
                         </p>
                     </div>
 
@@ -126,7 +126,7 @@ export default function ManifestoPage() {
                                     <div className="h-6 w-px bg-red-500/20 mx-2" />
                                     <div>
                                         <strong className="block text-slate-400 text-sm mb-1">Robotic Tone</strong>
-                                        <p className="text-slate-600 text-xs">"Press 1 for Fees". Feels fake and cold.</p>
+                                        <p className="text-slate-600 text-xs">&quot;Press 1 for Fees&quot;. Feels fake and cold.</p>
                                     </div>
                                 </li>
                                 <li className="flex gap-4">
@@ -164,7 +164,7 @@ export default function ManifestoPage() {
                                     <div className="h-6 w-px bg-cyan-500 mx-1 shadow-[0_0_10px_cyan]" />
                                     <div>
                                         <strong className="block text-white text-[13px] mb-1">Emotional Intelligence</strong>
-                                        <p className="text-slate-400 text-[11px] leading-relaxed">Uses "Hinglish", empathy, and slang. Connects.</p>
+                                        <p className="text-slate-400 text-[11px] leading-relaxed">Uses &quot;Hinglish&quot;, empathy, and slang. Connects.</p>
                                     </div>
                                 </li>
                                 <li className="flex gap-4">
@@ -183,7 +183,7 @@ export default function ManifestoPage() {
                 <div className="border-t border-white/10 pt-16 md:pt-20">
                     <Quote className="h-8 w-8 text-cyan-500 mb-6 opacity-50" />
                     <p className="text-xl md:text-3xl text-white font-light leading-snug mb-8">
-                        "We didn't just want to build software. We wanted to build a colleague. Someone who cares about your admissions as much as you do."
+                        &quot;We didn&apos;t just want to build software. We wanted to build a colleague. Someone who cares about your admissions as much as you do.&quot;
                     </p>
                     <div className="flex items-center gap-4">
                         <div className="h-12 w-12 bg-white rounded-full overflow-hidden relative">

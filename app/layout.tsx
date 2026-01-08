@@ -1,6 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "sonner/dist/styles.css";
 import { SidebarWrapper } from "@/components/sidebar-wrapper"
+import { Toaster } from "@/components/ui/sonner"
 import { createServerClient } from "@/lib/supabase-server"
 
 const geistSans = Geist({
@@ -32,8 +34,18 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createServerClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  // CTO SHOCK ABSORBER: Wrap Auth in Try/Catch
+  // This prevents the entire app from crashing (White Screen) if Supabase connection fails.
+  let user = null
+  try {
+    const supabase = await createServerClient()
+    const { data } = await supabase.auth.getUser()
+    user = data.user
+  } catch (error) {
+    console.error("CRITICAL: Root Layout Auth Failed. Rendering Public View.", error)
+    // We proceed with user = null, allowing the app to render in "Guest Mode"
+    // instead of crashing completely.
+  }
 
   return (
     <html lang="en">
@@ -43,6 +55,7 @@ export default async function RootLayout({
         <SidebarWrapper user={user}>
           {children}
         </SidebarWrapper>
+        <Toaster />
       </body>
     </html>
   );

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { BrainCircuit, GraduationCap, Wallet, ShieldCheck } from "lucide-react"
+import { HireAgentButton } from "@/components/market/hire-agent-button"
 
 export default function AgentMarketPage() {
     // REAL BUSINESS DATA
@@ -42,7 +43,7 @@ export default function AgentMarketPage() {
     ]
 
     return (
-        <div className="h-[calc(100vh-40px)] w-full overflow-hidden flex flex-col">
+        <div className="h-full w-full overflow-hidden flex flex-col">
             <div className="flex-1 flex flex-col w-full max-w-7xl mx-auto p-4 md:p-8 min-h-0">
                 {/* Header (Frozen) */}
                 <div className="flex-none flex items-center justify-between mb-8">
@@ -53,7 +54,7 @@ export default function AgentMarketPage() {
                 </div>
 
                 {/* Content Area (Scrollable) */}
-                <div className="flex-1 overflow-y-auto custom-scrollbar min-h-0 pr-2">
+                <div className="flex-1 overflow-y-auto custom-scrollbar min-h-0 pr-2 bg-transparent">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-10">
                         {availableAgents.map((agent) => {
                             if ((agent as any).comingSoon) {
@@ -94,9 +95,7 @@ export default function AgentMarketPage() {
                                                     Already Active
                                                 </Button>
                                             ) : (
-                                                <Button size="sm" className="bg-white text-black hover:bg-slate-200">
-                                                    Hire Now
-                                                </Button>
+                                                <HireAgentButton agentName={agent.name} price={agent.price} />
                                             )}
                                         </div>
                                     </CardContent>

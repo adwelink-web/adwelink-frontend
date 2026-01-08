@@ -14,7 +14,7 @@ export async function POST(request: Request) {
         }
 
         // Set is_ai_paused = false
-        const { data, error } = await supabase
+        const { error } = await supabase
             .from('conversation_states')
             .update({
                 is_ai_paused: false,
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
         return NextResponse.json({ success: true, message: 'AI Resumed' }, { status: 200 })
 
-    } catch (e) {
+    } catch {
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
     }
 }

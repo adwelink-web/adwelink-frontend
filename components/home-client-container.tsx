@@ -3,153 +3,244 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Activity, BrainCircuit, CalendarDays, CheckCircle2, Users, Wallet } from "lucide-react"
+import { Activity, BrainCircuit, Users, Sparkles, TrendingUp, Zap, IndianRupee, ShieldCheck } from "lucide-react"
+
+interface ActivityItem {
+    type: string
+    text: string
+    time: string
+    created_at?: string
+    sentiment?: string
+    intent?: string
+    phone_number?: string
+}
+
+interface HomeStats {
+    leads?: { value: string | number; change?: string }
+    revenue?: { value: string; raw: number }
+    activityFeed?: ActivityItem[]
+    userName?: string
+    businessName?: string
+    students?: { value: string | number; change?: string }
+}
 
 interface HomeClientContainerProps {
-    stats: any
+    stats: HomeStats
     initialDate: string
 }
 
 export function HomeClientContainer({ stats, initialDate }: HomeClientContainerProps) {
     const router = useRouter()
     const [loading, setLoading] = useState<string | null>(null)
-    const [currentDate, setCurrentDate] = useState<string>(initialDate)
+    const [currentTime, setCurrentTime] = useState<string>("")
+    const [dateString, setDateString] = useState<string>(initialDate)
 
     useEffect(() => {
-        // Update date on client mount to match locale if needed
-        const now = new Date()
-        const options: Intl.DateTimeFormatOptions = { weekday: 'long', month: 'short', day: 'numeric' }
-        setCurrentDate(now.toLocaleDateString('en-US', options))
+        const updateTime = () => {
+            const now = new Date()
+            setCurrentTime(now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }))
+            setDateString(now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }))
+        }
+        updateTime()
+        const timer = setInterval(updateTime, 1000)
+        return () => clearInterval(timer)
     }, [])
 
     const handleSelect = () => {
         setLoading("Aditi")
         document.cookie = `activeAgent=Aditi; path=/; max-age=604800`
-        setTimeout(() => {
-            router.push("/workspace")
-        }, 800)
+        // Force hard navigation to bypass router hang
+        window.location.href = "/workspace"
     }
-
-    const metrics = stats ? [
-        { label: "Total Leads", value: stats.leads.value, change: stats.leads.change, icon: Users, color: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20" },
-        { label: "Total Students", value: stats.students.value, change: stats.students.change, icon: CheckCircle2, color: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20" },
-    ] : []
 
     const liveActivity = stats?.activityFeed || []
 
     return (
-        <div className="h-[calc(100vh-40px)] w-full overflow-hidden flex flex-col">
-            <div className="flex-1 flex flex-col w-full max-w-7xl mx-auto p-4 md:p-6 min-h-0 overflow-hidden">
-                {/* 1. Header & Welcome (Frozen) */}
-                <div className="flex-none flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-10">
+        <div className="h-full w-full bg-[#030712] relative overflow-hidden flex flex-col font-sans selection:bg-violet-500/30">
+
+            {/* 🌌 Background VFX */}
+            <div className="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-violet-900/20 via-[#030712] to-[#030712] pointer-events-none" />
+            <div className="absolute -top-[200px] left-[20%] w-[600px] h-[600px] bg-violet-600/10 blur-[150px] rounded-full pointer-events-none" />
+
+            {/* Grid Overlay */}
+            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none mix-blend-overlay"></div>
+
+            {/* 🚀 COMPACT ONE-SCREEN INTERFACE */}
+            <div className="relative z-10 flex-1 flex flex-col p-4 lg:p-6 h-full max-w-[1600px] mx-auto w-full min-h-0">
+
+                {/* COMPACT HEADER */}
+                <header className="flex justify-between items-end mb-4 shrink-0">
                     <div>
-                        <h1 className="text-3xl font-bold text-white tracking-tight">AMS Control Center</h1>
-                        <p className="text-slate-400 flex items-center gap-2 mt-1">
-                            <CalendarDays className="h-4 w-4 opacity-70" />
-                            {currentDate || "Loading Date..."} • <span className="text-emerald-400">System Connected</span>
-                        </p>
+                        <div className="flex items-center gap-2 mb-0.5">
+                            <div className="h-1.5 w-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_#10b981]"></div>
+                            <span className="text-[9px] font-bold tracking-[0.2em] text-emerald-500 uppercase">System Online</span>
+                        </div>
+                        <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+                            Dashboard <span className="text-violet-600">Prime</span>
+                        </h1>
                     </div>
-                    <div className="flex gap-2">
-                        <Button variant="outline" className="border-white/10 text-slate-300 hover:text-white bg-transparent hover:bg-white/5">View Reports</Button>
-                        <Button className="bg-white text-black hover:bg-slate-200 font-semibold" onClick={handleSelect}>Open Aditi's Workspace</Button>
-                    </div>
-                </div>
 
-                {/* 2. Content Area (No Scroll) */}
-                <div className="flex-1 overflow-hidden min-h-0 space-y-4">
-                    {/* Metrics (2 Column Layout) */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {metrics.map((m, i) => (
-                            <Card key={i} className={`bg-white/5 border-white/5 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${m.border} group`}>
-                                <CardContent className="p-6 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <div className="text-right hidden sm:block">
+                            <div className="text-lg font-bold text-white tabular-nums tracking-tight leading-none">{currentTime}</div>
+                            <div className="text-[10px] font-medium text-slate-500 uppercase tracking-widest">{dateString}</div>
+                        </div>
+                    </div>
+                </header>
+
+                {/* MAIN CONTENT GRID - FLEX 1 TO FILL SPACE */}
+                <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 min-h-0 overflow-hidden">
+
+                    {/* COL 1: Neural Core (Aditi) - Compact */}
+                    <div className="lg:col-span-4 flex flex-col h-full min-h-0">
+                        <div className="flex-1 bg-gradient-to-b from-white/[0.03] to-transparent border border-white/10 rounded-2xl p-1 relative overflow-hidden group flex flex-col min-h-0">
+                            <div className="absolute inset-0 bg-violet-600/5 group-hover:bg-violet-600/10 transition-colors"></div>
+
+                            {/* Inner Glass */}
+                            <div className="h-full w-full bg-[#05060A]/80 backdrop-blur-xl rounded-xl border border-white/5 p-5 flex flex-col relative overflow-hidden min-h-0">
+
+                                {/* Header */}
+                                <div className="flex justify-between items-start z-10 shrink-0">
                                     <div>
-                                        <p className="text-sm text-slate-400 font-medium mb-1 group-hover:text-slate-300 transition-colors">{m.label}</p>
-                                        <h3 className="text-2xl font-bold text-white tracking-tight">{m.value}</h3>
-                                        <span className={`text-xs font-medium ${m.change.startsWith('+') ? 'text-emerald-400' : 'text-rose-400'}`}>
-                                            {m.change} <span className="text-slate-500 opacity-60 ml-1">vs last month</span>
-                                        </span>
+                                        <h2 className="text-xl font-bold text-white leading-none">Aditi</h2>
+                                        <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-1">AI Counselor</p>
                                     </div>
-                                    <div className={`p-3 rounded-xl ${m.bg} ${m.color} ring-1 ring-inset ring-white/10`}>
-                                        <m.icon className="h-5 w-5" />
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                        {/* 3. Live Institute Pulse (Activity Feed) */}
-                        <Card className="bg-white/5 border-white/10 lg:col-span-2 shadow-xl backdrop-blur-sm">
-                            <CardHeader className="border-b border-white/5 pb-4">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <CardTitle className="flex items-center gap-2 text-white text-lg">
-                                            <Activity className="h-5 w-5 text-indigo-400" /> Live Institute Pulse
-                                        </CardTitle>
-                                        <CardDescription className="mt-1">Real-time actions performing by your AI employees.</CardDescription>
-                                    </div>
-                                    <div className="flex gap-1">
-                                        <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                                        <span className="text-[10px] uppercase text-emerald-500 font-bold tracking-wider">Live</span>
+                                    <div className="px-2 py-0.5 rounded border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-[9px] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                                        <Zap className="h-2.5 w-2.5 fill-current" /> Active
                                     </div>
                                 </div>
-                            </CardHeader>
-                            <CardContent className="pt-4">
-                                <div className="h-[280px] overflow-y-auto custom-scrollbar pr-2">
-                                    <div className="space-y-4 relative">
-                                        {/* Vertical Line */}
-                                        <div className="absolute left-[39px] top-2 bottom-2 w-[1px] bg-gradient-to-b from-white/10 via-white/5 to-transparent"></div>
 
-                                        {liveActivity.map((item: any, i: number) => (
-                                            <div key={i} className="flex gap-4 items-start group relative z-10">
-                                                <div className="flex flex-col items-end gap-1 min-w-[70px] pt-1">
-                                                    <span className="text-xs text-slate-500 font-mono group-hover:text-slate-300 transition-colors">{item.time}</span>
-                                                </div>
-                                                <div className={`h-2 w-2 mt-2 rounded-full ring-4 ring-[#0a0a0a] ${i === 0 ? 'bg-indigo-400 animate-ping' : 'bg-slate-700'}`}></div>
-                                                <div className="bg-white/5 p-3 rounded-lg w-full border border-white/5 text-sm text-slate-300 hover:bg-white/10 transition-colors hover:border-white/10">
-                                                    {item.text}
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* 4. Active Agent Snapshot */}
-                        <div className="space-y-6">
-                            <Card className="bg-white/5 border-white/10 relative overflow-hidden group hover:border-purple-500/30 transition-all">
-                                <div className="absolute top-0 left-0 w-1 h-full bg-purple-500 group-hover:w-1.5 transition-all"></div>
-                                <div className="absolute -right-10 -bottom-10 h-32 w-32 bg-purple-500/20 blur-[50px] rounded-full group-hover:bg-purple-500/30 transition-all pointer-events-none"></div>
-
-                                <CardHeader className="pb-2">
-                                    <CardTitle className="text-white text-lg flex justify-between items-center">
-                                        Active Workforce
-                                        <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20 uppercase tracking-wide">
-                                            Running
-                                        </span>
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent className="pt-4 relative z-10">
-                                    <div className="h-[280px] overflow-y-auto custom-scrollbar pr-2">
-                                        <div className="flex items-center gap-4 mb-6">
-                                            <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-900/20 flex items-center justify-center text-purple-400 shadow-inner ring-1 ring-white/10">
-                                                <BrainCircuit className="h-7 w-7" />
-                                            </div>
-                                            <div>
-                                                <h4 className="text-white font-semibold text-lg">Aditi</h4>
-                                                <p className="text-xs text-purple-300 font-medium">Senior Counselor</p>
-                                                <p className="text-[10px] text-slate-500 mt-0.5">Automating Sales</p>
+                                {/* Main Visual - Flex grows to fill space */}
+                                <div className="flex-1 relative flex items-center justify-center min-h-0 py-2">
+                                    <div className="relative h-32 w-32 lg:h-40 lg:w-40 group-hover:scale-105 transition-transform duration-500">
+                                        <div className="absolute inset-0 bg-violet-500 blur-[50px] opacity-20 animate-pulse"></div>
+                                        {/* Rings */}
+                                        <div className="absolute inset-0 border border-violet-500/30 rounded-full animate-[spin_10s_linear_infinite]" />
+                                        <div className="absolute inset-3 border border-violet-400/20 rounded-full animate-[spin_15s_linear_infinite_reverse]" />
+                                        {/* Icon */}
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <div className="h-20 w-20 bg-[#0B0F19] rounded-full border border-violet-500/50 flex items-center justify-center shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                                                <BrainCircuit className="h-10 w-10 text-violet-400" />
                                             </div>
                                         </div>
-                                        <Button onClick={handleSelect} className="w-full bg-white text-black hover:bg-indigo-50 font-semibold shadow-lg hover:shadow-indigo-500/20 transition-all py-5">
-                                            {loading === "Aditi" ? "Connecting..." : "Go to Workspace"}
-                                        </Button>
                                     </div>
-                                </CardContent>
-                            </Card>
+                                </div>
+
+                                {/* Footer Stats & Action */}
+                                <div className="w-full z-10 shrink-0 space-y-3">
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="bg-white/5 rounded-lg p-3 border border-white/5 hover:border-violet-500/30 transition-colors">
+                                            <div className="text-[9px] text-slate-400 uppercase tracking-wider mb-0.5">Efficiency</div>
+                                            <div className="text-lg font-bold text-white leading-none">98%</div>
+                                        </div>
+                                        <div className="bg-white/5 rounded-lg p-3 border border-white/5 hover:border-violet-500/30 transition-colors">
+                                            <div className="text-[9px] text-slate-400 uppercase tracking-wider mb-0.5">Latency</div>
+                                            <div className="text-lg font-bold text-emerald-400 leading-none">1.2s</div>
+                                        </div>
+                                    </div>
+
+                                    <Button
+                                        onClick={handleSelect}
+                                        onMouseEnter={() => router.prefetch("/workspace")}
+                                        disabled={loading === "Aditi"}
+                                        className="w-full h-10 bg-white text-black hover:bg-violet-50 font-bold text-xs uppercase tracking-widest shadow-lg active:scale-95 rounded-lg disabled:opacity-70 disabled:cursor-not-allowed"
+                                    >
+                                        {loading === "Aditi" ? (
+                                            <span className="flex items-center gap-2">
+                                                <Activity className="h-4 w-4 animate-spin text-violet-600" />
+                                                INITIALIZING...
+                                            </span>
+                                        ) : (
+                                            "Access Workspace"
+                                        )}
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* COL 2: Metrics & Feed - 8 Cols */}
+                    <div className="lg:col-span-8 flex flex-col gap-4 h-full min-h-0">
+
+                        {/* 1. Compact HUD Strip */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 h-[120px] shrink-0">
+                            {/* Card 1: Leads */}
+                            <div
+                                onClick={() => router.push('/workspace/leads')}
+                                className="bg-[#0B0F19]/50 backdrop-blur-md border border-white/10 rounded-xl p-4 flex flex-col justify-between hover:bg-[#0B0F19]/80 transition-colors cursor-pointer group relative overflow-hidden"
+                            >
+                                <div className="absolute right-0 top-0 p-16 bg-violet-600/10 blur-[60px] rounded-full pointer-events-none"></div>
+                                <div className="flex justify-between items-start z-10">
+                                    <div className="p-2 bg-violet-500/10 rounded-md border border-violet-500/20 text-violet-400">
+                                        <Users className="h-4 w-4" />
+                                    </div>
+                                    <TrendingUp className="h-3 w-3 text-emerald-500" />
+                                </div>
+                                <div className="z-10">
+                                    <div className="text-3xl font-black text-white tracking-tighter">{stats?.leads?.value || 0}</div>
+                                    <div className="text-[10px] font-medium text-slate-400 uppercase tracking-wide">Total Leads</div>
+                                </div>
+                            </div>
+
+                            {/* Card 2: Revenue Unlocked (ROI) - REAL DATA FIX */}
+                            <div
+                                onClick={() => router.push('/report/revenue')}
+                                className="bg-[#0B0F19]/50 backdrop-blur-md border border-white/10 rounded-xl p-4 flex flex-col justify-between hover:bg-[#0B0F19]/80 transition-colors cursor-pointer group relative overflow-hidden"
+                            >
+                                <div className="absolute right-0 top-0 p-16 bg-emerald-600/10 blur-[60px] rounded-full pointer-events-none group-hover:bg-emerald-600/20 transition-all"></div>
+                                <div className="flex justify-between items-start z-10">
+                                    <div className="p-2 bg-emerald-500/10 rounded-md border border-emerald-500/20 text-emerald-400">
+                                        <IndianRupee className="h-4 w-4" />
+                                    </div>
+                                    <Sparkles className="h-3 w-3 text-amber-400 animate-pulse" />
+                                </div>
+                                <div className="z-10">
+                                    <div className="text-3xl font-black text-white tracking-tighter flex items-center gap-1">
+                                        <span className="text-2xl text-slate-500 font-bold">₹</span>
+                                        {stats?.revenue?.value || "0"}
+                                    </div>
+                                    <div className="text-[10px] font-medium text-emerald-400 uppercase tracking-wide flex items-center gap-1.5">
+                                        Revenue Unlocked
+                                        <span className="bg-emerald-500/20 text-emerald-300 px-1 rounded text-[8px] border border-emerald-500/20">ROI</span>
+                                    </div>
+                                    <p className="text-[9px] text-slate-500 mt-0.5">from dead leads revived</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* 2. Terminal Log - Fills Remaining Space */}
+                        <div className="flex-1 bg-[#05060A] border border-white/10 rounded-2xl overflow-hidden flex flex-col relative min-h-0">
+                            <div className="bg-[#0B0F19] border-b border-white/5 py-2 px-4 flex items-center justify-between shrink-0">
+                                <span className="text-[10px] font-mono text-slate-400 flex items-center gap-2">
+                                    <ShieldCheck className="h-3 w-3 text-emerald-500" />
+                                    SECURE_LOG_V2.0
+                                </span>
+                                <div className="flex gap-1">
+                                    <div className="h-1.5 w-1.5 rounded-full bg-slate-700"></div>
+                                    <div className="h-1.5 w-1.5 rounded-full bg-slate-700"></div>
+                                </div>
+                            </div>
+
+                            <div className="flex-1 overflow-auto custom-scrollbar p-4 font-mono text-xs relative">
+                                <div className="absolute left-6 top-0 bottom-0 w-[1px] bg-white/5 border-r border-dashed border-white/5"></div>
+                                <div className="space-y-3">
+                                    {liveActivity.map((item: ActivityItem, i: number) => (
+                                        <div key={i} className={`flex items-start gap-3 ${i === 0 ? 'text-white' : 'text-slate-500'}`}>
+                                            <div className="min-w-[50px] text-[9px] pt-0.5 opacity-70 tabular-nums text-right">{item.time}</div>
+                                            <div className={`mt-1.5 h-1 w-1 rounded-full shrink-0 z-10 ${i === 0 ? 'bg-emerald-500 animate-pulse' : 'bg-slate-700'}`} />
+                                            <div className="flex-1 break-words leading-relaxed">
+                                                <span className={`${i === 0 ? 'text-emerald-400' : 'text-slate-600'} mr-1.5`}>➜</span>
+                                                {item.text}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="bg-[#0B0F19] border-t border-white/5 py-1.5 px-4 flex justify-between items-center text-[9px] text-slate-500 uppercase tracking-wider font-medium shrink-0">
+                                <span>Status: Active</span>
+                                <span className="text-emerald-500">● LIVE</span>
+                            </div>
                         </div>
 
                     </div>

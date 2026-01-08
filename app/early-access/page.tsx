@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ArrowLeft, Lock, Mail, Phone, Ticket, AlertCircle, ChevronRight } from "lucide-react"
+import { ArrowLeft, Lock, Phone, Ticket, AlertCircle, ChevronRight } from "lucide-react"
 import {
     Dialog,
     DialogContent,
@@ -12,7 +12,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import Link from "next/link"
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { useRouter } from "next/navigation"
 
 export default function EarlyAccessPage() {
@@ -107,7 +107,7 @@ export default function EarlyAccessPage() {
                         <Dialog>
                             <DialogTrigger asChild>
                                 <Button variant="ghost" className="text-slate-500 hover:text-white hover:bg-white/5 text-xs uppercase tracking-widest transition-all">
-                                    <AlertCircle className="h-3 w-3 mr-2" /> Don't have a Key?
+                                    <AlertCircle className="h-3 w-3 mr-2" /> Don&apos;t have a Key?
                                 </Button>
                             </DialogTrigger>
                             <DialogContent className="bg-black/90 backdrop-blur-xl border border-white/10 text-white sm:max-w-md shadow-2xl rounded-[32px]">

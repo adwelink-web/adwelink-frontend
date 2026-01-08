@@ -63,8 +63,16 @@ export async function proxy(request: NextRequest) {
         }
     )
 
-    // Refresh Session
-    const { data: { user } } = await supabase.auth.getUser()
+    // 🚀 CTO PERFORMANCE OPTIMIZATION:
+    // Only call getUser() if we actually have some sort of Supabase session cookie.
+    // This avoids a network hop for every single guest/public page request.
+    const hasSessionCookie = request.cookies.getAll().some(c => c.name.startsWith('sb-'))
+
+    let user = null
+    if (hasSessionCookie) {
+        const { data } = await supabase.auth.getUser()
+        user = data.user
+    }
 
     // Handle legacy /dashboard redirect
     if (request.nextUrl.pathname === '/dashboard') {
@@ -84,8 +92,8 @@ export async function proxy(request: NextRequest) {
         }
     }
 
-    // Redirect Logged-In Users away from Login page
-    if (request.nextUrl.pathname.startsWith('/login')) {
+    // Redirect Logged-In Users away from Login or Landing page
+    if (request.nextUrl.pathname === '/' || request.nextUrl.pathname.startsWith('/login')) {
         if (user) {
             return NextResponse.redirect(new URL('/home', request.url))
         }

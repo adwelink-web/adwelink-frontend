@@ -37,7 +37,8 @@ async function seedSharmaClasses() {
         console.log("⚠️ User creation pending verification. You may need to manually confirm email via SQL.")
         // We can't proceed to insert linked data if we don't have the ID.
         // But let's try to verify via Login (sometimes works if email confirm is off)
-        const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+        // But let's try to verify via Login (sometimes works if email confirm is off)
+        const { data: loginData } = await supabase.auth.signInWithPassword({
             email,
             password
         })

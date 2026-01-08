@@ -1,8 +1,6 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { Database } from '../lib/database.types';
-import * as dotenv from 'dotenv';
-import path from 'path';
 
 // Load env from .env.local if present, otherwise rely on process env
 // In a real run, we might need to manually set these or ensure .env.local is loaded
