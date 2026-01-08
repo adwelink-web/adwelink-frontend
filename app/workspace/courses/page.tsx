@@ -97,7 +97,7 @@ export default function CoursesPage() {
             setCourses(courses.filter(c => c.id !== courseId))
         } catch (error) {
             console.error("Failed to delete course:", error)
-            const msg = (error as any)?.message || "Unknown error"
+            const msg = (error as { message: string })?.message || "Unknown error"
             // Show a more helpful error message
             if (msg.includes("fk") || msg.includes("violates foreign key constraint")) {
                 alert("Cannot delete this course because it is linked to active batches. Please delete or move the batches first.")
@@ -121,7 +121,12 @@ export default function CoursesPage() {
                 await updateCourse(selectedCourse.id, payload)
                 setCourses(courses.map(c => c.id === selectedCourse.id ? { ...c, ...payload } as Course : c))
             } else {
-                const response = await createCourse(payload)
+
+                if (!payload.name) {
+                    alert("Course name is required")
+                    return
+                }
+                const response = await createCourse(payload as any) // Type assertion safe due to validation
                 if (response.success && response.data) {
                     setCourses([...courses, response.data])
                 }

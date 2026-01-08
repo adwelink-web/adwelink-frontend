@@ -35,7 +35,7 @@ export function SidebarWrapper({ children, user }: SidebarWrapperProps) {
     }, [])
 
     // Logic: Hide sidebar on Public Landing and Login pages
-    const isPublicPage = pathname === "/" || pathname?.startsWith("/login") || pathname?.startsWith("/manifesto") || pathname?.startsWith("/early-access") || pathname?.startsWith("/feedback")
+    const isPublicPage = pathname === "/" || pathname?.startsWith("/login") || pathname?.startsWith("/manifesto") || pathname?.startsWith("/early-access") || pathname?.startsWith("/feedback") || pathname?.startsWith("/landing")
 
     useEffect(() => {
         // Show beta popup once per session/device
@@ -58,7 +58,7 @@ export function SidebarWrapper({ children, user }: SidebarWrapperProps) {
     }, [pathname])
 
     if (isPublicPage) {
-        return <main>{children}</main>
+        return <main id="public-scroll-container" className="h-screen w-full overflow-y-auto">{children}</main>
     }
 
     return (

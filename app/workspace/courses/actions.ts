@@ -4,6 +4,11 @@ import { createServerClient } from "@/lib/supabase-server"
 import { revalidatePath } from "next/cache"
 import { getAuthenticatedInstituteId } from "@/lib/auth-utils"
 
+interface CourseCreateData {
+    name: string
+    [key: string]: unknown
+}
+
 export async function getCourses() {
     const supabase = await createServerClient()
     const institute_id = await getAuthenticatedInstituteId(supabase)
@@ -21,7 +26,7 @@ export async function getCourses() {
     return data
 }
 
-export async function createCourse(data: any) {
+export async function createCourse(data: CourseCreateData) {
     const supabase = await createServerClient()
 
     // Resilient institute identification
@@ -45,7 +50,7 @@ export async function createCourse(data: any) {
     return { success: true, data: course }
 }
 
-export async function updateCourse(courseId: string, data: any) {
+export async function updateCourse(courseId: string, data: Record<string, unknown>) {
     const supabase = await createServerClient()
     const institute_id = await getAuthenticatedInstituteId(supabase)
 

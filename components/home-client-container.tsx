@@ -21,7 +21,6 @@ interface HomeStats {
     activityFeed?: ActivityItem[]
     userName?: string
     businessName?: string
-    students?: { value: string | number; change?: string }
 }
 
 interface HomeClientContainerProps {

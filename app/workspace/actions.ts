@@ -17,9 +17,9 @@ export async function getDashboardData() {
     const [
         totalLeadsResult,
         todayLeadsResult,
-        pendingFollowupsResult,
-        recentLeadsResult,
-        totalStudentsResult
+        hotLeadsResult,
+        convertedLeadsResult,
+        recentLeadsResult
     ] = await Promise.all([
         // Query 1: Total Leads
         supabase.from("leads").select("*", { count: "exact", head: true }).eq("institute_id", institute_id),
@@ -27,18 +27,18 @@ export async function getDashboardData() {
         // Query 2: Today's Leads
         supabase.from("leads").select("*", { count: "exact", head: true }).eq("institute_id", institute_id).gte("created_at", today),
 
-        // Query 3: Pending Follow-ups
-        supabase.from("leads").select("*", { count: "exact", head: true }).eq("institute_id", institute_id).ilike("status", "%follow%"),
+        // Query 3: Hot Leads (status contains 'hot')
+        supabase.from("leads").select("*", { count: "exact", head: true }).eq("institute_id", institute_id).ilike("status", "%hot%"),
 
-        // Query 4: Recent Leads
+        // Query 4: Visit Booked (status contains 'visit' or 'scheduled')
+        supabase.from("leads").select("*", { count: "exact", head: true }).eq("institute_id", institute_id).or("status.ilike.%visit%,status.ilike.%scheduled%"),
+
+        // Query 5: Recent Leads
         supabase.from("leads")
             .select("id, name, phone, status, created_at, interested_course, source, next_followup")
             .eq("institute_id", institute_id)
             .order("created_at", { ascending: false })
-            .limit(5),
-
-        // Query 5: Total Students
-        supabase.from("students").select("*", { count: "exact", head: true }).eq("institute_id", institute_id)
+            .limit(5)
     ])
     // PARALLEL EXECUTION END
 
@@ -47,8 +47,8 @@ export async function getDashboardData() {
         stats: {
             totalLeads: totalLeadsResult.count || 0,
             todayLeads: todayLeadsResult.count || 0,
-            pendingFollowups: pendingFollowupsResult.count || 0,
-            totalStudents: totalStudentsResult.count || 0,
+            hotLeads: hotLeadsResult.count || 0,
+            visitBooked: convertedLeadsResult.count || 0,
         },
         recentLeads: recentLeadsResult.data || []
     }

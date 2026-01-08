@@ -4,7 +4,12 @@ import { createServerClient } from "@/lib/supabase-server"
 import { revalidatePath } from "next/cache"
 import { getAuthenticatedInstituteId } from "@/lib/auth-utils"
 
-export async function updateLead(leadId: string, data: any) {
+interface LeadCreateData {
+    phone: string
+    [key: string]: unknown
+}
+
+export async function updateLead(leadId: string, data: Record<string, unknown>) {
     const supabase = await createServerClient()
     const institute_id = await getAuthenticatedInstituteId(supabase)
 
@@ -22,7 +27,7 @@ export async function updateLead(leadId: string, data: any) {
     return { success: true }
 }
 
-export async function createLead(data: any) {
+export async function createLead(data: LeadCreateData) {
     const supabase = await createServerClient()
 
     // Resilient identification

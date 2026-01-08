@@ -89,12 +89,13 @@ export function AppSidebar({ className, user }: SidebarProps) {
             href: "/settings",
             color: "text-slate-400",
         },
-        {
-            label: "Billing",
-            icon: CreditCard,
-            href: "/billing",
-            color: "text-emerald-400",
-        },
+        // Billing hidden until company registration & real integration
+        // {
+        //     label: "Billing",
+        //     icon: CreditCard,
+        //     href: "/billing",
+        //     color: "text-emerald-400",
+        // },
         {
             label: "Feedback",
             icon: MessageSquare,
@@ -126,41 +127,43 @@ export function AppSidebar({ className, user }: SidebarProps) {
             title: "Feed",
             isLive: true,
         },
-        {
-            label: "Students",
-            icon: GraduationCap,
-            href: "/workspace/students",
-            color: "text-emerald-500",
-            title: "Students"
-        },
-        {
-            label: "Academic Catalog",
-            icon: GraduationCap,
-            href: "/workspace/courses",
-            color: "text-orange-400",
-            title: "Catalog"
-        },
-        {
-            label: "Training",
-            icon: GraduationCap,
-            href: "/workspace/training",
-            color: "text-emerald-500",
-            title: "Training"
-        },
-        {
-            label: "Fees",
-            icon: Wallet,
-            href: "/workspace/fees",
-            color: "text-green-500",
-            title: "Fees"
-        },
-        {
-            label: "Agent Settings",
-            icon: Settings,
-            href: "/workspace/brain",
-            color: "text-orange-500",
-            title: "Brain"
-        },
+        // === INACTIVE ROUTES - Hidden for MVP ===
+        // {
+        //     label: "Students",
+        //     icon: GraduationCap,
+        //     href: "/workspace/students",
+        //     color: "text-emerald-500",
+        //     title: "Students"
+        // },
+        // {
+        //     label: "Academic Catalog",
+        //     icon: GraduationCap,
+        //     href: "/workspace/courses",
+        //     color: "text-orange-400",
+        //     title: "Catalog"
+        // },
+        // {
+        //     label: "Training",
+        //     icon: GraduationCap,
+        //     href: "/workspace/training",
+        //     color: "text-emerald-500",
+        //     title: "Training"
+        // },
+        // {
+        //     label: "Fees",
+        //     icon: Wallet,
+        //     href: "/workspace/fees",
+        //     color: "text-green-500",
+        //     title: "Fees"
+        // },
+        // {
+        //     label: "Agent Settings",
+        //     icon: Settings,
+        //     href: "/workspace/brain",
+        //     color: "text-orange-500",
+        //     title: "Brain"
+        // },
+        // === END INACTIVE ===
         {
             label: "Give Feedback",
             icon: MessageSquare,

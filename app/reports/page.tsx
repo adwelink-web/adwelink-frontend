@@ -43,22 +43,24 @@ export default function ReportsPage() {
                 <div className="pb-20 px-4 md:px-8 max-w-7xl mx-auto space-y-8">
                     {/* KPI Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {[
-                            { label: "Conversion Rate", value: "12.4%", icon: TrendingUp, color: "text-emerald-400" },
-                            { label: "AI Response Time", value: "< 2s", icon: BarChart3, color: "text-blue-400" },
-                            { label: "Cost Saved", value: "₹45,200", icon: LineChart, color: "text-purple-400" },
-                            { label: "Active Channels", value: "3", icon: Users, color: "text-amber-400" },
-                        ].map((kpi, i) => (
-                            <Card key={i} className="bg-gradient-to-br from-white/[0.03] to-transparent border-white/10 backdrop-blur-md shadow-xl rounded-2xl overflow-hidden border-violet-500/5 hover:border-violet-500/20 transition-all">
-                                <CardContent className="p-6">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">{kpi.label}</span>
-                                        <kpi.icon className={`h-4 w-4 ${kpi.color}`} />
-                                    </div>
-                                    <div className="text-2xl font-bold text-white">{kpi.value}</div>
-                                </CardContent>
-                            </Card>
-                        ))}
+                        {
+                            [
+                                { label: "Conversion Rate", value: "12.4%", icon: TrendingUp, color: "text-emerald-400" },
+                                { label: "AI Response Time", value: "< 2s", icon: BarChart3, color: "text-blue-400" },
+                                { label: "Cost Saved", value: "₹45,200", icon: LineChart, color: "text-purple-400" },
+                                { label: "Active Channels", value: "3", icon: Users, color: "text-amber-400" },
+                            ].map((kpi, i) => (
+                                <Card key={i} className="bg-gradient-to-br from-white/[0.03] to-transparent border-white/10 backdrop-blur-md shadow-xl rounded-2xl overflow-hidden border-violet-500/5 hover:border-violet-500/20 transition-all">
+                                    <CardContent className="p-6">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">{kpi.label}</span>
+                                            <kpi.icon className={`h-4 w-4 ${kpi.color}`} />
+                                        </div>
+                                        <div className="text-2xl font-bold text-white">{kpi.value}</div>
+                                    </CardContent>
+                                </Card>
+                            ))
+                        }
                     </div>
 
                     {/* Charts Area */}

@@ -29,7 +29,8 @@ export default function LeadsPage() {
     const [dialogOpen, setDialogOpen] = React.useState(false)
     const [isEditing, setIsEditing] = React.useState(false)
     const [isCreating, setIsCreating] = React.useState(false)
-    const [courses, setCourses] = React.useState<any[]>([])
+    type Course = Database["public"]["Tables"]["courses"]["Row"]
+    const [courses, setCourses] = React.useState<Course[]>([])
     const [formData, setFormData] = React.useState<Partial<Lead>>({})
 
     const handleEditToggle = () => {
@@ -45,7 +46,11 @@ export default function LeadsPage() {
             const { id, created_at, updated_at, institute_id, ...updateData } = formData
 
             if (isCreating) {
-                const response = await createLead(updateData)
+                if (!updateData.phone) {
+                    alert("Phone number is required")
+                    return
+                }
+                const response = await createLead(updateData as any) // Type assertion needed due to Partial vs Interface mismatch, but validation ensures safety
                 if (response.success && response.data) {
                     setLeads([response.data, ...leads])
                     setDialogOpen(false)

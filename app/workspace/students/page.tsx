@@ -21,13 +21,22 @@ import {
 } from "@/components/ui/dialog"
 import { getStudents, deleteStudent, updateStudent } from "./actions"
 
+interface Student {
+    id: string
+    name: string | null
+    phone: string | null
+    lead_status: string | null
+    created_at: string
+    institute_id: string
+}
+
 export default function StudentsPage() {
-    const [students, setStudents] = React.useState<any[]>([])
+    const [students, setStudents] = React.useState<Student[]>([])
     const [loading, setLoading] = React.useState(true)
     const [searchQuery, setSearchQuery] = React.useState("")
-    const [selectedStudent, setSelectedStudent] = React.useState<any | null>(null)
+    const [selectedStudent, setSelectedStudent] = React.useState<Student | null>(null)
     const [isDialogOpen, setIsDialogOpen] = React.useState(false)
-    const [formData, setFormData] = React.useState<any>({})
+    const [formData, setFormData] = React.useState<Partial<Student>>({})
     const [isSaving, setIsSaving] = React.useState(false)
 
     React.useEffect(() => {
@@ -57,7 +66,7 @@ export default function StudentsPage() {
         }
     }
 
-    const handleEdit = (student: any) => {
+    const handleEdit = (student: Student) => {
         setSelectedStudent(student)
         setFormData({
             name: student.name || "",
@@ -208,7 +217,7 @@ export default function StudentsPage() {
                         <div className="space-y-1.5">
                             <label className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Full Name</label>
                             <Input
-                                value={formData.name}
+                                value={formData.name || ""}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 className="bg-white/5 border-white/10 focus:border-emerald-500/50"
                             />
@@ -216,7 +225,7 @@ export default function StudentsPage() {
                         <div className="space-y-1.5">
                             <label className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Phone Number</label>
                             <Input
-                                value={formData.phone}
+                                value={formData.phone || ""}
                                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                 className="bg-white/5 border-white/10 focus:border-emerald-500/50 font-mono"
                             />
@@ -224,7 +233,7 @@ export default function StudentsPage() {
                         <div className="space-y-1.5">
                             <label className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Status</label>
                             <Input
-                                value={formData.lead_status}
+                                value={formData.lead_status || ""}
                                 onChange={(e) => setFormData({ ...formData, lead_status: e.target.value })}
                                 className="bg-white/5 border-white/10 focus:border-emerald-500/50"
                             />
@@ -242,7 +251,7 @@ export default function StudentsPage() {
                         <Button
                             variant="destructive"
                             className="bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white border border-red-500/20"
-                            onClick={() => handleDelete(selectedStudent?.id)}
+                            onClick={() => selectedStudent?.id && handleDelete(selectedStudent.id)}
                         >
                             <Trash2 className="h-4 w-4" />
                         </Button>

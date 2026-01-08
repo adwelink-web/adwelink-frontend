@@ -13,45 +13,45 @@ type Lead = Database["public"]["Tables"]["leads"]["Row"]
 interface DashboardStats {
     totalLeads: number
     todayLeads: number
-    totalStudents: number
-    pendingFollowups: number
+    hotLeads: number
+    visitBooked: number
 }
 
 export default async function AMSWorkspacePage() {
-    const { user, stats: rawStats, recentLeads: rawRecentLeads } = await getDashboardData()
-    const stats = rawStats as DashboardStats
-    const recentLeads = rawRecentLeads as unknown as Lead[]
+    const data = await getDashboardData()
+    const stats: DashboardStats = data.stats
+    const recentLeads: Lead[] = data.recentLeads as Lead[]
+    const user = data.user
     const cookieStore = await cookies()
     const activeAgent = cookieStore.get("activeAgent")?.value || "Aditi"
 
     return (
-        <div className="h-full w-full overflow-hidden flex flex-col">
+        <div className="h-full w-full overflow-hidden flex flex-col relative">
 
             {/* Main Scrollable Container */}
-            <div className="flex-1 w-full h-full overflow-y-auto custom-scrollbar relative">
+            <div className="flex-1 w-full h-full overflow-y-auto custom-scrollbar relative z-10">
 
-                {/* Sticky Header Section */}
+                {/* Sticky Blurred Header Section */}
                 <div className="sticky top-0 z-50 backdrop-blur-xl px-4 md:px-8 py-6 mb-2">
                     <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 max-w-7xl mx-auto">
                         <div>
                             <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white flex flex-wrap items-center gap-3">
-                                <LayoutDashboard className="h-8 w-8 text-emerald-500" />
-                                Workspace Active: {user?.user_metadata?.first_name || 'Admin'}
+                                <LayoutDashboard className="h-8 w-8 text-violet-500" />
+                                Workspace Active: Admin
                                 <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-normal whitespace-nowrap">
                                     <span className="relative flex h-2 w-2">
                                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
                                         <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
                                     </span>
-                                    <span className="text-emerald-400">{activeAgent} Online</span>
+                                    <span className="text-emerald-400">Aditi Online</span>
                                 </span>
                             </h2>
                             <p className="text-muted-foreground mt-1 text-sm md:text-base">Here is your business summary for today.</p>
                         </div>
 
-                        <Link href="/workspace/leads" className="w-full md:w-auto">
-                            <Button className="w-full md:w-auto bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25">
-                                <UserPlus className="mr-2 h-4 w-4" />
-                                View All Leads
+                        <Link href="/workspace/leads">
+                            <Button className="w-full md:w-auto bg-violet-500 text-white hover:bg-violet-600 shadow-lg shadow-violet-500/25 font-bold">
+                                <UserPlus className="mr-2 h-4 w-4" /> View All Leads
                             </Button>
                         </Link>
                     </div>
@@ -59,14 +59,14 @@ export default async function AMSWorkspacePage() {
 
                 {/* Content Section */}
                 <div className="pb-20 px-4 md:px-8 max-w-7xl mx-auto space-y-6">
-                    {/* Business KPI Cards */}
+                    {/* Business KPI Cards - Lead Funnel */}
                     <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                         {/* 1. Total Leads */}
                         <Link href="/workspace/leads" className="block">
                             <Card className="bg-gradient-to-br from-violet-500/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-violet-500/20 hover:scale-[1.02] transition-all h-full">
                                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium text-slate-200">Total Leads Inquired</CardTitle>
-                                    <Users className="h-4 w-4 text-emerald-500" />
+                                    <CardTitle className="text-sm font-medium text-slate-200">Total Leads</CardTitle>
+                                    <Users className="h-4 w-4 text-violet-500" />
                                 </CardHeader>
                                 <CardContent>
                                     <div className="text-2xl font-bold text-white">{stats.totalLeads}</div>
@@ -77,42 +77,42 @@ export default async function AMSWorkspacePage() {
 
                         {/* 2. Today's Leads */}
                         <Link href="/workspace/leads" className="block">
-                            <Card className="bg-gradient-to-br from-violet-500/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-violet-500/20 hover:scale-[1.02] transition-all h-full">
+                            <Card className="bg-gradient-to-br from-cyan-500/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-cyan-500/20 hover:scale-[1.02] transition-all h-full">
                                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium text-slate-200">New Inquiries (Today)</CardTitle>
+                                    <CardTitle className="text-sm font-medium text-slate-200">New Today</CardTitle>
                                     <CalendarDays className="h-4 w-4 text-cyan-500" />
                                 </CardHeader>
                                 <CardContent>
                                     <div className="text-2xl font-bold text-white">{stats.todayLeads}</div>
-                                    <p className="text-xs text-muted-foreground">Fresh leads from calls/ads</p>
+                                    <p className="text-xs text-muted-foreground">Fresh leads</p>
                                 </CardContent>
                             </Card>
                         </Link>
 
-                        {/* 3. Total Students */}
-                        <Link href="/workspace/students" className="block">
-                            <Card className="bg-gradient-to-br from-violet-500/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-violet-500/20 hover:scale-[1.02] transition-all h-full">
-                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium text-slate-200">Active Students</CardTitle>
-                                    <GraduationCap className="h-4 w-4 text-emerald-400" />
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-2xl font-bold text-white">{stats.totalStudents}</div>
-                                    <p className="text-xs text-muted-foreground">Enrolled and verified</p>
-                                </CardContent>
-                            </Card>
-                        </Link>
-
-                        {/* 4. Pending Follow-ups */}
+                        {/* 3. Hot Leads 🔥 */}
                         <Link href="/workspace/leads" className="block">
-                            <Card className="bg-gradient-to-br from-violet-500/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-violet-500/20 hover:scale-[1.02] transition-all h-full">
+                            <Card className="bg-gradient-to-br from-orange-500/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-orange-500/20 hover:scale-[1.02] transition-all h-full">
                                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium text-slate-200">Pending Actions</CardTitle>
-                                    <Bell className="h-4 w-4 text-amber-500" />
+                                    <CardTitle className="text-sm font-medium text-slate-200">🔥 Hot Leads</CardTitle>
+                                    <Sparkles className="h-4 w-4 text-orange-500" />
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="text-2xl font-bold text-white">{stats.pendingFollowups}</div>
-                                    <p className="text-xs text-muted-foreground">Needs interaction</p>
+                                    <div className="text-2xl font-bold text-orange-400">{stats.hotLeads}</div>
+                                    <p className="text-xs text-orange-200/60">Ready to convert!</p>
+                                </CardContent>
+                            </Card>
+                        </Link>
+
+                        {/* 4. Visit Booked 📅 */}
+                        <Link href="/workspace/leads" className="block">
+                            <Card className="bg-gradient-to-br from-purple-500/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-purple-500/20 hover:scale-[1.02] transition-all h-full">
+                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                    <CardTitle className="text-sm font-medium text-slate-200">📅 Visit Booked</CardTitle>
+                                    <CalendarDays className="h-4 w-4 text-purple-500" />
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="text-2xl font-bold text-purple-400">{stats.visitBooked}</div>
+                                    <p className="text-xs text-purple-200/60">Appointments scheduled!</p>
                                 </CardContent>
                             </Card>
                         </Link>

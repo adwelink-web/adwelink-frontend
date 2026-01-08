@@ -39,7 +39,7 @@ export async function deleteStudent(studentId: string) {
     return { success: true }
 }
 
-export async function updateStudent(studentId: string, data: any) {
+export async function updateStudent(studentId: string, data: Record<string, unknown>) {
     const supabase = await createServerClient()
     const institute_id = await getAuthenticatedInstituteId(supabase)
 

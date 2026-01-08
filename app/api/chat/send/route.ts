@@ -141,7 +141,7 @@ export async function POST(request: Request) {
             data: chatData
         }, { status: 200 })
 
-    } catch (e: any) {
+    } catch (e: unknown) {
         console.error("Chat Send Error:", e)
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
     }

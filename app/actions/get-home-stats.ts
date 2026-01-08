@@ -9,17 +9,14 @@ export async function getHomeStats() {
         const institute_id = await getAuthenticatedInstituteId(supabase)
 
         // Execute queries in parallel for maximum speed - FILTERED BY INSTITUTE
-        const [leadsRes, studentsRes, chatsRes, activityRes] = await Promise.all([
+        const [leadsRes, chatsRes, activityRes] = await Promise.all([
             // 1. Total Leads
             supabase.from('leads').select('*', { count: 'exact', head: true }).eq("institute_id", institute_id),
 
-            // 2. Total Students
-            supabase.from('students').select('*', { count: 'exact', head: true }).eq("institute_id", institute_id),
-
-            // 3. Total Chats Handled by Aditi (count from ai_chat_history)
+            // 2. Total Chats Handled by Aditi (count from ai_chat_history)
             supabase.from('ai_chat_history').select('*', { count: 'exact', head: true }).eq("institute_id", institute_id),
 
-            // 4. Activity Feed (Filtered)
+            // 3. Activity Feed (Filtered)
             supabase.from('ai_chat_history')
                 .select('*')
                 .eq("institute_id", institute_id)
@@ -29,7 +26,6 @@ export async function getHomeStats() {
 
         // Process Results
         const totalLeads = leadsRes.count || 0
-        const totalStudents = studentsRes.count || 0
         const totalChats = chatsRes.count || 0
 
         // Process Activity Feed
@@ -51,11 +47,10 @@ export async function getHomeStats() {
         }
 
         return {
-            leads: { value: totalLeads.toLocaleString(), change: "+Live" }, // Change % placeholder
-            students: { value: totalStudents.toLocaleString(), change: "+Live" },
+            leads: { value: totalLeads.toLocaleString(), change: "+Live" },
             chatsHandled: { value: totalChats.toLocaleString(), count: totalChats },
             activityFeed,
-            userName: "Director", // Can fetch real user name if passed context
+            userName: "Director",
             businessName: "Adwelink Institute"
         }
 
@@ -64,7 +59,6 @@ export async function getHomeStats() {
         // Fallback to prevent crash
         return {
             leads: { value: "-", change: "Err" },
-            students: { value: "-", change: "Err" },
             chatsHandled: { value: "-", count: 0 },
             activityFeed: [{ type: 'error', text: 'Database Connection Failed', time: 'Now' }],
             userName: "Director",

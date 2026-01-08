@@ -18,7 +18,7 @@ export async function getInstituteSettings() {
     return data
 }
 
-export async function updateInstituteSettings(data: any) {
+export async function updateInstituteSettings(data: Record<string, unknown>) {
     const supabase = await createServerClient()
     const instituteId = await getAuthenticatedInstituteId(supabase)
 

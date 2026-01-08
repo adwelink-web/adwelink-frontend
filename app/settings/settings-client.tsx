@@ -13,17 +13,28 @@ import {
     Smartphone,
     Save,
     Lock,
-    Loader2
+    Loader2,
+    RefreshCcw,
+    Info
 } from "lucide-react"
 import { updateInstituteSettings } from "./actions"
 
+interface InstituteSettings {
+    name?: string | null
+    city?: string | null
+    address?: string | null
+    helpline_number?: string | null
+    phone_id?: string | null
+    access_token?: string | null
+}
+
 interface SettingsClientProps {
-    initialSettings: any
+    initialSettings: InstituteSettings | null
 }
 
 export default function SettingsClient({ initialSettings }: SettingsClientProps) {
-    const [originalSettings, setOriginalSettings] = React.useState<any>(initialSettings)
-    const [settings, setSettings] = React.useState<any>(initialSettings)
+    const [originalSettings, setOriginalSettings] = React.useState<InstituteSettings | null>(initialSettings)
+    const [settings, setSettings] = React.useState<InstituteSettings | null>(initialSettings)
     const [saving, setSaving] = React.useState(false)
     const [isEditing, setIsEditing] = React.useState(false)
 
@@ -85,12 +96,13 @@ export default function SettingsClient({ initialSettings }: SettingsClientProps)
                                 <Building className="h-4 w-4 mr-2" /> General
                             </TabsTrigger>
 
-                            <TabsTrigger value="integrations" className="data-[state=active]:bg-white data-[state=active]:text-black rounded-lg py-2 px-6 font-bold transition-all">
+                            {/* Integrations & Security hidden - not implemented yet */}
+                            {/* <TabsTrigger value="integrations" className="data-[state=active]:bg-white data-[state=active]:text-black rounded-lg py-2 px-6 font-bold transition-all">
                                 <Smartphone className="h-4 w-4 mr-2" /> Integrations
                             </TabsTrigger>
                             <TabsTrigger value="security" className="data-[state=active]:bg-red-500 data-[state=active]:text-white rounded-lg py-2 px-6 font-bold transition-all">
                                 <ShieldAlert className="h-4 w-4 mr-2" /> Security
-                            </TabsTrigger>
+                            </TabsTrigger> */}
                         </TabsList>
                     </div>
 
@@ -102,19 +114,38 @@ export default function SettingsClient({ initialSettings }: SettingsClientProps)
                                 <CardHeader className="flex flex-row items-center justify-between flex-shrink-0">
                                     <div>
                                         <CardTitle className="text-white">Institute Profile</CardTitle>
-                                        <CardDescription>Details displayed on student invoices and portals.</CardDescription>
+                                        <CardDescription>These details are used by Aditi in conversations with leads.</CardDescription>
                                     </div>
-                                    {!isEditing && (
-                                        <Button
-                                            onClick={() => setIsEditing(true)}
-                                            variant="outline"
-                                            className="border-white/10 text-slate-300 hover:bg-white/5"
-                                        >
-                                            Edit Profile
-                                        </Button>
-                                    )}
+                                    <div className="flex gap-2">
+                                        {!isEditing && (
+                                            <>
+                                                <Button
+                                                    onClick={() => {
+                                                        if (confirm('Reset to original settings? This will undo any unsaved changes.'))
+                                                            setSettings(initialSettings)
+                                                    }}
+                                                    variant="ghost"
+                                                    className="text-slate-400 hover:text-white hover:bg-white/5"
+                                                >
+                                                    <RefreshCcw className="h-4 w-4 mr-2" /> Reset
+                                                </Button>
+                                                <Button
+                                                    onClick={() => setIsEditing(true)}
+                                                    variant="outline"
+                                                    className="border-white/10 text-slate-300 hover:bg-white/5"
+                                                >
+                                                    Edit Profile
+                                                </Button>
+                                            </>
+                                        )}
+                                    </div>
                                 </CardHeader>
                                 <CardContent className="space-y-4 flex-1 overflow-y-auto custom-scrollbar">
+                                    {/* Info Banner */}
+                                    <div className="flex items-center gap-3 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
+                                        <Info className="h-5 w-5 text-emerald-500 shrink-0" />
+                                        <p className="text-sm text-emerald-200/80">These settings are <strong>actively used</strong> by Aditi when talking to your leads. Changes take effect immediately.</p>
+                                    </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="space-y-2">
                                             <Label className="text-slate-300">Institute Name</Label>

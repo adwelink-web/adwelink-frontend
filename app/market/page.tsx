@@ -11,7 +11,6 @@ export default function AgentMarketPage() {
             name: "Aditi",
             role: "Senior Counselor (Sales)",
             desc: "Your diligent Sales Employee. She handles inquiries, qualifies leads, and ensures admissions 24/7.",
-            price: "₹4,999/mo",
             icon: BrainCircuit,
             color: "text-purple-400",
             bg: "bg-purple-500/10",
@@ -22,7 +21,6 @@ export default function AgentMarketPage() {
             name: "Rahul Sir",
             role: "Academic Head (Tutor)",
             desc: "Your AI Faculty Member. He is a trainable teacher who conducts classes and solves student doubts in your style.",
-            price: "₹6,999/mo",
             icon: GraduationCap,
             color: "text-slate-500", // Dimmed color
             bg: "bg-slate-500/10",
@@ -33,7 +31,6 @@ export default function AgentMarketPage() {
             name: "Accountant",
             role: "Fee Recovery Specialist",
             desc: "He tracks student payments and intelligently follows up with parents to recover pending fees without being rude.",
-            price: "₹2,999/mo",
             icon: Wallet,
             color: "text-slate-500", // Dimmed color
             bg: "bg-slate-500/10",
@@ -80,7 +77,7 @@ export default function AgentMarketPage() {
                 <div className="pb-20 px-4 md:px-8 max-w-7xl mx-auto">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {availableAgents.map((agent) => {
-                            if ((agent as any).comingSoon) {
+                            if ('comingSoon' in agent && agent.comingSoon) {
                                 return (
                                     <Card key={agent.name} className="bg-white/[0.02] border-white/10 border-dashed backdrop-blur-sm flex flex-col items-center justify-center p-4 opacity-60 hover:opacity-100 transition-all min-h-[180px] group rounded-xl">
                                         <agent.icon className="h-8 w-8 text-slate-500 mb-2" />
@@ -110,14 +107,15 @@ export default function AgentMarketPage() {
                                     </CardHeader>
                                     <CardContent className="py-2 px-4 space-y-3">
                                         <p className="text-xs text-slate-300 leading-relaxed line-clamp-2">{agent.desc}</p>
-                                        <div className="flex items-center justify-between pt-2 border-t border-white/5">
-                                            <span className="text-white font-bold text-sm">{agent.price}</span>
+                                        <div className="flex items-center justify-end pt-2 border-t border-white/5">
                                             {agent.hired ? (
                                                 <Button size="sm" variant="outline" className="border-purple-500/50 text-purple-400 hover:bg-purple-500/10 h-7 text-xs" disabled>
                                                     Active
                                                 </Button>
                                             ) : (
-                                                <HireAgentButton agentName={agent.name} price={agent.price} />
+                                                <Button size="sm" className="bg-purple-500 hover:bg-purple-600 text-white h-7 text-xs">
+                                                    Hire Now
+                                                </Button>
                                             )}
                                         </div>
                                     </CardContent>
