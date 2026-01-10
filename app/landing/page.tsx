@@ -91,7 +91,7 @@ export default function ClientLandingPage() {
                     <div className="mb-8 animate-fade-in-up">
                         <span className="px-4 py-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 text-[11px] font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-2">
                             <Star className="h-3 w-3 fill-emerald-400" />
-                            Trusted by Indore & Bhopal&apos;s Top Institutes
+                            Trusted by Indore&apos;s Top Institutes
                         </span>
                     </div>
 
@@ -427,7 +427,7 @@ export default function ClientLandingPage() {
                             </div>
 
                             <p className="mt-6 text-xs text-slate-500">
-                                Currently accepting applications from Indore & Bhopal-based institutes.
+                                Currently accepting applications from Indore-based institutes.
                             </p>
                         </div>
                     </div>
@@ -473,7 +473,7 @@ export default function ClientLandingPage() {
                             <div>
                                 <h4 className="font-bold text-white mb-4 text-sm">Contact</h4>
                                 <ul className="space-y-3 text-sm text-slate-500">
-                                    <li>Indore & Bhopal, MP</li>
+                                    <li>Indore, MP</li>
                                     <li>India</li>
                                     <li className="pt-2"><a href="mailto:hello@adwelink.com" className="text-indigo-400 hover:text-indigo-300 transition-colors">hello@adwelink.com</a></li>
                                 </ul>

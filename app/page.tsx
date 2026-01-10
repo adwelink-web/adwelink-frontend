@@ -28,9 +28,9 @@ export default function ComingSoonPage() {
     const [waitlistStatus, setWaitlistStatus] = useState<"idle" | "submitting" | "success" | "error">("idle")
     const [formData, setFormData] = useState({ name: "", contact: "" })
 
-    // Countdown to Jan 10, 2026
+    // Countdown to Jan 15, 2026 at 1:15 PM
     useEffect(() => {
-        const target = new Date("2026-01-10T00:00:00").getTime()
+        const target = new Date("2026-01-15T13:15:00").getTime()
         const timer = setInterval(() => {
             const now = new Date().getTime()
             const diff = target - now
@@ -110,7 +110,7 @@ export default function ComingSoonPage() {
                 {/* Release Tag */}
                 <div className="mb-6 animate-fade-in-up delay-100">
                     <span className="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-[10px] text-slate-400 backdrop-blur-md uppercase tracking-wider">
-                        Release v1.0 • Jan 10
+                        Release v1.0 • Jan 15
                     </span>
                 </div>
 
@@ -120,7 +120,7 @@ export default function ComingSoonPage() {
                 </h1>
 
                 <p className="text-base md:text-xl text-slate-400 max-w-xl mx-auto mb-8 font-light animate-fade-in-up delay-300 px-4">
-                    The first <strong className="text-white font-medium">WhatsApp-First Humanoid AI Employee</strong> for Indore & Bhopal. <br className="hidden md:block" />
+                    The first <strong className="text-white font-medium">WhatsApp-First Humanoid AI Employee</strong> for Indore. <br className="hidden md:block" />
                     <span className="text-white/60">Not a Chatbot. She works directly in your WhatsApp.</span>
                 </p>
 
@@ -136,7 +136,7 @@ export default function ComingSoonPage() {
                             <DialogHeader>
                                 <DialogTitle className="text-3xl font-bold tracking-tighter">Priority Waitlist</DialogTitle>
                                 <DialogDescription className="text-slate-400 text-sm pt-2">
-                                    Secure your spot for the Jan 10 Launch. We&apos;ll reach out when we&apos;re ready for your institute.
+                                    Secure your spot for the Jan 15 Launch. We&apos;ll reach out when we&apos;re ready for your institute.
                                 </DialogDescription>
                             </DialogHeader>
 

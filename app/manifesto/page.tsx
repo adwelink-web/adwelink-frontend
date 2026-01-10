@@ -84,7 +84,7 @@ export default function ManifestoPage() {
                                         </div>
                                         <div className="flex items-center justify-between text-xs py-2 border-b border-white/10">
                                             <span className="text-slate-500">Launch</span>
-                                            <span className="text-white font-mono">10.01.26</span>
+                                            <span className="text-white font-mono">15.01.26</span>
                                         </div>
                                     </div>
                                 </div>

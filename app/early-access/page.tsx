@@ -124,7 +124,7 @@ export default function EarlyAccessPage() {
                                         Get Access Key
                                     </DialogTitle>
                                     <DialogDescription className="text-slate-400 pt-2 text-sm">
-                                        This is a restricted pilot for 10 Institutes in Indore & Bhopal.
+                                        This is a restricted pilot for 10 Institutes in Indore.
                                         Contact the Founder for an override key.
                                     </DialogDescription>
                                 </DialogHeader>
@@ -136,7 +136,7 @@ export default function EarlyAccessPage() {
                                             {[
                                                 "₹0 Setup Fee: Permanent Free Setup",
                                                 "Instant Access: Full Dashboard NOW",
-                                                "Live Testing: Deploy Agents before Jan 10",
+                                                "Live Testing: Deploy Agents before Jan 15",
                                                 "Founder Direct: Shape the product roadmap"
                                             ].map((benefit, i) => (
                                                 <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 text-[11px] text-slate-300">
