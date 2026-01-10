@@ -128,25 +128,9 @@ export default function LeadsPage() {
                 if (leadsResponse.error) {
                     console.error("Supabase Error:", leadsResponse.error)
                 } else {
-                    // DEMO: If explicit fetch has fewer items, inject dummy data to test scroll
+                    // PRODUCTION: Only show actual leads from the database. No mock data.
                     const actualLeads = leadsResponse.data || []
-                    if (actualLeads.length < 50) {
-                        const dummyLeads = Array.from({ length: 50 }).map((_, i) => ({
-                            id: `dummy-${i}`,
-                            name: `Demo Student ${i + 1}`,
-                            phone: `99999${String(i).padStart(5, '0')}`,
-                            city: i % 2 === 0 ? "Indore" : "Bhopal",
-                            source: i % 3 === 0 ? "INSTAGRAM" : "WALK_IN",
-                            interested_course: i % 2 === 0 ? "Data Science" : "Digital Marketing",
-                            lead_score: 40 + (i * 2),
-                            status: i % 4 === 0 ? "HOT_LEAD" : "NEW",
-                            next_followup: new Date().toISOString(),
-                            created_at: new Date().toISOString()
-                        })) as unknown as Lead[]
-                        setLeads([...actualLeads, ...dummyLeads])
-                    } else {
-                        setLeads(actualLeads)
-                    }
+                    setLeads(actualLeads)
                 }
 
                 setCourses(coursesData || [])

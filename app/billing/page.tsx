@@ -5,10 +5,8 @@ import { Button } from "@/components/ui/button"
 import { CreditCard, Download, Sparkles, ReceiptText, ShieldCheck } from "lucide-react"
 
 export default function BillingPage() {
-    const invoices = [
-        { id: "INV-001", date: "Dec 01, 2025", amount: "₹2,999", status: "Paid" },
-        { id: "INV-002", date: "Jan 01, 2026", amount: "₹2,999", status: "Paid" },
-    ]
+    // PRODUCTION: Real billing data only. Currently empty.
+    const invoices: any[] = []
 
     return (
         <div className="h-full w-full overflow-hidden flex flex-col relative">
@@ -80,10 +78,10 @@ export default function BillingPage() {
                             <CardContent className="py-3 space-y-3">
                                 <div className="flex items-center justify-between p-3 bg-black/20 border border-white/10 rounded-lg">
                                     <div className="flex items-center gap-3">
-                                        <div className="h-8 w-12 bg-slate-800 rounded flex items-center justify-center text-[9px] text-white font-bold uppercase ring-1 ring-white/10">VISA</div>
+                                        <div className="h-8 w-12 bg-slate-800 rounded flex items-center justify-center text-[9px] text-zinc-500 font-bold uppercase ring-1 ring-white/10">NONE</div>
                                         <div>
-                                            <p className="text-sm font-medium text-white">•••• 4242</p>
-                                            <p className="text-[10px] text-slate-500">Exp 12/26</p>
+                                            <p className="text-sm font-medium text-slate-400">No method added</p>
+                                            <p className="text-[10px] text-slate-600">Add a card to upgrade</p>
                                         </div>
                                     </div>
                                     <Button variant="ghost" size="sm" className="text-purple-400 hover:text-purple-300 hover:bg-white/5 h-7 text-xs">Edit</Button>

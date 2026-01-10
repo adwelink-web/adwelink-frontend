@@ -43,8 +43,8 @@ export function HomeClientContainer({ stats, initialDate }: HomeClientContainerP
             icon: BrainCircuit,
             color: "violet",
             status: "active",
-            efficiency: "98%",
-            latency: "1.2s"
+            efficiency: "--",
+            latency: "--"
         },
         {
             name: "Teacher",

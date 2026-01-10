@@ -78,6 +78,11 @@ export default function EarlyAccessPage() {
                                     setStatus("idle")
                                 }}
                                 placeholder="ENTER KEY"
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        handleVerify()
+                                    }
+                                }}
                                 className="relative bg-[#0B0F19] border-white/10 text-center text-lg md:text-xl font-mono tracking-[0.15em] md:tracking-[0.2em] h-14 md:h-16 uppercase placeholder:text-slate-600 text-white focus-visible:ring-0 focus-visible:border-indigo-500/50 rounded-xl"
                             />
                         </div>
