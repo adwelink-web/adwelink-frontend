@@ -41,18 +41,18 @@ export default function ManifestoPage() {
 
                     {/* Left: Text */}
                     <div className="text-center lg:text-left">
-                        <span className="text-cyan-400 text-[10px] md:text-xs font-bold tracking-widest uppercase mb-4 block animate-in fade-in slide-in-from-bottom-4 duration-700">The Vision</span>
-                        <h1 className="text-4xl md:text-7xl font-bold tracking-tighter mb-8 leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
+                        <span className="text-cyan-400 text-[10px] md:text-xs font-bold tracking-widest uppercase mb-4 block animate-fade-in-up">The Vision</span>
+                        <h1 className="text-4xl md:text-7xl font-bold tracking-tighter mb-8 leading-tight animate-fade-in-up delay-100">
                             Why we are building <br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-500">Humanoids, not Bots.</span>
                         </h1>
-                        <p className="text-lg md:text-xl text-slate-400 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+                        <p className="text-lg md:text-xl text-slate-400 leading-relaxed animate-fade-in-up delay-200">
                             The &quot;Chatbot Era&quot; failed us. Institutes need empathy, not scripts. They need memory, not sessions. They need an Employee.
                         </p>
                     </div>
 
                     {/* Right: Visual (Holographic Card) */}
-                    <div className="flex justify-center lg:justify-end animate-in fade-in zoom-in duration-1000 delay-300">
+                    <div className="flex justify-center lg:justify-end animate-fade-in delay-300">
                         <div className="relative w-full max-w-sm aspect-[3/4] md:aspect-square perspective-1000 group">
                             {/* Glow behind */}
                             <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 to-purple-500/20 blur-[60px] rounded-full opacity-50 group-hover:opacity-80 transition-opacity duration-700" />
