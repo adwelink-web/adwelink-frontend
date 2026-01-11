@@ -86,18 +86,18 @@ export default function ComingSoonPage() {
             </div>
 
             {/* 🧭 Navbar */}
-            <nav className="w-full max-w-7xl mx-auto px-6 py-6 flex justify-between items-center relative z-20 shrink-0">
-                <div className="relative h-8 w-28 md:w-36">
+            <nav className="w-full max-w-7xl mx-auto px-4 md:px-6 py-6 flex justify-between items-center relative z-20 shrink-0">
+                <div className="relative h-8 w-24 md:w-36">
                     <Image src="/branding/adwelink.svg" alt="Adwelink" fill className="object-contain object-left" priority />
                 </div>
 
-                <div className="flex items-center gap-4">
-                    <Link href="/manifesto" className="text-xs font-medium text-slate-400 hover:text-white transition-colors uppercase tracking-wider flex items-center gap-1">
+                <div className="flex items-center gap-2 md:gap-4">
+                    <Link href="/manifesto" className="text-xs font-medium text-slate-400 hover:text-white transition-colors uppercase tracking-wider flex items-center gap-1 whitespace-nowrap">
                         <FileText className="h-3.5 w-3.5" /> Vision
                     </Link>
 
                     <Link href="/early-access">
-                        <Button className="h-9 px-5 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500 hover:text-white border border-indigo-500/30 hover:border-indigo-400 text-[10px] font-bold tracking-widest rounded-full uppercase transition-all duration-500">
+                        <Button className="h-9 px-3 md:px-5 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500 hover:text-white border border-indigo-500/30 hover:border-indigo-400 text-[10px] font-bold tracking-widest rounded-full uppercase transition-all duration-500">
                             <Ticket className="h-3 w-3 mr-2" /> Early Access
                         </Button>
                     </Link>
