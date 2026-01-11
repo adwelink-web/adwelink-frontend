@@ -92,7 +92,7 @@ export default function ComingSoonPage() {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <Link href="/manifesto" className="text-xs font-medium text-slate-400 hover:text-white transition-colors uppercase tracking-wider hidden sm:flex items-center gap-1">
+                    <Link href="/manifesto" className="text-xs font-medium text-slate-400 hover:text-white transition-colors uppercase tracking-wider flex items-center gap-1">
                         <FileText className="h-3.5 w-3.5" /> Vision
                     </Link>
 
