@@ -34,12 +34,14 @@ async function testBrain() {
     // 2. Query the Brain View for 'sales' (Aditi Counselor)
     console.log("\n🔍 Querying agent_runtime_brain for 'sales' agent...");
 
-    const { data: brain, error: brainError } = await supabase
+    const { data: brainData, error: brainError } = await supabase
         .from('agent_runtime_brain' as any)
         .select('*')
         .eq('institute_id', institute.id)
         .eq('agent_slug', 'sales') // 'sales' is the slug for Counselor
         .single();
+
+    const brain = brainData as any;
 
     if (brainError) {
         console.error("❌ Failed to fetch Brain:", brainError);
