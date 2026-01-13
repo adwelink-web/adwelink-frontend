@@ -42,7 +42,7 @@ function LoginForm() {
             email,
             options: {
                 // Redirect user to home page after clicking the link
-                emailRedirectTo: `${window.location.origin}/auth/callback?next=/home`,
+                emailRedirectTo: `${window.location.origin}/auth/callback?next=/workspace`,
             },
         })
 
