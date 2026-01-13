@@ -410,7 +410,20 @@ export default function ClientLandingPage() {
                                     <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" /> Aditi AI Agent</li>
                                     <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" /> WhatsApp Integration</li>
                                 </ul>
-                                <Button className="w-full h-12 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold">Choose Starter</Button>
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button className="w-full h-12 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold">Choose Starter</Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="bg-[#0B0F19] border border-white/10 text-white sm:max-w-md rounded-3xl">
+                                        <DialogHeader>
+                                            <DialogTitle className="text-2xl font-bold">Get Started with Starter</DialogTitle>
+                                            <DialogDescription className="text-slate-400">
+                                                Join the waitlist for the Starter plan. We'll contact you for onboarding.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <WaitlistForm />
+                                    </DialogContent>
+                                </Dialog>
                             </div>
 
                             {/* Growth */}
@@ -426,7 +439,20 @@ export default function ClientLandingPage() {
                                     <li className="flex items-center gap-3"><CheckCircle className="h-5 w-5 text-indigo-400 shrink-0" /> Aditi AI Agent (Pro)</li>
                                     <li className="flex items-center gap-3"><CheckCircle className="h-5 w-5 text-indigo-400 shrink-0" /> Priority Support</li>
                                 </ul>
-                                <Button className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-lg shadow-indigo-500/25">Get Started</Button>
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-lg shadow-indigo-500/25">Get Started</Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="bg-[#0B0F19] border border-white/10 text-white sm:max-w-md rounded-3xl">
+                                        <DialogHeader>
+                                            <DialogTitle className="text-2xl font-bold">Join Adwelink Alpha</DialogTitle>
+                                            <DialogDescription className="text-slate-400">
+                                                Secure your spot for the Type-A plan. Founder-led onboarding included.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <WaitlistForm />
+                                    </DialogContent>
+                                </Dialog>
                             </div>
 
                             {/* Enterprise */}
@@ -441,7 +467,20 @@ export default function ClientLandingPage() {
                                     <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-purple-400 shrink-0" /> Dedicated Account Manager</li>
                                     <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-purple-400 shrink-0" /> Custom Integrations</li>
                                 </ul>
-                                <Button className="w-full h-12 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold">Contact Sales</Button>
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button className="w-full h-12 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold">Contact Sales</Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="bg-[#0B0F19] border border-white/10 text-white sm:max-w-md rounded-3xl">
+                                        <DialogHeader>
+                                            <DialogTitle className="text-2xl font-bold">Contact Enterprise Sales</DialogTitle>
+                                            <DialogDescription className="text-slate-400">
+                                                For huge volumes and custom integrations, let's talk.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <WaitlistForm />
+                                    </DialogContent>
+                                </Dialog>
                                 <p className="text-[10px] text-slate-600 mt-4 text-center italic">*Subject to fair usage policy. Changeable in future.</p>
                             </div>
                         </div>
