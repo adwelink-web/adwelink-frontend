@@ -376,7 +376,7 @@ export default function ClientLandingPage() {
                         </div>
                         <h2 className="text-3xl font-bold mb-6">Your Data. Your Control.</h2>
                         <p className="text-slate-400 mb-8 max-w-2xl mx-auto">
-                            We know data is the lifeblood of an institute. Your leads are stored in an isolated, encrypted database. Even we can&apos;t see them without your permission.
+                            We know data is the lifeblood of an institute. Your leads are stored in an isolated, encrypted database with strict privacy controls.
                         </p>
                         <div className="flex flex-wrap justify-center gap-4 text-xs font-medium text-slate-500 uppercase tracking-widest">
                             <span className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-emerald-500" /> Encrypted</span>
