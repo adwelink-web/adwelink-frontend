@@ -35,7 +35,7 @@ async function testBrain() {
     console.log("\n🔍 Querying agent_runtime_brain for 'sales' agent...");
 
     const { data: brain, error: brainError } = await supabase
-        .from('agent_runtime_brain')
+        .from('agent_runtime_brain' as any)
         .select('*')
         .eq('institute_id', institute.id)
         .eq('agent_slug', 'sales') // 'sales' is the slug for Counselor
