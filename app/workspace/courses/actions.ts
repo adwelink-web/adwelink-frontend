@@ -34,10 +34,10 @@ export async function createCourse(data: CourseCreateData) {
 
     const { data: course, error } = await supabase
         .from("courses")
-        .insert({
-            ...data,
+        .insert([{
+            ...(data as any),
             institute_id
-        })
+        }])
         .select()
         .single()
 

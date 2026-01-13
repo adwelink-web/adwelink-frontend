@@ -26,8 +26,8 @@ interface Student {
     name: string | null
     phone: string | null
     lead_status: string | null
-    created_at: string
-    institute_id: string
+    created_at: string | null
+    institute_id: string | null
 }
 
 export default function StudentsPage() {
@@ -175,7 +175,7 @@ export default function StudentsPage() {
                                                         </Badge>
                                                     </td>
                                                     <td className="px-6 py-4 text-xs text-slate-500">
-                                                        {new Date(student.created_at).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                        {student.created_at ? new Date(student.created_at).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }) : "-"}
                                                     </td>
                                                     <td className="px-6 py-4 text-right">
                                                         <div className="flex justify-end gap-2">

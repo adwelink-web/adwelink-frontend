@@ -83,11 +83,11 @@ export default function FeedPage() {
         if (msgError) {
             console.error("Chat Fetch Error Detailed:", JSON.stringify(msgError, null, 2))
         } else {
-            setMessages(msgData || [])
+            setMessages((msgData as any) || [])
 
             // 1. Group by session/phone and find latest activity time
             const sessionMap: Record<string, string> = {}
-            msgData?.forEach((m: ChatRow) => {
+            msgData?.forEach((m: any) => {
                 const sid = m.phone_number || m.session_id || "Unknown"
                 const mTime = m.created_at || "0"
                 if (!sessionMap[sid] || mTime > sessionMap[sid]) {

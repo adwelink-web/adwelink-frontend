@@ -88,7 +88,7 @@ export default function LeadsPage() {
         setIsEditing(true)
         setFormData({
             status: 'NEW',
-            source: 'DIRECT',
+            lead_source: 'DIRECT',
             visit_type: 'offline'
         })
         setDialogOpen(true)
@@ -215,12 +215,12 @@ export default function LeadsPage() {
                                             <td className="px-6 py-4 align-middle">
                                                 <div className="flex flex-col gap-1 mt-0.5">
                                                     <span className="text-sm text-slate-400 font-medium capitalize leading-normal">{lead.city || "-"}</span>
-                                                    {lead.source && <span className="text-[10px] text-slate-600 uppercase tracking-wider font-semibold">{lead.source}</span>}
+                                                    {lead.lead_source && <span className="text-[10px] text-slate-600 uppercase tracking-wider font-semibold">{lead.lead_source}</span>}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 align-middle">
                                                 <div className="flex flex-col gap-1">
-                                                    <span className="text-sm text-slate-300 font-medium leading-normal">{lead.interested_course}</span>
+                                                    <span className="text-sm text-slate-300 font-medium leading-normal">{lead.course_interest}</span>
                                                     {lead.current_class && <span className="text-xs text-slate-500">{lead.current_class}</span>}
                                                 </div>
                                             </td>
@@ -232,9 +232,9 @@ export default function LeadsPage() {
                                                 ) : <span className="text-slate-700">-</span>}
                                             </td>
                                             <td className="px-6 py-4 align-middle">
-                                                {lead.next_followup ? (
+                                                {lead.next_followup_date ? (
                                                     <div className="text-xs text-slate-400 font-medium">
-                                                        {formatDate(lead.next_followup)}
+                                                        {formatDate(lead.next_followup_date)}
                                                     </div>
                                                 ) : <span className="text-slate-700">-</span>}
                                             </td>
@@ -324,15 +324,15 @@ export default function LeadsPage() {
                                                 </Select>
                                                 <Input
                                                     className="h-5 w-[100px] text-[10px] text-right bg-transparent border-white/20"
-                                                    value={formData.source || ""}
-                                                    onChange={(e) => setFormData({ ...formData, source: e.target.value })}
+                                                    value={formData.lead_source || ""}
+                                                    onChange={(e) => setFormData({ ...formData, lead_source: e.target.value })}
                                                     placeholder="Source"
                                                 />
                                             </div>
                                         ) : (
                                             <>
                                                 {getStatusBadge(selectedLead?.status || "NEW")}
-                                                <span className="text-[10px] text-slate-500 uppercase tracking-wide">{selectedLead?.source || "DIRECT"} SOURCE</span>
+                                                <span className="text-[10px] text-slate-500 uppercase tracking-wide">{selectedLead?.lead_source || "DIRECT"} SOURCE</span>
                                             </>
                                         )}
                                     </div>
@@ -401,8 +401,8 @@ export default function LeadsPage() {
                                                 <label className="text-[9px] text-slate-500 uppercase font-semibold">Interested Course</label>
                                                 {isEditing ? (
                                                     <Select
-                                                        value={formData.interested_course || ""}
-                                                        onValueChange={(val) => setFormData({ ...formData, interested_course: val })}
+                                                        value={formData.course_interest || ""}
+                                                        onValueChange={(val) => setFormData({ ...formData, course_interest: val })}
                                                     >
                                                         <SelectTrigger className="h-6 text-sm bg-black/20 border-white/10 mt-0.5 px-2">
                                                             <SelectValue placeholder="Select Course" />
@@ -414,7 +414,7 @@ export default function LeadsPage() {
                                                         </SelectContent>
                                                     </Select>
                                                 ) : (
-                                                    <div className="text-sm font-medium text-white mt-0.5 truncate">{selectedLead?.interested_course || <span className="text-slate-600">Not Specified</span>}</div>
+                                                    <div className="text-sm font-medium text-white mt-0.5 truncate">{selectedLead?.course_interest || <span className="text-slate-600">Not Specified</span>}</div>
                                                 )}
                                             </div>
                                             <div>
@@ -497,11 +497,11 @@ export default function LeadsPage() {
                                                     <Input
                                                         type="date"
                                                         className="h-6 text-xs bg-black/20 border-white/10 mt-0.5 px-1 w-full"
-                                                        value={getSafeDateValue(formData.next_followup)}
-                                                        onChange={(e) => setFormData({ ...formData, next_followup: e.target.value })}
+                                                        value={getSafeDateValue(formData.next_followup_date)}
+                                                        onChange={(e) => setFormData({ ...formData, next_followup_date: e.target.value })}
                                                     />
                                                 ) : (
-                                                    <div className="text-xs font-medium text-amber-400">{selectedLead?.next_followup ? formatDate(selectedLead.next_followup) : "None"}</div>
+                                                    <div className="text-xs font-medium text-amber-400">{selectedLead?.next_followup_date ? formatDate(selectedLead.next_followup_date) : "None"}</div>
                                                 )}
                                             </div>
                                             <div className="bg-white/5 p-2.5 rounded-lg border border-white/5">

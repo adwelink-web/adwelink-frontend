@@ -144,9 +144,9 @@ export default async function AMSWorkspacePage() {
                                                         <p className="text-sm font-medium text-white truncate">{lead.name || "Unknown Caller"}</p>
                                                         <p className="text-xs text-muted-foreground flex items-center gap-1">
                                                             <Phone className="h-3 w-3" /> {lead.phone}
-                                                            {lead.source && (
+                                                            {lead.lead_source && (
                                                                 <span className="ml-2 flex items-center gap-1 text-slate-400 border-l border-white/10 pl-2">
-                                                                    <span className="uppercase text-[9px] tracking-wider font-semibold">VIA {lead.source}</span>
+                                                                    <span className="uppercase text-[9px] tracking-wider font-semibold">VIA {lead.lead_source}</span>
                                                                 </span>
                                                             )}
                                                         </p>
@@ -155,7 +155,7 @@ export default async function AMSWorkspacePage() {
                                                 <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
                                                     <div className="text-right">
                                                         <p className="text-xs text-slate-300 bg-white/10 px-2 py-1 rounded inline-block">
-                                                            {lead.interested_course || "General Inquiry"}
+                                                            {lead.course_interest || "General Inquiry"}
                                                         </p>
                                                     </div>
                                                     <div className={`text-[10px] px-2.5 py-1 rounded-full border font-semibold uppercase tracking-wider whitespace-nowrap ${lead.status?.toLowerCase().includes('hot') ? 'bg-red-500/10 text-red-400 border-red-500/20' :

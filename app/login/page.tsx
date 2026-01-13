@@ -6,8 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardContent, CardDescription, CardFooter } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { Loader2, Sparkles } from "lucide-react"
-import { useEffect } from "react"
+import { Loader2, Sparkles, Mail, CheckCircle, ArrowRight } from "lucide-react"
 import Image from "next/image"
 
 export default function LoginPage() {
@@ -22,13 +21,14 @@ function LoginForm() {
     const router = useRouter()
     const searchParams = useSearchParams()
 
-    // Handle Demo Mode (Initialize State Directly)
+    // Handle Demo Mode
     const isDemo = searchParams.get("demo") === "sharma"
 
+    // Only email state needed for Magic Link
     const [email, setEmail] = useState(isDemo ? "sharma.demo@gmail.com" : "")
-    const [password, setPassword] = useState(isDemo ? "sharma123" : "")
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [success, setSuccess] = useState(false)
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -36,18 +36,57 @@ function LoginForm() {
         setError(null)
 
         const supabase = createClient()
-        const { error } = await supabase.auth.signInWithPassword({
+
+        // Magic Link (OTP) Login
+        const { error } = await supabase.auth.signInWithOtp({
             email,
-            password,
+            options: {
+                // Redirect user to home page after clicking the link
+                emailRedirectTo: `${window.location.origin}/auth/callback?next=/home`,
+            },
         })
 
         if (error) {
             setError(error.message)
             setLoading(false)
         } else {
-            router.push("/home")
-            router.refresh()
+            setSuccess(true)
+            setLoading(false)
         }
+    }
+
+    if (success) {
+        return (
+            <div className="h-[calc(100vh-40px)] w-full overflow-hidden flex items-center justify-center bg-[#0B0F19] p-4 text-white">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[500px] bg-emerald-600/20 blur-[120px] rounded-full pointer-events-none" />
+
+                <Card className="w-full max-w-md bg-white/5 border-white/10 backdrop-blur-md relative z-10">
+                    <CardHeader className="text-center">
+                        <div className="mx-auto h-20 w-20 bg-emerald-500/20 rounded-full flex items-center justify-center mb-6 ring-1 ring-emerald-500/50">
+                            <CheckCircle className="h-10 w-10 text-emerald-400" />
+                        </div>
+                        <h2 className="text-2xl font-bold text-white mb-2">Check Your Email 🚀</h2>
+                        <CardDescription className="text-slate-400 text-base">
+                            We've sent a magic link to <span className="text-white font-medium">{email}</span>
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <p className="text-sm text-center text-slate-500">
+                            Click the link in the email to sign in instantly. You can close this tab now.
+                        </p>
+                    </CardContent>
+                    <CardFooter className="flex justify-center border-t border-white/5 pt-6">
+                        <Button
+                            variant="ghost"
+                            className="text-slate-400 hover:text-white"
+                            onClick={() => setSuccess(false)}
+                        >
+                            Try different email
+                        </Button>
+                    </CardFooter>
+                </Card>
+            </div>
+        )
     }
 
     return (
@@ -80,44 +119,45 @@ function LoginForm() {
                     <form onSubmit={handleLogin} className="space-y-4">
                         <div className="space-y-2">
                             <Label htmlFor="email">Email</Label>
-                            <Input
-                                id="email"
-                                type="email"
-                                placeholder="admin@adwelink.com"
-                                className="bg-black/40 border-white/10 text-white placeholder:text-slate-600 focus:border-purple-500/50"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                            />
+                            <div className="relative">
+                                <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
+                                <Input
+                                    id="email"
+                                    type="email"
+                                    placeholder="admin@adwelink.com"
+                                    className="pl-10 bg-black/40 border-white/10 text-white placeholder:text-slate-600 focus:border-purple-500/50"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                />
+                            </div>
                         </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="password">Password</Label>
-                            <Input
-                                id="password"
-                                type="password"
-                                className="bg-black/40 border-white/10 text-white focus:border-purple-500/50"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                        </div>
+
                         {error && (
-                            <div className="text-xs text-red-400 bg-red-500/10 p-2 rounded border border-red-500/20">
+                            <div className="text-xs text-red-400 bg-red-500/10 p-2 rounded border border-red-500/20 text-center">
                                 {error}
                             </div>
                         )}
+
                         <Button
                             type="submit"
-                            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold shadow-lg shadow-purple-900/20"
+                            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold shadow-lg shadow-purple-900/20 h-11"
                             disabled={loading}
                         >
-                            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Sign In"}
+                            {loading ? (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : (
+                                <span className="flex items-center">
+                                    Send Magic Link <ArrowRight className="ml-2 h-4 w-4" />
+                                </span>
+                            )}
                         </Button>
                     </form>
                 </CardContent>
                 <CardFooter className="flex justify-center border-t border-white/5 pt-4">
-                    <p className="text-xs text-slate-500">
-                        Authorized Personnel Only. <span className="text-purple-400 hover:underline cursor-pointer">Forgot Password?</span>
+                    <p className="text-xs text-slate-500 text-center">
+                        Secure passwordless access.<br />
+                        Authorized Personnel Only.
                     </p>
                 </CardFooter>
             </Card>

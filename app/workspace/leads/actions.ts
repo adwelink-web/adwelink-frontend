@@ -35,10 +35,10 @@ export async function createLead(data: LeadCreateData) {
 
     const { data: lead, error } = await supabase
         .from("leads")
-        .insert({
-            ...data,
+        .insert([{
+            ...(data as any),
             institute_id
-        })
+        }])
         .select()
         .single()
 

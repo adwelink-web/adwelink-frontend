@@ -29,12 +29,18 @@ export async function getHomeStats() {
         const totalChats = chatsRes.count || 0
 
         // Process Activity Feed
-        const activityFeed = activityRes.data?.map(item => ({
-            type: item.sentiment === 'positive' ? 'success' : item.sentiment === 'negative' ? 'error' : 'info',
-            text: `${item.intent || 'Message'} from ${item.phone_number?.slice(-4) || 'User'}`, // Privacy masking
-            time: new Date(item.created_at!).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
-            created_at: item.created_at || undefined
-        })) || []
+        // Process Activity Feed
+        const activityFeed = activityRes.data?.map(item => {
+            const isPositive = ['enrollment', 'confirmed', 'interested'].some(i => item.intent_detected?.toLowerCase().includes(i));
+            const isNegative = ['spam', 'stop', 'unsubscribe'].some(i => item.intent_detected?.toLowerCase().includes(i));
+
+            return {
+                type: isPositive ? 'success' : isNegative ? 'error' : 'info',
+                text: `${item.intent_detected || 'Message'} from ${item.phone_number?.slice(-4) || 'User'}`, // Privacy masking
+                time: new Date(item.created_at!).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+                created_at: item.created_at || undefined
+            }
+        }) || []
 
         // If feed is empty, show system status
         if (activityFeed.length === 0) {

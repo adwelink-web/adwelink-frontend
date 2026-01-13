@@ -23,9 +23,27 @@ export default function FeedbackPage() {
             return
         }
         setLoading(true)
-        await new Promise(resolve => setTimeout(resolve, 1500))
-        setSubmitted(true)
-        setLoading(false)
+
+        try {
+            const supabase = createClient()
+            const { error } = await supabase
+                .from('feedback')
+                .insert([{
+                    rating,
+                    name: (e.target as any)[0].value, // Hardcoded for now based on input order, better to use state
+                    email: (e.target as any)[1].value,
+                    message: (e.target as any)[2].value
+                }])
+
+            if (error) throw error
+
+            setSubmitted(true)
+        } catch (err) {
+            console.error(err)
+            alert("Failed to submit feedback. Please try again.")
+        } finally {
+            setLoading(false)
+        }
     }
 
     if (submitted) {

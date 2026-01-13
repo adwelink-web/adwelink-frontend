@@ -14,6 +14,16 @@ import {
     Hand
 } from "lucide-react"
 import Link from "next/link"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { createClient } from "@/lib/supabase"
 import React, { useState } from "react"
 import Image from "next/image"
 
@@ -482,11 +492,22 @@ export default function ClientLandingPage() {
                                         Enter Workspace
                                     </Button>
                                 </Link>
-                                <a href="mailto:hello@adwelink.com?subject=Schedule%20a%20Demo">
-                                    <Button variant="outline" className="h-14 px-8 border-white/20 text-white hover:bg-white/10 font-bold rounded-xl text-base transition-all">
-                                        Schedule a Demo
-                                    </Button>
-                                </a>
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button variant="outline" className="h-14 px-8 border-white/20 text-white hover:bg-white/10 font-bold rounded-xl text-base transition-all">
+                                            Schedule a Demo
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="bg-[#0B0F19] border border-white/10 text-white sm:max-w-md rounded-3xl">
+                                        <DialogHeader>
+                                            <DialogTitle className="text-2xl font-bold">Join the Alpha</DialogTitle>
+                                            <DialogDescription className="text-slate-400">
+                                                We are onboarding institutes manually. Leave your details and we'll call you within 24 hours.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <WaitlistForm />
+                                    </DialogContent>
+                                </Dialog>
                             </div>
 
                             <p className="mt-6 text-xs text-slate-500">
@@ -556,5 +577,57 @@ export default function ClientLandingPage() {
 
             </main>
         </div >
+    )
+}
+
+function WaitlistForm() {
+    const [loading, setLoading] = useState(false)
+    const [submitted, setSubmitted] = useState(false)
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setLoading(true)
+        const form = e.target as HTMLFormElement
+        const formData = new FormData(form)
+
+        try {
+            const supabase = createClient()
+            const { error } = await supabase.from('waitlist').insert([{
+                full_name: formData.get('name') as string,
+                contact: formData.get('contact') as string,
+                source: 'Landing Page'
+            }])
+            if (error) throw error
+            setSubmitted(true)
+        } catch (err) {
+            console.error(err)
+            alert("Something went wrong. Please try again.")
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    if (submitted) {
+        return (
+            <div className="py-8 text-center space-y-4">
+                <div className="mx-auto h-12 w-12 bg-emerald-500/20 rounded-full flex items-center justify-center">
+                    <CheckCircle className="h-6 w-6 text-emerald-400" />
+                </div>
+                <div>
+                    <h3 className="text-xl font-bold text-white">Request Received!</h3>
+                    <p className="text-slate-400 text-sm">We'll reach out to you shortly.</p>
+                </div>
+            </div>
+        )
+    }
+
+    return (
+        <form onSubmit={handleSubmit} className="space-y-4 py-4">
+            <Input name="name" placeholder="Institute / Director Name" required className="bg-white/5 border-white/10" />
+            <Input name="contact" placeholder="Phone Number / Email" required className="bg-white/5 border-white/10" />
+            <Button type="submit" disabled={loading} className="w-full bg-white text-black hover:bg-slate-200 font-bold rounded-xl h-12">
+                {loading ? "Submitting..." : "Join Waitlist"}
+            </Button>
+        </form>
     )
 }
