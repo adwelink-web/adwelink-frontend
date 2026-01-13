@@ -69,8 +69,16 @@ export default function ClientLandingPage() {
                             <a href="#problem" className="text-xs font-medium text-slate-400 hover:text-white transition-colors uppercase tracking-wider">Problem</a>
                             <a href="#solution" className="text-xs font-medium text-slate-400 hover:text-white transition-colors uppercase tracking-wider">Solution</a>
                             <a href="#ams" className="text-xs font-medium text-slate-400 hover:text-white transition-colors uppercase tracking-wider">AMS</a>
+                            <a href="#pricing" className="text-xs font-medium text-slate-400 hover:text-white transition-colors uppercase tracking-wider">Pricing</a>
                             <a href="#offer" className="text-xs font-medium text-slate-400 hover:text-white transition-colors uppercase tracking-wider">Offer</a>
                         </nav>
+
+                        {/* Live Test Button - Desktop */}
+                         <Link href="/demo-chat" className="hidden md:block">
+                            <Button variant="outline" className="rounded-full px-4 h-8 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 text-[10px] font-bold uppercase tracking-widest shadow-[0_0_15px_rgba(16,185,129,0.2)] hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all animate-pulse">
+                                <span className="mr-2 h-2 w-2 rounded-full bg-emerald-500"></span> Live Test
+                            </Button>
+                        </Link>
 
                         {/* CTA Button */}
                         <Link href="/login">
@@ -371,6 +379,68 @@ export default function ClientLandingPage() {
                             <span className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-emerald-500" /> Encrypted</span>
                             <span className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-emerald-500" /> Private</span>
                             <span className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-emerald-500" /> Daily Backups</span>
+                        </div>
+                    </div>
+                </section>
+
+                {/* 💰 Pricing Section */}
+                <section id="pricing" className="py-24 px-6 bg-[#0B0F19]">
+                    <div className="max-w-6xl mx-auto">
+                        <div className="text-center mb-16 animate-fade-in-up">
+                            <span className="text-emerald-400 text-xs font-bold tracking-widest uppercase mb-2 block">Simple Pricing</span>
+                            <h2 className="text-3xl md:text-5xl font-bold mb-6">Invest in Growth, Not Software.</h2>
+                            <p className="text-slate-400 max-w-xl mx-auto">
+                                One-time Setup: <span className="text-white font-bold text-lg">₹15,000</span> <span className="text-sm">(Implementation & Training included)</span>
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            {/* Starter */}
+                            <div className="p-8 rounded-[32px] bg-white/5 border border-white/10 hover:border-indigo-500/30 transition-colors group">
+                                <h3 className="text-xl font-bold text-white mb-2">Starter</h3>
+                                <div className="flex items-baseline gap-1 mb-6">
+                                    <span className="text-3xl font-bold">₹7,999</span>
+                                    <span className="text-slate-500 text-sm">/mo</span>
+                                </div>
+                                <ul className="space-y-4 mb-8 text-sm text-slate-400">
+                                    <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" /> 300 Lead Processing</li>
+                                    <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" /> Aditi AI Agent</li>
+                                    <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" /> WhatsApp Integration</li>
+                                </ul>
+                                <Button className="w-full h-12 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold">Choose Starter</Button>
+                            </div>
+
+                            {/* Growth */}
+                            <div className="p-8 rounded-[32px] bg-gradient-to-b from-indigo-900/20 to-transparent border border-indigo-500/50 relative transform hover:-translate-y-2 transition-transform duration-300 shadow-2xl">
+                                <div className="absolute top-0 right-0 bg-indigo-500 text-white text-[10px] font-bold px-4 py-1.5 rounded-bl-xl shadow-lg">MOST POPULAR</div>
+                                <h3 className="text-xl font-bold text-white mb-2">Type-A</h3>
+                                <div className="flex items-baseline gap-1 mb-6">
+                                    <span className="text-4xl font-bold text-indigo-400">₹14,999</span>
+                                    <span className="text-slate-500 text-sm">/mo</span>
+                                </div>
+                                <ul className="space-y-4 mb-8 text-sm text-slate-300">
+                                    <li className="flex items-center gap-3"><CheckCircle className="h-5 w-5 text-indigo-400 shrink-0" /> <span className="font-bold text-white">1,000 Lead Processing</span></li>
+                                    <li className="flex items-center gap-3"><CheckCircle className="h-5 w-5 text-indigo-400 shrink-0" /> Aditi AI Agent (Pro)</li>
+                                    <li className="flex items-center gap-3"><CheckCircle className="h-5 w-5 text-indigo-400 shrink-0" /> Priority Support</li>
+                                </ul>
+                                <Button className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-lg shadow-indigo-500/25">Get Started</Button>
+                            </div>
+
+                            {/* Enterprise */}
+                            <div className="p-8 rounded-[32px] bg-white/5 border border-white/10 hover:border-purple-500/30 transition-colors group">
+                                <h3 className="text-xl font-bold text-white mb-2">Enterprise</h3>
+                                <div className="flex items-baseline gap-1 mb-6">
+                                    <span className="text-3xl font-bold">₹29,999</span>
+                                    <span className="text-slate-500 text-sm">/mo</span>
+                                </div>
+                                <ul className="space-y-4 mb-8 text-sm text-slate-400">
+                                    <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-purple-400 shrink-0" /> <strong>Unlimited</strong> Processing*</li>
+                                    <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-purple-400 shrink-0" /> Dedicated Account Manager</li>
+                                    <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-purple-400 shrink-0" /> Custom Integrations</li>
+                                </ul>
+                                <Button className="w-full h-12 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold">Contact Sales</Button>
+                                <p className="text-[10px] text-slate-600 mt-4 text-center italic">*Subject to fair usage policy. Changeable in future.</p>
+                            </div>
                         </div>
                     </div>
                 </section>
