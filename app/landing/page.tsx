@@ -73,13 +73,6 @@ export default function ClientLandingPage() {
                             <a href="#offer" className="text-xs font-medium text-slate-400 hover:text-white transition-colors uppercase tracking-wider">Offer</a>
                         </nav>
 
-                        {/* Live Test Button - Desktop */}
-                         <Link href="/demo-chat" className="hidden md:block">
-                            <Button variant="outline" className="rounded-full px-4 h-8 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 text-[10px] font-bold uppercase tracking-widest shadow-[0_0_15px_rgba(16,185,129,0.2)] hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all animate-pulse">
-                                <span className="mr-2 h-2 w-2 rounded-full bg-emerald-500"></span> Live Test
-                            </Button>
-                        </Link>
-
                         {/* CTA Button */}
                         <Link href="/login">
                             <Button className={`rounded-full px-6 text-[10px] font-bold uppercase tracking-widest transition-all duration-500 ease-out hover:scale-105 active:scale-95 border border-white/10 hover:border-white/50 shadow-lg hover:shadow-white/20 ${isScrolled ? "bg-white/10 text-white hover:bg-white hover:text-black" : "bg-white/5 text-white hover:bg-white hover:text-black"}`}>
