@@ -23,10 +23,10 @@ export default async function InboundPage() {
 
             <Tabs defaultValue="waitlist" className="w-full">
                 <TabsList className="bg-white/5 border border-white/10">
-                    <TabsTrigger value="waitlist" className="data-[state=active]:bg-purple-600">
+                    <TabsTrigger value="waitlist" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                         <Users className="h-4 w-4 mr-2" /> Waitlist ({waitlist.length})
                     </TabsTrigger>
-                    <TabsTrigger value="feedback" className="data-[state=active]:bg-purple-600">
+                    <TabsTrigger value="feedback" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                         <MessageSquare className="h-4 w-4 mr-2" /> Feedback ({feedback.length})
                     </TabsTrigger>
                 </TabsList>
@@ -76,7 +76,7 @@ export default async function InboundPage() {
                             ) : (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {feedback.map((item) => (
-                                        <div key={item.id} className="p-5 rounded-xl bg-white/5 border border-white/5 hover:border-purple-500/30 transition-colors">
+                                        <div key={item.id} className="p-5 rounded-xl bg-white/5 border border-white/5 hover:border-primary/30 transition-colors">
                                             <div className="flex justify-between items-start mb-3">
                                                 <div className="flex items-center gap-1">
                                                     {[...Array(5)].map((_, i) => (
@@ -90,7 +90,7 @@ export default async function InboundPage() {
                                             </div>
                                             <p className="text-slate-300 text-sm italic mb-4">"{item.message}"</p>
                                             <div className="flex items-center gap-2 border-t border-white/5 pt-3">
-                                                <div className="h-6 w-6 rounded-full bg-purple-500/20 flex items-center justify-center text-xs font-bold text-purple-400">
+                                                <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">
                                                     {(item.name || "?").charAt(0)}
                                                 </div>
                                                 <div className="text-xs">

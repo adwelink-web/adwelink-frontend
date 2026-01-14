@@ -104,31 +104,31 @@ export default async function SuperAdminDashboard() {
     ]
 
     const colorClasses: Record<string, string> = {
-        purple: "from-purple-500/20 to-purple-500/5 border-purple-500/20 text-purple-400",
+        purple: "from-primary/20 to-primary/5 border-primary/20 text-primary",
         emerald: "from-emerald-500/20 to-emerald-500/5 border-emerald-500/20 text-emerald-400",
-        blue: "from-blue-500/20 to-blue-500/5 border-blue-500/20 text-blue-400",
+        blue: "from-cyan-500/20 to-cyan-500/5 border-cyan-500/20 text-cyan-400",
         amber: "from-amber-500/20 to-amber-500/5 border-amber-500/20 text-amber-400"
     }
 
     return (
-        <div className="p-8 space-y-8">
+        <div className="space-y-8 pb-10">
 
-            {/* Page Header */}
-            <div className="flex items-end justify-between">
+            {/* Sticky Header with Glassmorphism */}
+            <div className="sticky top-0 z-40 -mx-8 px-8 py-4 bg-background/60 backdrop-blur-xl border-b border-white/5 flex items-end justify-between transition-all duration-200">
                 <div>
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center">
+                    <div className="flex items-center gap-3 mb-1">
+                        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center shadow-lg shadow-primary/20 ring-1 ring-white/10">
                             <Zap className="h-5 w-5 text-white" />
                         </div>
-                        <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
+                        <h1 className="text-3xl font-bold tracking-tight text-foreground">
                             Command Center
                         </h1>
                     </div>
-                    <p className="text-slate-500 text-sm">Adwelink Business Overview • Real-time Metrics</p>
+                    <p className="text-muted-foreground text-sm ml-1">Adwelink Business Overview • Real-time Metrics</p>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-slate-500">
+                <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
                     <Clock className="h-3.5 w-3.5" />
-                    <span>Last updated: Just now</span>
+                    <span>Updated: Just now</span>
                 </div>
             </div>
 
@@ -137,20 +137,20 @@ export default async function SuperAdminDashboard() {
                 {stats.map((stat, i) => (
                     <div
                         key={i}
-                        className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${colorClasses[stat.color]} border p-6 group hover:scale-[1.02] transition-all duration-300`}
+                        className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${colorClasses[stat.color]} border p-6 group hover:scale-[1.02] transition-all duration-300 shadow-xl`}
                     >
-                        {/* Glow effect */}
-                        <div className={`absolute top-0 right-0 w-32 h-32 bg-${stat.color}-500/10 blur-3xl rounded-full`} />
+                        {/* Smooth Glow effect */}
+                        <div className={`absolute top-[-50%] right-[-50%] w-48 h-48 bg-${stat.color === 'purple' ? 'primary' : stat.color}-500/20 blur-[60px] rounded-full group-hover:opacity-100 transition-opacity`} />
 
                         <div className="relative z-10">
                             <div className="flex items-center justify-between mb-4">
-                                <span className="text-sm font-medium text-slate-400">{stat.label}</span>
+                                <span className="text-xs font-bold uppercase tracking-wider opacity-70">{stat.label}</span>
                                 <stat.icon className={`h-5 w-5 ${colorClasses[stat.color].split(' ').pop()}`} />
                             </div>
-                            <div className="text-4xl font-bold text-white mb-1 tracking-tight">{stat.value}</div>
+                            <div className="text-4xl font-bold text-white mb-2 tracking-tight">{stat.value}</div>
                             <div className="flex items-center justify-between">
-                                <span className="text-xs text-slate-500">{stat.subtext}</span>
-                                <span className={`text-[10px] font-bold uppercase tracking-wider ${colorClasses[stat.color].split(' ').pop()}`}>
+                                <span className="text-xs text-slate-400 font-medium">{stat.subtext}</span>
+                                <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/5 border border-white/5 ${colorClasses[stat.color].split(' ').pop()}`}>
                                     {stat.trend}
                                 </span>
                             </div>
@@ -163,80 +163,87 @@ export default async function SuperAdminDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
                 {/* Institutes List */}
-                <div className="rounded-2xl bg-white/[0.02] border border-white/10 backdrop-blur-sm overflow-hidden">
-                    <div className="flex items-center justify-between p-5 border-b border-white/5">
+                <div className="rounded-2xl bg-black/40 border border-white/10 backdrop-blur-sm overflow-hidden flex flex-col shadow-2xl">
+                    <div className="flex items-center justify-between p-5 border-b border-white/5 bg-white/5">
                         <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                                <Building2 className="h-4 w-4 text-purple-400" />
+                            <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center ring-1 ring-primary/20">
+                                <Building2 className="h-4 w-4 text-primary" />
                             </div>
-                            <h2 className="text-lg font-semibold text-white">Institutes</h2>
+                            <h2 className="text-lg font-bold text-white tracking-tight">Active Institutes</h2>
                         </div>
-                        <Link href="/super-admin/institutes" className="flex items-center gap-1 text-xs text-purple-400 hover:text-purple-300 transition-colors">
+                        <Link href="/super-admin/institutes" className="flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 transition-colors bg-primary/10 px-3 py-1 rounded-full">
                             View All <ArrowUpRight className="h-3 w-3" />
                         </Link>
                     </div>
                     <div className="p-4 space-y-2 max-h-[400px] overflow-y-auto custom-scrollbar">
                         {metrics.institutes.slice(0, 6).map((inst) => (
-                            <div key={inst.id} className="flex items-center justify-between p-4 rounded-xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-colors group">
-                                <div className="flex items-center gap-3">
-                                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center text-sm font-bold text-slate-400 border border-white/5">
+                            <div key={inst.id} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] hover:border-primary/20 transition-all group cursor-default">
+                                <div className="flex items-center gap-4">
+                                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center text-sm font-bold text-slate-400 border border-white/10 group-hover:border-primary/30 transition-colors">
                                         {inst.name?.charAt(0)}
                                     </div>
                                     <div>
-                                        <p className="font-medium text-white group-hover:text-purple-300 transition-colors">{inst.name}</p>
-                                        <p className="text-xs text-slate-500">{inst.city || "No city"} • <span className="text-purple-400">{inst.current_plan || "trial"}</span></p>
+                                        <p className="font-semibold text-white text-sm group-hover:text-primary transition-colors">{inst.name}</p>
+                                        <p className="text-xs text-slate-500 font-medium">{inst.city || "No city"} • <span className="text-primary font-bold uppercase text-[10px]">{inst.current_plan || "trial"}</span></p>
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-sm font-mono text-slate-300">{inst.messages_used || 0}<span className="text-slate-600">/{inst.message_limit || 50}</span></p>
-                                    <p className="text-[10px] text-slate-600 uppercase tracking-wider">messages</p>
+                                    <div className="flex items-center justify-end gap-1.5">
+                                        <span className="text-sm font-mono font-bold text-white">{inst.messages_used || 0}</span>
+                                        <span className="text-xs text-slate-600">/ {inst.message_limit || 50}</span>
+                                    </div>
+                                    <div className="w-20 h-1 bg-slate-800 rounded-full mt-1 ml-auto overflow-hidden">
+                                        <div className="h-full bg-primary rounded-full" style={{ width: `${Math.min(((inst.messages_used || 0) / (inst.message_limit || 50)) * 100, 100)}%` }}></div>
+                                    </div>
                                 </div>
                             </div>
                         ))}
                         {metrics.institutes.length === 0 && (
                             <div className="text-center py-12">
-                                <Building2 className="h-12 w-12 text-slate-700 mx-auto mb-3" />
-                                <p className="text-slate-500 text-sm">No institutes yet</p>
+                                <Building2 className="h-12 w-12 text-slate-800 mx-auto mb-3" />
+                                <p className="text-slate-600 text-sm font-medium">No institutes yet</p>
                             </div>
                         )}
                     </div>
                 </div>
 
                 {/* Recent Leads */}
-                <div className="rounded-2xl bg-white/[0.02] border border-white/10 backdrop-blur-sm overflow-hidden">
-                    <div className="flex items-center justify-between p-5 border-b border-white/5">
+                <div className="rounded-2xl bg-black/40 border border-white/10 backdrop-blur-sm overflow-hidden flex flex-col shadow-2xl">
+                    <div className="flex items-center justify-between p-5 border-b border-white/5 bg-white/5">
                         <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                            <div className="h-8 w-8 rounded-lg bg-emerald-500/10 flex items-center justify-center ring-1 ring-emerald-500/20">
                                 <Users className="h-4 w-4 text-emerald-400" />
                             </div>
-                            <h2 className="text-lg font-semibold text-white">Recent Leads</h2>
+                            <h2 className="text-lg font-bold text-white tracking-tight">Recent Leads</h2>
                         </div>
-                        <Link href="/super-admin/leads" className="flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300 transition-colors">
+                        <Link href="/super-admin/leads" className="flex items-center gap-1 text-xs font-medium text-emerald-400 hover:text-emerald-300 transition-colors bg-emerald-500/10 px-3 py-1 rounded-full">
                             View All <ArrowUpRight className="h-3 w-3" />
                         </Link>
                     </div>
                     <div className="p-4 space-y-2 max-h-[400px] overflow-y-auto custom-scrollbar">
                         {metrics.recentLeads.map((lead: any) => {
                             const statusColors: Record<string, string> = {
-                                hot: "bg-red-500/20 text-red-400 border-red-500/20",
-                                warm: "bg-amber-500/20 text-amber-400 border-amber-500/20",
-                                interested: "bg-emerald-500/20 text-emerald-400 border-emerald-500/20",
-                                fresh: "bg-blue-500/20 text-blue-400 border-blue-500/20"
+                                hot: "bg-red-500/10 text-red-400 border-red-500/20 ring-red-500/10",
+                                warm: "bg-amber-500/10 text-amber-400 border-amber-500/20 ring-amber-500/10",
+                                interested: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 ring-emerald-500/10",
+                                fresh: "bg-blue-500/10 text-blue-400 border-blue-500/20 ring-blue-500/10"
                             }
-                            const statusClass = statusColors[lead.status] || "bg-slate-500/20 text-slate-400 border-slate-500/20"
+                            const statusClass = statusColors[lead.status?.toLowerCase()] || "bg-slate-500/10 text-slate-400 border-slate-500/20"
 
                             return (
-                                <div key={lead.id} className="flex items-center justify-between p-4 rounded-xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-colors group">
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-900/50 to-emerald-900/20 flex items-center justify-center text-sm font-bold text-emerald-400 border border-emerald-500/10">
+                                <div key={lead.id} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] hover:border-emerald-500/20 transition-all group">
+                                    <div className="flex items-center gap-4">
+                                        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-900/40 to-emerald-900/10 flex items-center justify-center text-sm font-bold text-emerald-400 border border-emerald-500/10 ring-1 ring-emerald-500/10">
                                             {(lead.name || "U").charAt(0)}
                                         </div>
                                         <div>
-                                            <p className="font-medium text-white group-hover:text-emerald-300 transition-colors">{lead.name || "Unknown"}</p>
-                                            <p className="text-xs text-slate-500">{lead.phone} • {lead.institutes?.name || "Unknown"}</p>
+                                            <p className="font-semibold text-white text-sm group-hover:text-emerald-300 transition-colors">{lead.name || "Unknown"}</p>
+                                            <p className="text-xs text-slate-500 font-medium flex items-center gap-1.5">
+                                                <span>{lead.institutes?.name || "Unknown"}</span>
+                                            </p>
                                         </div>
                                     </div>
-                                    <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${statusClass}`}>
+                                    <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border ring-1 ${statusClass}`}>
                                         {lead.status || "new"}
                                     </span>
                                 </div>
@@ -244,8 +251,8 @@ export default async function SuperAdminDashboard() {
                         })}
                         {metrics.recentLeads.length === 0 && (
                             <div className="text-center py-12">
-                                <Users className="h-12 w-12 text-slate-700 mx-auto mb-3" />
-                                <p className="text-slate-500 text-sm">No leads yet</p>
+                                <Users className="h-12 w-12 text-slate-800 mx-auto mb-3" />
+                                <p className="text-slate-600 text-sm font-medium">No leads yet</p>
                             </div>
                         )}
                     </div>

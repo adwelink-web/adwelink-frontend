@@ -31,66 +31,70 @@ export default async function SuperAdminLayout({
     ]
 
     return (
-        <div className="min-h-screen bg-[#030712] text-white relative overflow-hidden">
+        <div className="min-h-screen bg-background text-foreground relative overflow-hidden font-sans antialiased">
 
-            {/* 🌌 Premium Background Effects */}
+            {/* 🌌 Iconic Premium Background Effects */}
             <div className="fixed inset-0 pointer-events-none z-0">
-                <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay" />
-                <div className="absolute top-[-20%] left-[10%] w-[800px] h-[800px] bg-purple-900/20 blur-[180px] rounded-full" />
-                <div className="absolute bottom-[-20%] right-[10%] w-[600px] h-[600px] bg-indigo-900/15 blur-[150px] rounded-full" />
-                <div className="absolute top-[50%] right-[30%] w-[400px] h-[400px] bg-violet-900/10 blur-[120px] rounded-full animate-pulse" />
+                {/* Primary Ambience */}
+                <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-primary/20 blur-[120px] rounded-full mix-blend-screen opacity-50" />
+                {/* Secondary/Cyan Ambience */}
+                <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-cyan-500/10 blur-[120px] rounded-full mix-blend-screen opacity-50" />
+                {/* Subtle Pulse */}
+                <div className="absolute top-[40%] left-[30%] w-[300px] h-[300px] bg-violet-600/10 blur-[100px] rounded-full animate-pulse opacity-30" />
             </div>
 
             {/* 🎯 Sidebar */}
-            <aside className="fixed left-0 top-0 bottom-0 w-64 bg-[#0a0d14]/80 backdrop-blur-2xl border-r border-white/5 z-50 flex flex-col">
+            <aside className="fixed left-0 top-0 bottom-0 w-64 bg-sidebar border-r border-border/40 backdrop-blur-xl z-50 flex flex-col">
 
                 {/* Logo Section */}
-                <div className="h-20 flex items-center px-6 border-b border-white/5">
+                <div className="h-16 flex items-center px-6 border-b border-border/40">
                     <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-lg shadow-purple-500/20">
-                            <Crown className="h-5 w-5 text-white" />
+                        <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center shadow-lg shadow-primary/25 ring-1 ring-white/10">
+                            <Crown className="h-4 w-4 text-white" />
                         </div>
                         <div>
-                            <span className="font-bold text-lg text-white tracking-tight">Super Admin</span>
+                            <span className="font-bold text-base text-foreground tracking-tight">Super Admin</span>
                             <div className="flex items-center gap-1.5">
-                                <Sparkles className="h-3 w-3 text-purple-400" />
-                                <span className="text-[10px] text-purple-400 font-medium uppercase tracking-wider">Adwelink</span>
+                                <Sparkles className="h-2.5 w-2.5 text-primary" />
+                                <span className="text-[9px] text-primary font-bold uppercase tracking-widest">Adwelink</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Navigation */}
-                <nav className="flex-1 py-6 px-4 space-y-1.5">
+                <nav className="flex-1 py-6 px-3 space-y-1">
                     {navItems.map((item) => (
                         <Link
                             key={item.href}
                             href={item.href}
-                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-300 group"
+                            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all duration-200 group relative overflow-hidden"
                         >
-                            <item.icon className="h-5 w-5 group-hover:text-purple-400 transition-colors" />
+                            <item.icon className="h-4.5 w-4.5 group-hover:text-primary transition-colors" />
                             <span className="text-sm font-medium">{item.label}</span>
+                            {/* Hover Glow */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                         </Link>
                     ))}
                 </nav>
 
                 {/* User Section */}
-                <div className="p-4 border-t border-white/5">
-                    <div className="p-4 rounded-xl bg-white/5 border border-white/5">
+                <div className="p-4 border-t border-border/40 bg-black/20">
+                    <div className="p-3 rounded-xl bg-white/5 border border-white/5 group hover:border-primary/20 transition-colors">
                         <div className="flex items-center gap-3 mb-3">
-                            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center text-xs font-bold">
+                            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center text-xs font-bold ring-1 ring-white/10">
                                 {user.email?.charAt(0).toUpperCase()}
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-white truncate">Super Admin</p>
-                                <p className="text-[10px] text-slate-500 truncate">{user.email}</p>
+                                <p className="text-sm font-semibold text-foreground truncate">Super Admin</p>
+                                <p className="text-[10px] text-muted-foreground truncate">{user.email}</p>
                             </div>
                         </div>
                         <Link
                             href="/home"
-                            className="flex items-center justify-center gap-2 w-full py-2 rounded-lg bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-colors text-xs font-medium"
+                            className="flex items-center justify-center gap-2 w-full py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-all text-xs font-bold uppercase tracking-wide"
                         >
-                            <LogOut className="h-3.5 w-3.5" />
+                            <LogOut className="h-3 w-3" />
                             Exit to AMS
                         </Link>
                     </div>
@@ -98,8 +102,10 @@ export default async function SuperAdminLayout({
             </aside>
 
             {/* 📄 Main Content */}
-            <main className="ml-64 min-h-screen relative z-10">
-                {children}
+            <main className="ml-64 min-h-screen relative z-10 w-[calc(100%-16rem)] flex flex-col">
+                <div className="flex-1 p-8 overflow-y-auto custom-scrollbar">
+                    {children}
+                </div>
             </main>
         </div>
     )

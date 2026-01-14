@@ -80,14 +80,14 @@ export default function OnboardPage() {
             <div className="flex items-center gap-4 mb-8">
                 {[1, 2, 3].map((s) => (
                     <div key={s} className="flex items-center gap-2">
-                        <div className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-bold ${step >= s ? "bg-purple-500 text-white" : "bg-white/10 text-slate-500"
+                        <div className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-bold ${step >= s ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "bg-white/10 text-muted-foreground"
                             }`}>
                             {step > s ? <CheckCircle className="h-4 w-4" /> : s}
                         </div>
-                        <span className={`text-sm ${step >= s ? "text-white" : "text-slate-500"}`}>
+                        <span className={`text-sm ${step >= s ? "text-foreground font-medium" : "text-muted-foreground"}`}>
                             {s === 1 ? "Basic Info" : s === 2 ? "WhatsApp" : "Plan"}
                         </span>
-                        {s < 3 && <div className={`w-8 h-0.5 ${step > s ? "bg-purple-500" : "bg-white/10"}`} />}
+                        {s < 3 && <div className={`w-8 h-0.5 ${step > s ? "bg-primary" : "bg-white/10"}`} />}
                     </div>
                 ))}
             </div>
@@ -97,7 +97,7 @@ export default function OnboardPage() {
                 <Card className="border-white/10">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                            <Building2 className="h-5 w-5 text-purple-400" />
+                            <Building2 className="h-5 w-5 text-primary" />
                             Institute Details
                         </CardTitle>
                     </CardHeader>
@@ -144,7 +144,7 @@ export default function OnboardPage() {
                         <Button
                             onClick={() => setStep(2)}
                             disabled={!formData.name}
-                            className="w-full bg-purple-600 hover:bg-purple-700 mt-4"
+                            className="w-full bg-primary hover:bg-primary/90 mt-4"
                         >
                             Next: WhatsApp Setup <ArrowRight className="h-4 w-4 ml-2" />
                         </Button>
@@ -191,7 +191,7 @@ export default function OnboardPage() {
                             <Button variant="outline" onClick={() => setStep(1)} className="flex-1">
                                 Back
                             </Button>
-                            <Button onClick={() => setStep(3)} className="flex-1 bg-purple-600 hover:bg-purple-700">
+                            <Button onClick={() => setStep(3)} className="flex-1 bg-primary hover:bg-primary/90">
                                 Next: Select Plan <ArrowRight className="h-4 w-4 ml-2" />
                             </Button>
                         </div>
@@ -219,16 +219,16 @@ export default function OnboardPage() {
                                 key={plan.id}
                                 onClick={() => updateField("current_plan", plan.id)}
                                 className={`p-4 rounded-xl border cursor-pointer transition-all ${formData.current_plan === plan.id
-                                    ? "border-purple-500 bg-purple-500/10"
+                                    ? "border-primary bg-primary/10 shadow-[0_0_15px_rgba(124,58,237,0.1)]"
                                     : "border-white/10 hover:border-white/20"
                                     }`}
                             >
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <p className="font-bold text-white">{plan.name}</p>
-                                        <p className="text-xs text-slate-500">{plan.limit}</p>
+                                        <p className="text-xs text-muted-foreground">{plan.limit}</p>
                                     </div>
-                                    <p className="text-lg font-bold text-purple-400">{plan.price}</p>
+                                    <p className="text-lg font-bold text-primary">{plan.price}</p>
                                 </div>
                             </div>
                         ))}
@@ -244,7 +244,7 @@ export default function OnboardPage() {
                             <Button
                                 onClick={handleSubmit}
                                 disabled={loading}
-                                className="flex-1 bg-purple-600 hover:bg-purple-700"
+                                className="flex-1 bg-primary hover:bg-primary/90"
                             >
                                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create Institute"}
                             </Button>
