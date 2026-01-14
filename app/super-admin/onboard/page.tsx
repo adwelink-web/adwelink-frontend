@@ -73,28 +73,28 @@ export default function OnboardPage() {
             {/* Header */}
             <div className="mb-8">
                 <h1 className="text-3xl font-bold tracking-tight">Onboard New Client</h1>
-                <p className="text-slate-500 mt-1">Setup a new institute in Adwelink</p>
+                <p className="text-muted-foreground mt-1">Setup a new institute in Adwelink</p>
             </div>
 
             {/* Progress Steps */}
             <div className="flex items-center gap-4 mb-8">
                 {[1, 2, 3].map((s) => (
                     <div key={s} className="flex items-center gap-2">
-                        <div className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-bold ${step >= s ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "bg-white/10 text-muted-foreground"
+                        <div className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${step >= s ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "bg-muted text-muted-foreground"
                             }`}>
                             {step > s ? <CheckCircle className="h-4 w-4" /> : s}
                         </div>
                         <span className={`text-sm ${step >= s ? "text-foreground font-medium" : "text-muted-foreground"}`}>
                             {s === 1 ? "Basic Info" : s === 2 ? "WhatsApp" : "Plan"}
                         </span>
-                        {s < 3 && <div className={`w-8 h-0.5 ${step > s ? "bg-primary" : "bg-white/10"}`} />}
+                        {s < 3 && <div className={`w-8 h-0.5 ${step > s ? "bg-primary" : "bg-muted"}`} />}
                     </div>
                 ))}
             </div>
 
             {/* Step 1: Basic Info */}
             {step === 1 && (
-                <Card className="border-white/10">
+                <Card className="border-border/40 bg-card/50 backdrop-blur-sm">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Building2 className="h-5 w-5 text-primary" />
@@ -108,7 +108,7 @@ export default function OnboardPage() {
                                 placeholder="e.g., Indore Academy of Excellence"
                                 value={formData.name}
                                 onChange={(e) => updateField("name", e.target.value)}
-                                className="mt-1 bg-white/5 border-white/10"
+                                className="mt-1"
                             />
                         </div>
                         <div className="grid grid-cols-2 gap-4">
@@ -118,7 +118,7 @@ export default function OnboardPage() {
                                     placeholder="e.g., Indore"
                                     value={formData.city}
                                     onChange={(e) => updateField("city", e.target.value)}
-                                    className="mt-1 bg-white/5 border-white/10"
+                                    className="mt-1"
                                 />
                             </div>
                             <div>
@@ -127,7 +127,7 @@ export default function OnboardPage() {
                                     placeholder="e.g., 9876543210"
                                     value={formData.helpline_number}
                                     onChange={(e) => updateField("helpline_number", e.target.value)}
-                                    className="mt-1 bg-white/5 border-white/10"
+                                    className="mt-1"
                                 />
                             </div>
                         </div>
@@ -137,14 +137,14 @@ export default function OnboardPage() {
                                 placeholder="Full address"
                                 value={formData.address}
                                 onChange={(e) => updateField("address", e.target.value)}
-                                className="mt-1 bg-white/5 border-white/10"
+                                className="mt-1"
                             />
                         </div>
 
                         <Button
                             onClick={() => setStep(2)}
                             disabled={!formData.name}
-                            className="w-full bg-primary hover:bg-primary/90 mt-4"
+                            className="w-full mt-4"
                         >
                             Next: WhatsApp Setup <ArrowRight className="h-4 w-4 ml-2" />
                         </Button>
@@ -154,15 +154,15 @@ export default function OnboardPage() {
 
             {/* Step 2: WhatsApp */}
             {step === 2 && (
-                <Card className="border-white/10">
+                <Card className="border-border/40 bg-card/50 backdrop-blur-sm">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                            <Phone className="h-5 w-5 text-green-400" />
+                            <Phone className="h-5 w-5 text-emerald-500" />
                             WhatsApp Business Setup
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-sm text-amber-300">
+                        <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-sm text-amber-500">
                             <p className="font-bold mb-1">⚠️ Optional</p>
                             <p className="text-xs">Skip if client hasn't setup WhatsApp Business API yet. You can add later.</p>
                         </div>
@@ -173,7 +173,7 @@ export default function OnboardPage() {
                                 placeholder="e.g., 123456789012345"
                                 value={formData.phone_id}
                                 onChange={(e) => updateField("phone_id", e.target.value)}
-                                className="mt-1 bg-white/5 border-white/10"
+                                className="mt-1"
                             />
                         </div>
                         <div>
@@ -183,7 +183,7 @@ export default function OnboardPage() {
                                 placeholder="Meta API Access Token"
                                 value={formData.access_token}
                                 onChange={(e) => updateField("access_token", e.target.value)}
-                                className="mt-1 bg-white/5 border-white/10"
+                                className="mt-1"
                             />
                         </div>
 
@@ -191,7 +191,7 @@ export default function OnboardPage() {
                             <Button variant="outline" onClick={() => setStep(1)} className="flex-1">
                                 Back
                             </Button>
-                            <Button onClick={() => setStep(3)} className="flex-1 bg-primary hover:bg-primary/90">
+                            <Button onClick={() => setStep(3)} className="flex-1">
                                 Next: Select Plan <ArrowRight className="h-4 w-4 ml-2" />
                             </Button>
                         </div>
@@ -201,10 +201,10 @@ export default function OnboardPage() {
 
             {/* Step 3: Plan */}
             {step === 3 && (
-                <Card className="border-white/10">
+                <Card className="border-border/40 bg-card/50 backdrop-blur-sm">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                            <Key className="h-5 w-5 text-amber-400" />
+                            <Key className="h-5 w-5 text-amber-500" />
                             Select Plan
                         </CardTitle>
                     </CardHeader>
@@ -220,12 +220,12 @@ export default function OnboardPage() {
                                 onClick={() => updateField("current_plan", plan.id)}
                                 className={`p-4 rounded-xl border cursor-pointer transition-all ${formData.current_plan === plan.id
                                     ? "border-primary bg-primary/10 shadow-[0_0_15px_rgba(124,58,237,0.1)]"
-                                    : "border-white/10 hover:border-white/20"
+                                    : "border-border/40 hover:border-border/80"
                                     }`}
                             >
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="font-bold text-white">{plan.name}</p>
+                                        <p className="font-bold text-foreground">{plan.name}</p>
                                         <p className="text-xs text-muted-foreground">{plan.limit}</p>
                                     </div>
                                     <p className="text-lg font-bold text-primary">{plan.price}</p>
@@ -234,7 +234,7 @@ export default function OnboardPage() {
                         ))}
 
                         {error && (
-                            <p className="text-red-400 text-sm text-center">{error}</p>
+                            <p className="text-destructive text-sm text-center">{error}</p>
                         )}
 
                         <div className="flex gap-4 mt-4">
@@ -244,7 +244,7 @@ export default function OnboardPage() {
                             <Button
                                 onClick={handleSubmit}
                                 disabled={loading}
-                                className="flex-1 bg-primary hover:bg-primary/90"
+                                className="flex-1"
                             >
                                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create Institute"}
                             </Button>
@@ -260,9 +260,9 @@ export default function OnboardPage() {
                         <div className="h-16 w-16 rounded-full bg-emerald-500 flex items-center justify-center mx-auto mb-4">
                             <CheckCircle className="h-8 w-8 text-white" />
                         </div>
-                        <h2 className="text-2xl font-bold text-white mb-2">Institute Created!</h2>
-                        <p className="text-slate-400">{formData.name} is now onboarded.</p>
-                        <p className="text-xs text-slate-500 mt-4">Redirecting to institutes list...</p>
+                        <h2 className="text-2xl font-bold text-foreground mb-2">Institute Created!</h2>
+                        <p className="text-muted-foreground">{formData.name} is now onboarded.</p>
+                        <p className="text-xs text-muted-foreground mt-4">Redirecting to institutes list...</p>
                     </CardContent>
                 </Card>
             )}

@@ -1,5 +1,6 @@
 import { createServerClient } from "@/lib/supabase-server"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Building2, MapPin, Phone, MessageSquare } from "lucide-react"
 import Link from "next/link"
@@ -43,7 +44,7 @@ export default async function InstitutesPage() {
             {/* Institutes Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {institutes.map((inst) => (
-                    <Card key={inst.id} className="bg-white/[0.02] border-white/10 hover:border-primary/30 transition-all hover:bg-white/[0.04] group">
+                    <Card key={inst.id} className="border-border/40 bg-card/50 backdrop-blur-sm hover:bg-muted/10 transition-colors group">
                         <CardHeader className="flex flex-row items-start justify-between pb-2">
                             <div>
                                 <CardTitle className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">{inst.name}</CardTitle>
@@ -52,20 +53,25 @@ export default async function InstitutesPage() {
                                     {inst.city || "No city"}
                                 </div>
                             </div>
-                            <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide border ${planColors[inst.current_plan || "trial"]}`}>
+                            <Badge variant={
+                                inst.current_plan === "domination" ? "default" :
+                                    inst.current_plan === "growth" ? "secondary" :
+                                        inst.current_plan === "starter" ? "outline" :
+                                            "secondary"
+                            } className="uppercase text-[10px]">
                                 {inst.current_plan || "trial"}
-                            </span>
+                            </Badge>
                         </CardHeader>
                         <CardContent>
                             {/* Usage Bar */}
-                            <div className="mb-5 bg-black/20 p-3 rounded-lg border border-white/5">
+                            <div className="mb-5 bg-muted/20 p-3 rounded-lg border border-border/10">
                                 <div className="flex justify-between text-xs mb-2">
                                     <span className="text-muted-foreground font-medium uppercase tracking-wider text-[10px]">Message Usage</span>
                                     <span className="text-foreground font-mono font-bold">{inst.messages_used || 0} <span className="text-muted-foreground font-normal">/ {inst.message_limit || 50}</span></span>
                                 </div>
-                                <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                                <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                                     <div
-                                        className="h-full bg-primary rounded-full transition-all shadow-[0_0_10px_rgba(124,58,237,0.5)]"
+                                        className="h-full bg-primary rounded-full transition-all"
                                         style={{ width: `${Math.min(((inst.messages_used || 0) / (inst.message_limit || 50)) * 100, 100)}%` }}
                                     />
                                 </div>
@@ -73,20 +79,20 @@ export default async function InstitutesPage() {
 
                             {/* Details */}
                             <div className="space-y-2.5 text-xs">
-                                <div className="flex items-center gap-2.5 text-slate-400">
-                                    <Phone className="h-3.5 w-3.5 text-slate-500" />
+                                <div className="flex items-center gap-2.5 text-muted-foreground">
+                                    <Phone className="h-3.5 w-3.5" />
                                     <span>{inst.helpline_number || "No helpline"}</span>
                                 </div>
-                                <div className="flex items-center gap-2.5 text-slate-400">
-                                    <MessageSquare className="h-3.5 w-3.5 text-slate-500" />
-                                    <span>WhatsApp: {inst.phone_id ? <span className="text-emerald-400 font-medium">Connected</span> : <span className="text-slate-600">Not setup</span>}</span>
+                                <div className="flex items-center gap-2.5 text-muted-foreground">
+                                    <MessageSquare className="h-3.5 w-3.5" />
+                                    <span>WhatsApp: {inst.phone_id ? <span className="text-emerald-500 font-medium">Connected</span> : <span className="text-muted-foreground">Not setup</span>}</span>
                                 </div>
                             </div>
 
                             {/* Actions */}
-                            <div className="mt-5 pt-4 border-t border-white/5 flex gap-2">
+                            <div className="mt-5 pt-4 border-t border-border/10 flex gap-2">
                                 <Link href={`/super-admin/institutes/${inst.id}`} className="flex-1">
-                                    <Button variant="outline" size="sm" className="w-full text-xs h-8 border-white/10 hover:bg-white/5 hover:text-white">View Dashboard</Button>
+                                    <Button variant="outline" size="sm" className="w-full text-xs h-8">View Dashboard</Button>
                                 </Link>
                             </div>
                         </CardContent>
@@ -94,12 +100,12 @@ export default async function InstitutesPage() {
                 ))}
 
                 {institutes.length === 0 && (
-                    <div className="col-span-full text-center py-20 bg-white/[0.02] rounded-3xl border border-white/5 border-dashed">
-                        <Building2 className="h-12 w-12 text-slate-700 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-slate-400">No institutes found</h3>
-                        <p className="text-slate-500 text-sm mb-6">Get started by adding your first client.</p>
+                    <div className="col-span-full text-center py-20 bg-card/50 rounded-3xl border border-border/40 border-dashed">
+                        <Building2 className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-foreground">No institutes found</h3>
+                        <p className="text-muted-foreground text-sm mb-6">Get started by adding your first client.</p>
                         <Link href="/super-admin/onboard">
-                            <Button variant="outline" className="border-primary/50 text-primary hover:bg-primary/10">
+                            <Button variant="outline">
                                 Onboard Client
                             </Button>
                         </Link>
