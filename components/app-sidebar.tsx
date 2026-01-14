@@ -199,7 +199,7 @@ export function AppSidebar({ className, user }: SidebarProps) {
 
             {/* 1. Sidebar Header */}
             <div className="px-6 py-6 border-b border-white/5">
-                <Link href="/home" className="flex items-center justify-center mb-6" title="Back to AMS Headquarters">
+                <Link href={isSuperAdminMode ? "/super-admin" : "/home"} className="flex items-center justify-center mb-6" title={isSuperAdminMode ? "Back to Command Center" : "Back to AMS Headquarters"}>
                     <div className="relative h-12 w-48">
                         <Image
                             src="/branding/adwelink.svg"
