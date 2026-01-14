@@ -53,13 +53,19 @@ export function AppSidebar({ className, user }: SidebarProps) {
     // Agent Switcher logic removed as per request
 
 
-    // --- LOGIC: SEPARATE MENUS FOR INSTITUTE VS AGENT ---
-    // If we are at root OR any Institute Page, we are in "Institute Mode".
-    const isInstituteMode = pathname === "/home" ||
+    // --- LOGIC: SEPARATE MENUS FOR INSTITUTE VS AGENT VS SUPER ADMIN ---
+
+    // 1. Super Admin Mode: If path starts with /super-admin
+    const isSuperAdminMode = pathname.startsWith("/super-admin")
+
+    // 2. Institute Mode: Root, Home, Settings, Market (but NOT if in Super Admin)
+    const isInstituteMode = !isSuperAdminMode && (
+        pathname === "/home" ||
         pathname.startsWith("/billing") ||
         pathname.startsWith("/market") ||
         pathname.startsWith("/settings") ||
-        pathname === "/";
+        pathname === "/"
+    );
 
     interface Route {
         label: string
@@ -69,6 +75,42 @@ export function AppSidebar({ className, user }: SidebarProps) {
         title?: string
         isLive?: boolean
     }
+
+    const superAdminRoutes: Route[] = [
+        {
+            label: "Dashboard",
+            icon: LayoutDashboard,
+            href: "/super-admin",
+            color: "text-purple-400",
+        },
+        {
+            label: "Institutes",
+            icon: Store, // Using Store/Building icon
+            href: "/super-admin/institutes",
+            color: "text-blue-400",
+        },
+        {
+            label: "All Leads",
+            icon: Users,
+            href: "/super-admin/leads",
+            color: "text-emerald-400",
+        },
+        {
+            label: "Inbound",
+            icon: MessageSquare, // Using MessageSquare as generic Inbox alternative if Inbox not imported
+            href: "/super-admin/inbound",
+            color: "text-pink-400",
+        },
+        // Onboard is an action, but usually accessible via Institutes page, 
+        // keeping it in nav for quick access as per original layout
+        {
+            label: "Onboard Client",
+            icon: Users, // using Users as generic placeholder if UserPlus not imported
+            href: "/super-admin/onboard",
+            color: "text-amber-400",
+            title: "Action"
+        },
+    ]
 
     const instituteRoutes: Route[] = [
         {
@@ -89,13 +131,7 @@ export function AppSidebar({ className, user }: SidebarProps) {
             href: "/settings",
             color: "text-slate-400",
         },
-        // Billing hidden until company registration & real integration
-        // {
-        //     label: "Billing",
-        //     icon: CreditCard,
-        //     href: "/billing",
-        //     color: "text-emerald-400",
-        // },
+        // Billing hidden
         {
             label: "Feedback",
             icon: MessageSquare,
@@ -127,43 +163,6 @@ export function AppSidebar({ className, user }: SidebarProps) {
             title: "Feed",
             isLive: true,
         },
-        // === INACTIVE ROUTES - Hidden for MVP ===
-        // {
-        //     label: "Students",
-        //     icon: GraduationCap,
-        //     href: "/workspace/students",
-        //     color: "text-emerald-500",
-        //     title: "Students"
-        // },
-        // {
-        //     label: "Academic Catalog",
-        //     icon: GraduationCap,
-        //     href: "/workspace/courses",
-        //     color: "text-orange-400",
-        //     title: "Catalog"
-        // },
-        // {
-        //     label: "Training",
-        //     icon: GraduationCap,
-        //     href: "/workspace/training",
-        //     color: "text-emerald-500",
-        //     title: "Training"
-        // },
-        // {
-        //     label: "Fees",
-        //     icon: Wallet,
-        //     href: "/workspace/fees",
-        //     color: "text-green-500",
-        //     title: "Fees"
-        // },
-        // {
-        //     label: "Agent Settings",
-        //     icon: Settings,
-        //     href: "/workspace/brain",
-        //     color: "text-orange-500",
-        //     title: "Brain"
-        // },
-        // === END INACTIVE ===
         {
             label: "Give Feedback",
             icon: MessageSquare,
@@ -182,7 +181,9 @@ export function AppSidebar({ className, user }: SidebarProps) {
     // Select the correct list based on mode
     let displayRoutes: Route[] = []
 
-    if (isInstituteMode) {
+    if (isSuperAdminMode) {
+        displayRoutes = superAdminRoutes
+    } else if (isInstituteMode) {
         displayRoutes = instituteRoutes
     } else {
         // In Agent Mode, filter based on the Active Agent's capabilities
@@ -219,7 +220,7 @@ export function AppSidebar({ className, user }: SidebarProps) {
             {/* 2. Navigation Routes */}
             <ScrollArea className="flex-1 px-4 py-4">
                 <div className="mb-2 px-2 text-[10px] uppercase text-slate-500 font-bold tracking-wider">
-                    {isInstituteMode ? "Institute Controls" : "Workspace Tools"}
+                    {isSuperAdminMode ? "Super Admin Controls" : isInstituteMode ? "Institute Controls" : "Workspace Tools"}
                 </div>
                 <div className="space-y-1">
                     {displayRoutes.map((route) => (
