@@ -1,4 +1,4 @@
-import { createServerClient } from "@/lib/supabase-server"
+import { createAdminClient } from "@/lib/supabase-server"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -6,7 +6,7 @@ import { Building2, MapPin, Phone, MessageSquare, Store, UserPlus } from "lucide
 import Link from "next/link"
 
 async function getInstitutes() {
-    const supabase = await createServerClient()
+    const supabase = createAdminClient()
 
     const { data: institutes } = await supabase
         .from("institutes")

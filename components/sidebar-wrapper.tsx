@@ -64,7 +64,7 @@ export function SidebarWrapper({ children, user }: SidebarWrapperProps) {
     return (
         <div className="flex h-screen overflow-hidden relative">
             {/* Desktop Sidebar */}
-            <div className="hidden md:flex w-64 flex-col bg-sidebar border-r border-border shrink-0">
+            <div className="hidden md:flex w-64 h-full flex-col bg-sidebar border-r border-border shrink-0">
                 <AppSidebar user={user} />
             </div>
 

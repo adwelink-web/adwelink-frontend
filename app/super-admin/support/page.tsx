@@ -1,10 +1,10 @@
-import { createServerClient } from "@/lib/supabase-server"
+import { createAdminClient } from "@/lib/supabase-server"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { HelpCircle, MessageSquare, AlertCircle } from "lucide-react"
 
 async function getTickets() {
-    const supabase = await createServerClient()
+    const supabase = createAdminClient()
     const { data: tickets } = await supabase
         .from("support_tickets")
         .select(`

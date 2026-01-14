@@ -1,10 +1,10 @@
-import { createServerClient } from "@/lib/supabase-server"
+import { createAdminClient } from "@/lib/supabase-server"
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Bell, AlertTriangle, AlertCircle, CheckCircle2 } from "lucide-react"
 
 async function getAlerts() {
-    const supabase = await createServerClient()
+    const supabase = createAdminClient()
     const { data: alerts } = await supabase
         .from("alerts")
         .select(`
@@ -52,8 +52,8 @@ export default async function AlertsPage() {
                                     <CardHeader className="flex flex-row items-start justify-between pb-2">
                                         <div className="flex items-start gap-4">
                                             <div className={`mt-1 p-2 rounded-lg ${alert.severity === 'critical' ? 'bg-red-500/20 text-red-500 ring-1 ring-red-500/30' :
-                                                    alert.severity === 'warning' ? 'bg-amber-500/20 text-amber-500 ring-1 ring-amber-500/30' :
-                                                        'bg-blue-500/20 text-blue-500 ring-1 ring-blue-500/30'
+                                                alert.severity === 'warning' ? 'bg-amber-500/20 text-amber-500 ring-1 ring-amber-500/30' :
+                                                    'bg-blue-500/20 text-blue-500 ring-1 ring-blue-500/30'
                                                 }`}>
                                                 {alert.severity === 'critical' ? <AlertCircle className="h-5 w-5" /> :
                                                     alert.severity === 'warning' ? <AlertTriangle className="h-5 w-5" /> :

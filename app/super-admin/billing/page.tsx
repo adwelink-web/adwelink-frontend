@@ -1,10 +1,10 @@
-import { createServerClient } from "@/lib/supabase-server"
+import { createAdminClient } from "@/lib/supabase-server"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { CreditCard, Wallet, Download } from "lucide-react"
 
 async function getPayments() {
-    const supabase = await createServerClient()
+    const supabase = createAdminClient()
     const { data: payments } = await supabase
         .from("payments")
         .select(`*, institutes(name)`)

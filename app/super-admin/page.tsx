@@ -1,4 +1,4 @@
-import { createServerClient } from "@/lib/supabase-server"
+import { createAdminClient } from "@/lib/supabase-server"
 import { Building2, Users, MessageSquare, IndianRupee, ArrowUpRight, Clock, Zap, Crown } from "lucide-react"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -17,7 +17,7 @@ const formatCurrency = (amount: number) => {
 
 // Fetch all metrics
 async function getMetrics() {
-    const supabase = await createServerClient()
+    const supabase = createAdminClient()
 
     // Get institutes count and data
     const { data: institutes, count: institutesCount } = await supabase

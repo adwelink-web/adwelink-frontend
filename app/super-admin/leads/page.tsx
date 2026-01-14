@@ -1,4 +1,4 @@
-import { createServerClient } from "@/lib/supabase-server"
+import { createAdminClient } from "@/lib/supabase-server"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -13,7 +13,7 @@ import {
 import { Users, Download, Filter } from "lucide-react"
 
 async function getAllLeads() {
-    const supabase = await createServerClient()
+    const supabase = createAdminClient()
 
     const { data: leads } = await supabase
         .from("leads")

@@ -1,10 +1,10 @@
-import { createServerClient } from "@/lib/supabase-server"
+import { createAdminClient } from "@/lib/supabase-server"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Activity, Clock, User, ShieldCheck } from "lucide-react"
 
 async function getActivityLog() {
-    const supabase = await createServerClient()
+    const supabase = createAdminClient()
     const { data: logs } = await supabase
         .from("activity_log")
         .select("*")
