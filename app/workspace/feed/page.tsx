@@ -85,10 +85,14 @@ export default function FeedPage() {
         } else {
             setMessages((msgData as any) || [])
 
-            // 1. Group by session/phone and find latest activity time
+            // 1. Group by phone_number primarily (prevents duplicates for same person with multiple sessions)
+            // Only use session_id as fallback when phone_number is empty
             const sessionMap: Record<string, string> = {}
             msgData?.forEach((m: any) => {
-                const sid = m.phone_number || m.session_id || "Unknown"
+                // Prefer phone_number, only fallback to session_id if phone is truly empty
+                const sid = (m.phone_number && m.phone_number.trim() !== "")
+                    ? m.phone_number
+                    : (m.session_id || "Unknown")
                 const mTime = m.created_at || "0"
                 if (!sessionMap[sid] || mTime > sessionMap[sid]) {
                     sessionMap[sid] = mTime
