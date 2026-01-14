@@ -81,25 +81,25 @@ export function AppSidebar({ className, user }: SidebarProps) {
             label: "Dashboard",
             icon: LayoutDashboard,
             href: "/super-admin",
-            color: "text-purple-400",
+            color: "text-foreground", // Standard
         },
         {
             label: "Institutes",
-            icon: Store, // Using Store/Building icon
+            icon: Store,
             href: "/super-admin/institutes",
-            color: "text-blue-400",
+            color: "text-foreground",
         },
         {
             label: "All Leads",
             icon: Users,
             href: "/super-admin/leads",
-            color: "text-emerald-400",
+            color: "text-foreground",
         },
         {
             label: "Inbound",
-            icon: MessageSquare, // Using MessageSquare as generic Inbox alternative if Inbox not imported
+            icon: MessageSquare,
             href: "/super-admin/inbound",
-            color: "text-pink-400",
+            color: "text-foreground",
         },
         // Onboard is an action, but usually accessible via Institutes page, 
         // keeping it in nav for quick access as per original layout
@@ -107,7 +107,7 @@ export function AppSidebar({ className, user }: SidebarProps) {
             label: "Onboard Client",
             icon: Users, // using Users as generic placeholder if UserPlus not imported
             href: "/super-admin/onboard",
-            color: "text-amber-400",
+            color: "text-foreground",
             title: "Action"
         },
     ]
