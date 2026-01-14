@@ -123,9 +123,9 @@ export default async function SuperAdminDashboard() {
     }
 
     return (
-        <div className="flex flex-col h-full">
+        <div className="space-y-6 pb-10">
             {/* Sticky Header */}
-            <div className="sticky top-0 z-40 px-6 py-4 bg-background/80 backdrop-blur-xl border-b border-border flex items-end justify-between transition-all duration-200">
+            <div className="sticky top-0 z-40 -mx-6 px-6 py-4 bg-background/80 backdrop-blur-xl border-b border-border flex items-end justify-between transition-all duration-200">
                 <div>
                     <div className="flex items-center gap-3 mb-1">
                         <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center ring-1 ring-primary/20">
@@ -143,7 +143,7 @@ export default async function SuperAdminDashboard() {
                 </Badge>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            <div className="space-y-6">
                 {/* Stats Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {stats.map((stat, i) => (
@@ -290,6 +290,5 @@ export default async function SuperAdminDashboard() {
                     </Card>
                 </div>
             </div>
-        </div>
-    )
+            )
 }

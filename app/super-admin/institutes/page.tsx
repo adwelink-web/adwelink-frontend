@@ -27,7 +27,7 @@ export default async function InstitutesPage() {
     }
 
     return (
-        <div className="space-y-8 pb-10">
+        <div className="space-y-8 pb-10 p-6">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>

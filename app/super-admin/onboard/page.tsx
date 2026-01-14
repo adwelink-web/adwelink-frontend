@@ -69,7 +69,7 @@ export default function OnboardPage() {
     }
 
     return (
-        <div className="p-8 max-w-2xl mx-auto">
+        <div className="p-6 max-w-2xl mx-auto">
             {/* Header */}
             <div className="mb-8">
                 <h1 className="text-3xl font-bold tracking-tight">Onboard New Client</h1>

@@ -37,7 +37,7 @@ export default async function AllLeadsPage() {
     }
 
     return (
-        <div className="p-8">
+        <div className="p-6">
             {/* Header */}
             <div className="mb-8">
                 <h1 className="text-3xl font-bold tracking-tight">All Leads</h1>
