@@ -1,6 +1,18 @@
 import { createServerClient } from "@/lib/supabase-server"
 import { Building2, Users, MessageSquare, IndianRupee, TrendingUp, ArrowUpRight, Clock, Zap } from "lucide-react"
 import Link from "next/link"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+
+// Helper for currency format
+const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        maximumFractionDigits: 0
+    }).format(amount)
+}
 
 // Fetch all metrics
 async function getMetrics() {
@@ -111,151 +123,171 @@ export default async function SuperAdminDashboard() {
     }
 
     return (
-        <div className="space-y-8 pb-10">
-
-            {/* Sticky Header with Glassmorphism */}
-            <div className="sticky top-0 z-40 -mx-8 px-8 py-4 bg-background/60 backdrop-blur-xl border-b border-white/5 flex items-end justify-between transition-all duration-200">
+        <div className="flex flex-col h-full">
+            {/* Sticky Header */}
+            <div className="sticky top-0 z-40 px-6 py-4 bg-background/80 backdrop-blur-xl border-b border-border flex items-end justify-between transition-all duration-200">
                 <div>
                     <div className="flex items-center gap-3 mb-1">
-                        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center shadow-lg shadow-primary/20 ring-1 ring-white/10">
-                            <Zap className="h-5 w-5 text-white" />
+                        <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center ring-1 ring-primary/20">
+                            <Zap className="h-5 w-5 text-primary" />
                         </div>
-                        <h1 className="text-3xl font-bold tracking-tight text-foreground">
+                        <h1 className="text-2xl font-bold tracking-tight text-foreground">
                             Command Center
                         </h1>
                     </div>
-                    <p className="text-muted-foreground text-sm ml-1">Adwelink Business Overview • Real-time Metrics</p>
+                    <p className="text-muted-foreground text-sm">Adwelink Business Overview & Real-time Metrics</p>
                 </div>
-                <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
-                    <Clock className="h-3.5 w-3.5" />
-                    <span>Updated: Just now</span>
-                </div>
+                <Badge variant="outline" className="font-mono gap-2 hidden sm:flex">
+                    <Clock className="h-3 w-3" />
+                    Updated: Just now
+                </Badge>
             </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-                {stats.map((stat, i) => (
-                    <div
-                        key={i}
-                        className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${colorClasses[stat.color]} border p-6 group hover:scale-[1.02] transition-all duration-300 shadow-xl`}
-                    >
-                        {/* Smooth Glow effect */}
-                        <div className={`absolute top-[-50%] right-[-50%] w-48 h-48 bg-${stat.color === 'purple' ? 'primary' : stat.color}-500/20 blur-[60px] rounded-full group-hover:opacity-100 transition-opacity`} />
-
-                        <div className="relative z-10">
-                            <div className="flex items-center justify-between mb-4">
-                                <span className="text-xs font-bold uppercase tracking-wider opacity-70">{stat.label}</span>
-                                <stat.icon className={`h-5 w-5 ${colorClasses[stat.color].split(' ').pop()}`} />
-                            </div>
-                            <div className="text-4xl font-bold text-white mb-2 tracking-tight">{stat.value}</div>
-                            <div className="flex items-center justify-between">
-                                <span className="text-xs text-slate-400 font-medium">{stat.subtext}</span>
-                                <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/5 border border-white/5 ${colorClasses[stat.color].split(' ').pop()}`}>
-                                    {stat.trend}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-
-            {/* Two Column Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-                {/* Institutes List */}
-                <div className="rounded-2xl bg-black/40 border border-white/10 backdrop-blur-sm overflow-hidden flex flex-col shadow-2xl">
-                    <div className="flex items-center justify-between p-5 border-b border-white/5 bg-white/5">
-                        <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center ring-1 ring-primary/20">
-                                <Building2 className="h-4 w-4 text-primary" />
-                            </div>
-                            <h2 className="text-lg font-bold text-white tracking-tight">Active Institutes</h2>
-                        </div>
-                        <Link href="/super-admin/institutes" className="flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 transition-colors bg-primary/10 px-3 py-1 rounded-full">
-                            View All <ArrowUpRight className="h-3 w-3" />
-                        </Link>
-                    </div>
-                    <div className="p-4 space-y-2 max-h-[400px] overflow-y-auto custom-scrollbar">
-                        {metrics.institutes.slice(0, 6).map((inst) => (
-                            <div key={inst.id} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] hover:border-primary/20 transition-all group cursor-default">
-                                <div className="flex items-center gap-4">
-                                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center text-sm font-bold text-slate-400 border border-white/10 group-hover:border-primary/30 transition-colors">
-                                        {inst.name?.charAt(0)}
-                                    </div>
-                                    <div>
-                                        <p className="font-semibold text-white text-sm group-hover:text-primary transition-colors">{inst.name}</p>
-                                        <p className="text-xs text-slate-500 font-medium">{inst.city || "No city"} • <span className="text-primary font-bold uppercase text-[10px]">{inst.current_plan || "trial"}</span></p>
-                                    </div>
+            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                {/* Stats Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {stats.map((stat, i) => (
+                        <Card key={i} className="bg-card/50 backdrop-blur border-border/40 transition-all hover:bg-muted/10">
+                            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                                <CardTitle className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
+                                    {stat.label}
+                                </CardTitle>
+                                <stat.icon className={`h-4 w-4 ${colorClasses[stat.color].split(' ').pop()}`} />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold text-foreground">{stat.value}</div>
+                                <div className="flex items-center gap-2 mt-1">
+                                    <Badge variant="secondary" className="text-[10px] uppercase px-1.5 h-5">
+                                        {stat.trend}
+                                    </Badge>
+                                    <p className="text-xs text-muted-foreground">
+                                        {stat.subtext}
+                                    </p>
                                 </div>
-                                <div className="text-right">
-                                    <div className="flex items-center justify-end gap-1.5">
-                                        <span className="text-sm font-mono font-bold text-white">{inst.messages_used || 0}</span>
-                                        <span className="text-xs text-slate-600">/ {inst.message_limit || 50}</span>
-                                    </div>
-                                    <div className="w-20 h-1 bg-slate-800 rounded-full mt-1 ml-auto overflow-hidden">
-                                        <div className="h-full bg-primary rounded-full" style={{ width: `${Math.min(((inst.messages_used || 0) / (inst.message_limit || 50)) * 100, 100)}%` }}></div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                        {metrics.institutes.length === 0 && (
-                            <div className="text-center py-12">
-                                <Building2 className="h-12 w-12 text-slate-800 mx-auto mb-3" />
-                                <p className="text-slate-600 text-sm font-medium">No institutes yet</p>
-                            </div>
-                        )}
-                    </div>
+                            </CardContent>
+                        </Card>
+                    ))}
                 </div>
 
-                {/* Recent Leads */}
-                <div className="rounded-2xl bg-black/40 border border-white/10 backdrop-blur-sm overflow-hidden flex flex-col shadow-2xl">
-                    <div className="flex items-center justify-between p-5 border-b border-white/5 bg-white/5">
-                        <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded-lg bg-emerald-500/10 flex items-center justify-center ring-1 ring-emerald-500/20">
-                                <Users className="h-4 w-4 text-emerald-400" />
-                            </div>
-                            <h2 className="text-lg font-bold text-white tracking-tight">Recent Leads</h2>
-                        </div>
-                        <Link href="/super-admin/leads" className="flex items-center gap-1 text-xs font-medium text-emerald-400 hover:text-emerald-300 transition-colors bg-emerald-500/10 px-3 py-1 rounded-full">
-                            View All <ArrowUpRight className="h-3 w-3" />
-                        </Link>
-                    </div>
-                    <div className="p-4 space-y-2 max-h-[400px] overflow-y-auto custom-scrollbar">
-                        {metrics.recentLeads.map((lead: any) => {
-                            const statusColors: Record<string, string> = {
-                                hot: "bg-red-500/10 text-red-400 border-red-500/20 ring-red-500/10",
-                                warm: "bg-amber-500/10 text-amber-400 border-amber-500/20 ring-amber-500/10",
-                                interested: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 ring-emerald-500/10",
-                                fresh: "bg-blue-500/10 text-blue-400 border-blue-500/20 ring-blue-500/10"
-                            }
-                            const statusClass = statusColors[lead.status?.toLowerCase()] || "bg-slate-500/10 text-slate-400 border-slate-500/20"
+                {/* Two Column Layout */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-                            return (
-                                <div key={lead.id} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] hover:border-emerald-500/20 transition-all group">
-                                    <div className="flex items-center gap-4">
-                                        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-900/40 to-emerald-900/10 flex items-center justify-center text-sm font-bold text-emerald-400 border border-emerald-500/10 ring-1 ring-emerald-500/10">
-                                            {(lead.name || "U").charAt(0)}
-                                        </div>
-                                        <div>
-                                            <p className="font-semibold text-white text-sm group-hover:text-emerald-300 transition-colors">{lead.name || "Unknown"}</p>
-                                            <p className="text-xs text-slate-500 font-medium flex items-center gap-1.5">
-                                                <span>{lead.institutes?.name || "Unknown"}</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border ring-1 ${statusClass}`}>
-                                        {lead.status || "new"}
-                                    </span>
-                                </div>
-                            )
-                        })}
-                        {metrics.recentLeads.length === 0 && (
-                            <div className="text-center py-12">
-                                <Users className="h-12 w-12 text-slate-800 mx-auto mb-3" />
-                                <p className="text-slate-600 text-sm font-medium">No leads yet</p>
+                    {/* Institutes List */}
+                    <Card className="col-span-1 bg-card/50 border-border/40">
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <div className="space-y-1">
+                                <CardTitle className="text-base font-bold flex items-center gap-2">
+                                    <Building2 className="h-4 w-4 text-primary" />
+                                    Active Institutes
+                                </CardTitle>
+                                <CardDescription>Top active clients by message usage</CardDescription>
                             </div>
-                        )}
-                    </div>
+                            <Link href="/super-admin/institutes">
+                                <Badge variant="outline" className="hover:bg-primary/10 hover:text-primary cursor-pointer transition-colors">
+                                    View All <ArrowUpRight className="h-3 w-3 ml-1" />
+                                </Badge>
+                            </Link>
+                        </CardHeader>
+                        <CardContent className="p-0">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow className="hover:bg-transparent border-border/40">
+                                        <TableHead className="pl-6">Name</TableHead>
+                                        <TableHead>Usage</TableHead>
+                                        <TableHead className="text-right pr-6">Status</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {metrics.institutes.slice(0, 5).map((inst) => (
+                                        <TableRow key={inst.id} className="hover:bg-muted/5 border-border/40">
+                                            <TableCell className="pl-6 py-3">
+                                                <div className="font-medium text-foreground text-sm">{inst.name}</div>
+                                                <div className="text-xs text-muted-foreground">{inst.city || "No city"}</div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="text-sm font-mono font-medium text-foreground">{inst.messages_used || 0}</div>
+                                                <div className="w-16 h-1 bg-muted rounded-full mt-1 overflow-hidden">
+                                                    <div className="h-full bg-primary rounded-full" style={{ width: `${Math.min(((inst.messages_used || 0) / (inst.message_limit || 50)) * 100, 100)}%` }}></div>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="text-right pr-6">
+                                                <Badge variant="secondary" className="text-[10px] uppercase font-bold">
+                                                    {inst.current_plan || "Trial"}
+                                                </Badge>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                    {metrics.institutes.length === 0 && (
+                                        <TableRow>
+                                            <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
+                                                No institutes found.
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
+
+                    {/* Recent Leads */}
+                    <Card className="col-span-1 bg-card/50 border-border/40">
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <div className="space-y-1">
+                                <CardTitle className="text-base font-bold flex items-center gap-2">
+                                    <Users className="h-4 w-4 text-emerald-500" />
+                                    Recent Leads
+                                </CardTitle>
+                                <CardDescription>Latest inbound leads across all institutes</CardDescription>
+                            </div>
+                            <Link href="/super-admin/leads">
+                                <Badge variant="outline" className="hover:bg-emerald-500/10 hover:text-emerald-500 cursor-pointer transition-colors">
+                                    View All <ArrowUpRight className="h-3 w-3 ml-1" />
+                                </Badge>
+                            </Link>
+                        </CardHeader>
+                        <CardContent className="p-0">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow className="hover:bg-transparent border-border/40">
+                                        <TableHead className="pl-6">Lead Name</TableHead>
+                                        <TableHead>Institute</TableHead>
+                                        <TableHead className="text-right pr-6">Status</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {metrics.recentLeads.map((lead: any) => {
+                                        return (
+                                            <TableRow key={lead.id} className="hover:bg-muted/5 border-border/40">
+                                                <TableCell className="pl-6 py-3">
+                                                    <div className="font-medium text-foreground text-sm">{lead.name || "Unknown"}</div>
+                                                    <div className="text-xs text-muted-foreground">{new Date(lead.created_at).toLocaleDateString()}</div>
+                                                </TableCell>
+                                                <TableCell className="text-xs text-muted-foreground">
+                                                    {lead.institutes?.name || "Unknown"}
+                                                </TableCell>
+                                                <TableCell className="text-right pr-6">
+                                                    <Badge variant={
+                                                        lead.status === 'hot' ? 'destructive' :
+                                                            lead.status === 'warm' ? 'default' :
+                                                                lead.status === 'fresh' ? 'secondary' : 'outline'
+                                                    } className="text-[10px] uppercase">
+                                                        {lead.status || "New"}
+                                                    </Badge>
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                    })}
+                                    {metrics.recentLeads.length === 0 && (
+                                        <TableRow>
+                                            <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
+                                                No leads found.
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
         </div>
