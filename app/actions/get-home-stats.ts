@@ -29,14 +29,14 @@ export async function getHomeStats() {
         const totalChats = chatsRes.count || 0
 
         // Process Activity Feed
-        // Process Activity Feed
         const activityFeed = activityRes.data?.map(item => {
-            const isPositive = ['enrollment', 'confirmed', 'interested'].some(i => item.intent_detected?.toLowerCase().includes(i));
-            const isNegative = ['spam', 'stop', 'unsubscribe'].some(i => item.intent_detected?.toLowerCase().includes(i));
+            const msgText = item.message_text?.toLowerCase() || '';
+            const isPositive = ['enrollment', 'confirmed', 'interested'].some(i => msgText.includes(i));
+            const isNegative = ['spam', 'stop', 'unsubscribe'].some(i => msgText.includes(i));
 
             return {
                 type: isPositive ? 'success' : isNegative ? 'error' : 'info',
-                text: `${item.intent_detected || 'Message'} from ${item.phone_number?.slice(-4) || 'User'}`, // Privacy masking
+                text: `${item.is_from_user ? 'Message' : 'Reply'} ${item.lead_phone ? 'from ' + item.lead_phone.slice(-4) : ''}`,
                 time: new Date(item.created_at!).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
                 created_at: item.created_at || undefined
             }

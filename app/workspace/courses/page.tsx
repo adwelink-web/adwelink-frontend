@@ -71,11 +71,9 @@ export default function CoursesPage() {
         setSelectedCourse(null)
         setFormData({
             name: "",
-            total_fee: 0,
+            fee: 0,
             duration_months: 12,
-            mode: "Offline", // DB expects Capitalized 'Offline'
-            registration_fee: 0,
-            target_class: "",
+            description: "Offline",
         })
         setIsEditing(false)
         setDialogOpen(true)
@@ -140,7 +138,7 @@ export default function CoursesPage() {
 
     const filteredCourses = courses.filter(c =>
         c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (c.target_class?.toLowerCase() || "").includes(searchQuery.toLowerCase())
+        (c.description?.toLowerCase() || "").includes(searchQuery.toLowerCase())
     )
 
     return (
@@ -244,10 +242,10 @@ export default function CoursesPage() {
                                                 </div>
                                                 <div className="flex items-center gap-2">
                                                     <Badge variant="outline" className="bg-primary/5 text-[9px] text-primary border-primary/20 uppercase py-0 px-2 font-black tracking-tight rounded-md">
-                                                        {course.mode || "Offline"}
+                                                        {course.description || "Offline"}
                                                     </Badge>
                                                     <div className="flex items-center gap-1 text-[10px] text-slate-400 font-bold uppercase tracking-tight">
-                                                        <Layers className="h-3 w-3 text-sky-400" /> Batch: <span className="text-white">{course.target_class || "All Students"}</span>
+                                                        <Layers className="h-3 w-3 text-sky-400" /> Course ID: <span className="text-white">{course.id.slice(0, 8)}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -257,7 +255,7 @@ export default function CoursesPage() {
                                                     <div className="text-[9px] text-slate-500 uppercase font-bold tracking-widest">Total Fee</div>
                                                     <div className="text-xl font-bold text-white font-mono leading-none flex items-baseline gap-1">
                                                         <span className="text-xs font-bold text-slate-500">₹</span>
-                                                        {Number(course.total_fee).toLocaleString()}
+                                                        {Number(course.fee || 0).toLocaleString()}
                                                     </div>
                                                 </div>
                                                 <div className="space-y-1 text-right">
@@ -274,7 +272,7 @@ export default function CoursesPage() {
                                                     {course.created_at ? new Date(course.created_at).toLocaleDateString() : 'N/A'}
                                                 </div>
                                                 <div className="text-[9px] text-slate-500 uppercase font-bold tracking-widest">
-                                                    Adm. Fee: <span className="text-white">₹{Number(course.registration_fee || 0).toLocaleString()}</span>
+                                                    Duration: <span className="text-white">{course.duration_months || 12} Months</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -319,65 +317,35 @@ export default function CoursesPage() {
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-5">
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600 ml-1">Target Batch / Class</label>
-                                        <Input
-                                            placeholder="e.g. 10th, 12th, or Droppers"
-                                            value={formData.target_class || ""}
-                                            onChange={(e) => setFormData({ ...formData, target_class: e.target.value })}
-                                            className="bg-white/[0.03] border-white/10 text-white h-12 text-sm font-medium rounded-xl"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600 ml-1">Study Mode</label>
-                                        <Select
-                                            value={formData.mode || "Offline"}
-                                            onValueChange={(val) => setFormData({ ...formData, mode: val })}
-                                        >
-                                            <SelectTrigger className="bg-white/[0.03] border-white/10 text-white h-12 text-sm font-bold rounded-xl capitalize">
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent className="bg-[#161B22] border-white/10 text-white rounded-xl">
-                                                <SelectItem value="Offline">Offline</SelectItem>
-                                                <SelectItem value="Online">Online</SelectItem>
-                                                <SelectItem value="Hybrid">Hybrid</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600 ml-1">Description / Mode</label>
+                                    <Input
+                                        placeholder="e.g. Offline, Online, or Hybrid"
+                                        value={formData.description || ""}
+                                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                        className="bg-white/[0.03] border-white/10 text-white h-12 text-sm font-medium rounded-xl"
+                                    />
                                 </div>
                             </div>
 
                             {/* Financials & Duration */}
                             <div className="pt-6 border-t border-white/5">
                                 <h4 className="text-[10px] font-bold text-primary uppercase tracking-[0.3em] mb-5">Fees & Program Cycle</h4>
-                                <div className="grid grid-cols-3 gap-5">
+                                <div className="grid grid-cols-2 gap-5">
                                     <div className="space-y-2">
-                                        <label className="text-[9px] font-bold uppercase text-slate-600">Total Fee</label>
+                                        <label className="text-[9px] font-bold uppercase text-slate-600">Course Fee</label>
                                         <div className="relative">
                                             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 font-mono text-xs">₹</span>
                                             <Input
                                                 type="number"
-                                                value={formData.total_fee || ""}
-                                                onChange={(e) => setFormData({ ...formData, total_fee: parseFloat(e.target.value) })}
+                                                value={formData.fee || ""}
+                                                onChange={(e) => setFormData({ ...formData, fee: parseFloat(e.target.value) })}
                                                 className="bg-primary/5 border-primary/20 text-primary pl-7 h-11 font-mono font-black text-sm rounded-xl"
                                             />
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[9px] font-bold uppercase text-slate-600">Admission Fee</label>
-                                        <div className="relative">
-                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 font-mono text-xs">₹</span>
-                                            <Input
-                                                type="number"
-                                                value={formData.registration_fee || ""}
-                                                onChange={(e) => setFormData({ ...formData, registration_fee: parseFloat(e.target.value) })}
-                                                className="bg-white/[0.03] border-white/10 text-white pl-7 h-11 font-mono font-bold text-sm rounded-xl"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[9px] font-bold uppercase text-slate-600">Cycle (m)</label>
+                                        <label className="text-[9px] font-bold uppercase text-slate-600">Duration (months)</label>
                                         <Input
                                             type="number"
                                             value={formData.duration_months || ""}

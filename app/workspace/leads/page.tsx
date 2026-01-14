@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase"
 import { Database } from "@/lib/database.types" // Use generated types
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Plus, Phone, MapPin, Sparkles, ArrowUpRight, Trash2, Users } from "lucide-react"
+import { Plus, Phone, MapPin, Sparkles, ArrowUpRight, Trash2, Users, Download } from "lucide-react"
 import {
     Dialog,
     DialogContent,
@@ -88,10 +88,48 @@ export default function LeadsPage() {
         setIsEditing(true)
         setFormData({
             status: 'NEW',
-            lead_source: 'DIRECT',
-            visit_type: 'offline'
+            source: 'DIRECT',
         })
         setDialogOpen(true)
+    }
+
+    const exportToCSV = () => {
+        if (leads.length === 0) {
+            alert("No leads to export")
+            return
+        }
+
+        // Define CSV headers
+        const headers = ['Name', 'Phone', 'Status', 'Source', 'Interested Course', 'Notes', 'Last Contacted', 'Created At']
+
+        // Map leads to CSV rows
+        const csvRows = leads.map(lead => [
+            lead.name || '',
+            lead.phone || '',
+            lead.status || '',
+            lead.source || '',
+            lead.interested_course || '',
+            lead.interest_notes?.replace(/,/g, ';').replace(/\n/g, ' ') || '',
+            lead.last_contacted_at ? new Date(lead.last_contacted_at).toLocaleDateString('en-IN') : '',
+            lead.created_at ? new Date(lead.created_at).toLocaleDateString('en-IN') : ''
+        ])
+
+        // Create CSV content
+        const csvContent = [
+            headers.join(','),
+            ...csvRows.map(row => row.map(cell => `"${cell}"`).join(','))
+        ].join('\n')
+
+        // Create and trigger download
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+        const link = document.createElement('a')
+        const url = URL.createObjectURL(blob)
+        link.setAttribute('href', url)
+        link.setAttribute('download', `leads_export_${new Date().toISOString().split('T')[0]}.csv`)
+        link.style.visibility = 'hidden'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
     }
 
     const getSafeDateValue = (dateStr: string | null | undefined, includeTime = false) => {
@@ -174,9 +212,18 @@ export default function LeadsPage() {
                         </h2>
                         <p className="text-muted-foreground mt-1 text-sm md:text-base">Track Visits, Follow-ups, and Admissions.</p>
                     </div>
-                    <Button className="w-full md:w-auto bg-white text-black hover:bg-slate-200 h-9 px-4 text-xs font-bold rounded-xl shadow-lg" onClick={handleNewLead}>
-                        <Plus className="mr-2 h-4 w-4 stroke-[3px]" /> Add Manual Lead
-                    </Button>
+                    <div className="flex gap-2 w-full md:w-auto">
+                        <Button
+                            variant="outline"
+                            className="flex-1 md:flex-none border-white/20 text-white hover:bg-white/10 h-9 px-4 text-xs font-bold rounded-xl"
+                            onClick={exportToCSV}
+                        >
+                            <Download className="mr-2 h-4 w-4" /> Export CSV
+                        </Button>
+                        <Button className="flex-1 md:flex-none bg-white text-black hover:bg-slate-200 h-9 px-4 text-xs font-bold rounded-xl shadow-lg" onClick={handleNewLead}>
+                            <Plus className="mr-2 h-4 w-4 stroke-[3px]" /> Add Lead
+                        </Button>
+                    </div>
                 </div>
 
 
@@ -214,27 +261,21 @@ export default function LeadsPage() {
                                             </td>
                                             <td className="px-6 py-4 align-middle">
                                                 <div className="flex flex-col gap-1 mt-0.5">
-                                                    <span className="text-sm text-slate-400 font-medium capitalize leading-normal">{lead.city || "-"}</span>
-                                                    {lead.lead_source && <span className="text-[10px] text-slate-600 uppercase tracking-wider font-semibold">{lead.lead_source}</span>}
+                                                    <span className="text-sm text-slate-400 font-medium capitalize leading-normal">{lead.source || "-"}</span>
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 align-middle">
                                                 <div className="flex flex-col gap-1">
-                                                    <span className="text-sm text-slate-300 font-medium leading-normal">{lead.course_interest}</span>
-                                                    {lead.current_class && <span className="text-xs text-slate-500">{lead.current_class}</span>}
+                                                    <span className="text-sm text-slate-300 font-medium leading-normal">{lead.interested_course || '-'}</span>
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 align-middle">
-                                                {lead.lead_score ? (
-                                                    <div className={`text-base font-bold tracking-tight ${lead.lead_score > 80 ? 'text-emerald-400' : lead.lead_score > 50 ? 'text-amber-400' : 'text-slate-500'}`}>
-                                                        {lead.lead_score}
-                                                    </div>
-                                                ) : <span className="text-slate-700">-</span>}
+                                                <span className="text-slate-700">-</span>
                                             </td>
                                             <td className="px-6 py-4 align-middle">
-                                                {lead.next_followup_date ? (
+                                                {lead.last_contacted_at ? (
                                                     <div className="text-xs text-slate-400 font-medium">
-                                                        {formatDate(lead.next_followup_date)}
+                                                        {formatDate(lead.last_contacted_at)}
                                                     </div>
                                                 ) : <span className="text-slate-700">-</span>}
                                             </td>
@@ -284,9 +325,9 @@ export default function LeadsPage() {
                                                         />
                                                         <Input
                                                             className="h-6 w-32 text-xs bg-transparent border-white/20 px-2"
-                                                            value={formData.city || ""}
-                                                            onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                                                            placeholder="City"
+                                                            value={formData.source || ""}
+                                                            onChange={(e) => setFormData({ ...formData, source: e.target.value })}
+                                                            placeholder="Source"
                                                         />
                                                     </div>
                                                 </div>
@@ -298,7 +339,7 @@ export default function LeadsPage() {
                                                     <DialogDescription className="flex items-center gap-3 text-xs text-slate-400">
                                                         <span className="flex items-center gap-1"><Phone className="h-3 w-3" /> {selectedLead?.phone || "No Phone"}</span>
                                                         <span className="w-1 h-1 bg-slate-600 rounded-full" />
-                                                        <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {selectedLead?.city || "N/A"}</span>
+                                                        <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {selectedLead?.source || "N/A"}</span>
                                                     </DialogDescription>
                                                 </>
                                             )}
@@ -324,15 +365,15 @@ export default function LeadsPage() {
                                                 </Select>
                                                 <Input
                                                     className="h-5 w-[100px] text-[10px] text-right bg-transparent border-white/20"
-                                                    value={formData.lead_source || ""}
-                                                    onChange={(e) => setFormData({ ...formData, lead_source: e.target.value })}
+                                                    value={formData.source || ""}
+                                                    onChange={(e) => setFormData({ ...formData, source: e.target.value })}
                                                     placeholder="Source"
                                                 />
                                             </div>
                                         ) : (
                                             <>
                                                 {getStatusBadge(selectedLead?.status || "NEW")}
-                                                <span className="text-[10px] text-slate-500 uppercase tracking-wide">{selectedLead?.lead_source || "DIRECT"} SOURCE</span>
+                                                <span className="text-[10px] text-slate-500 uppercase tracking-wide">{selectedLead?.source || "DIRECT"} SOURCE</span>
                                             </>
                                         )}
                                     </div>
@@ -371,38 +412,33 @@ export default function LeadsPage() {
                             <ScrollArea className="h-[calc(85vh-130px)]">
                                 <div className="p-5 pb-20 space-y-5">
 
-                                    {/* 1. AI Insights */}
+                                    {/* 1. Lead Info Summary */}
                                     <section>
                                         <div className="rounded-xl bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 border border-violet-500/20 p-4 relative overflow-hidden">
                                             <div className="absolute top-0 right-0 p-3 opacity-10"><Sparkles className="h-10 w-10 text-violet-500" /></div>
                                             <h4 className="text-[10px] font-bold uppercase tracking-widest text-violet-400 mb-3 flex items-center gap-2">
-                                                <Sparkles className="h-3 w-3" /> AI Engagement Analysis
+                                                <Sparkles className="h-3 w-3" /> Lead Summary
                                             </h4>
                                             <div className="flex items-center gap-6 mb-2">
-                                                <div className="text-center">
-                                                    <div className="text-2xl font-bold text-white">{selectedLead?.lead_score || 0}<span className="text-base text-slate-500 font-normal">%</span></div>
-                                                    <div className="text-[9px] text-slate-400 uppercase tracking-wide mt-0.5">Chance</div>
-                                                </div>
-                                                <div className="h-8 w-px bg-white/10"></div>
                                                 <div className="flex-1">
-                                                    <p className="text-sm text-violet-200/90 leading-relaxed italic">
-                                                        &quot;{selectedLead?.ai_notes || "Insufficient interaction data. No AI summary available yet."}&quot;
+                                                    <p className="text-sm text-violet-200/90 leading-relaxed">
+                                                        {selectedLead?.interest_notes || "No notes available yet."}
                                                     </p>
                                                 </div>
                                             </div>
                                         </div>
                                     </section>
 
-                                    {/* 2. Academic Info */}
+                                    {/* 2. Lead Details */}
                                     <section>
-                                        <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-3 border-b border-white/5 pb-1">Academic Profile</h4>
-                                        <div className="grid grid-cols-4 gap-4">
+                                        <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-3 border-b border-white/5 pb-1">Lead Details</h4>
+                                        <div className="grid grid-cols-2 gap-4">
                                             <div>
                                                 <label className="text-[9px] text-slate-500 uppercase font-semibold">Interested Course</label>
                                                 {isEditing ? (
                                                     <Select
-                                                        value={formData.course_interest || ""}
-                                                        onValueChange={(val) => setFormData({ ...formData, course_interest: val })}
+                                                        value={formData.interested_course || ""}
+                                                        onValueChange={(val) => setFormData({ ...formData, interested_course: val })}
                                                     >
                                                         <SelectTrigger className="h-6 text-sm bg-black/20 border-white/10 mt-0.5 px-2">
                                                             <SelectValue placeholder="Select Course" />
@@ -414,130 +450,38 @@ export default function LeadsPage() {
                                                         </SelectContent>
                                                     </Select>
                                                 ) : (
-                                                    <div className="text-sm font-medium text-white mt-0.5 truncate">{selectedLead?.course_interest || <span className="text-slate-600">Not Specified</span>}</div>
+                                                    <div className="text-sm font-medium text-white mt-0.5 truncate">{selectedLead?.interested_course || <span className="text-slate-600">Not Specified</span>}</div>
                                                 )}
                                             </div>
                                             <div>
-                                                <label className="text-[9px] text-slate-500 uppercase font-semibold">Current Class</label>
-                                                {isEditing ? (
-                                                    <Input
-                                                        className="h-6 text-sm bg-black/20 border-white/10 mt-0.5 px-2"
-                                                        value={formData.current_class || ""}
-                                                        onChange={(e) => setFormData({ ...formData, current_class: e.target.value })}
-                                                    />
-                                                ) : (
-                                                    <div className="text-sm font-medium text-white mt-0.5">{selectedLead?.current_class || <span className="text-slate-600">N/A</span>}</div>
-                                                )}
-                                            </div>
-                                            <div>
-                                                <label className="text-[9px] text-slate-500 uppercase font-semibold">Target Year</label>
-                                                {isEditing ? (
-                                                    <Input
-                                                        className="h-6 text-sm bg-black/20 border-white/10 mt-0.5 px-2"
-                                                        value={formData.target_year || ""}
-                                                        onChange={(e) => setFormData({ ...formData, target_year: e.target.value })}
-                                                    />
-                                                ) : (
-                                                    <div className="text-sm font-medium text-white mt-0.5">{selectedLead?.target_year || <span className="text-slate-600">N/A</span>}</div>
-                                                )}
-                                            </div>
-                                            <div>
-                                                <label className="text-[9px] text-slate-500 uppercase font-semibold">Budget Est.</label>
-                                                {isEditing ? (
-                                                    <Input
-                                                        className="h-6 text-sm bg-black/20 border-white/10 mt-0.5 px-2"
-                                                        value={formData.budget_range || ""}
-                                                        onChange={(e) => setFormData({ ...formData, budget_range: e.target.value })}
-                                                    />
-                                                ) : (
-                                                    <div className="text-sm font-medium text-white mt-0.5">{selectedLead?.budget_range || <span className="text-slate-600">Not Disclosed</span>}</div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </section>
-
-                                    {/* 3. Family Details */}
-                                    <section>
-                                        <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-3 border-b border-white/5 pb-1">Family & Contact</h4>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <label className="text-[9px] text-slate-500 uppercase font-semibold">Parent Name</label>
-                                                {isEditing ? (
-                                                    <Input
-                                                        className="h-6 text-sm bg-black/20 border-white/10 mt-0.5 px-2"
-                                                        value={formData.parent_name || ""}
-                                                        onChange={(e) => setFormData({ ...formData, parent_name: e.target.value })}
-                                                    />
-                                                ) : (
-                                                    <div className="text-sm font-medium text-white mt-0.5">{selectedLead?.parent_name || <span className="text-slate-600">Not Provided</span>}</div>
-                                                )}
-                                            </div>
-                                            <div>
-                                                <label className="text-[9px] text-slate-500 uppercase font-semibold">Parent Phone</label>
-                                                {isEditing ? (
-                                                    <Input
-                                                        className="h-6 text-sm bg-black/20 border-white/10 mt-0.5 px-2 font-mono"
-                                                        value={formData.parent_phone || ""}
-                                                        onChange={(e) => setFormData({ ...formData, parent_phone: e.target.value })}
-                                                    />
-                                                ) : (
-                                                    <div className="text-sm font-medium text-white mt-0.5 font-mono">{selectedLead?.parent_phone || <span className="text-slate-600">N/A</span>}</div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </section>
-
-                                    {/* 4. Visit Logistic */}
-                                    <section>
-                                        <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-3 border-b border-white/5 pb-1">Visit & Logistics</h4>
-                                        <div className="grid grid-cols-3 gap-3">
-                                            <div className="bg-white/5 p-2.5 rounded-lg border border-white/5">
-                                                <label className="text-[9px] text-slate-500 uppercase font-semibold block mb-0.5">Next Follow-up</label>
+                                                <label className="text-[9px] text-slate-500 uppercase font-semibold">Last Contacted</label>
                                                 {isEditing ? (
                                                     <Input
                                                         type="date"
                                                         className="h-6 text-xs bg-black/20 border-white/10 mt-0.5 px-1 w-full"
-                                                        value={getSafeDateValue(formData.next_followup_date)}
-                                                        onChange={(e) => setFormData({ ...formData, next_followup_date: e.target.value })}
+                                                        value={getSafeDateValue(formData.last_contacted_at)}
+                                                        onChange={(e) => setFormData({ ...formData, last_contacted_at: e.target.value })}
                                                     />
                                                 ) : (
-                                                    <div className="text-xs font-medium text-amber-400">{selectedLead?.next_followup_date ? formatDate(selectedLead.next_followup_date) : "None"}</div>
-                                                )}
-                                            </div>
-                                            <div className="bg-white/5 p-2.5 rounded-lg border border-white/5">
-                                                <label className="text-[9px] text-slate-500 uppercase font-semibold block mb-0.5">Scheduled Visit</label>
-                                                {isEditing ? (
-                                                    <Input
-                                                        type="datetime-local"
-                                                        className="h-6 text-xs bg-black/20 border-white/10 mt-0.5 px-1 w-full"
-                                                        value={getSafeDateValue(formData.visit_date, true)}
-                                                        onChange={(e) => setFormData({ ...formData, visit_date: e.target.value })}
-                                                    />
-                                                ) : (
-                                                    <div className="text-xs font-medium text-white">{selectedLead?.visit_date ? formatDate(selectedLead.visit_date) : "None"}</div>
-                                                )}
-                                            </div>
-                                            <div className="bg-white/5 p-2.5 rounded-lg border border-white/5">
-                                                <label className="text-[9px] text-slate-500 uppercase font-semibold block mb-0.5">Visit Type</label>
-                                                {isEditing ? (
-                                                    <Select
-                                                        value={formData.visit_type || "offline"}
-                                                        onValueChange={(val) => setFormData({ ...formData, visit_type: val })}
-                                                    >
-                                                        <SelectTrigger className="h-6 w-full text-xs bg-black/20 border-white/10">
-                                                            <SelectValue />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectItem value="offline">Offline</SelectItem>
-                                                            <SelectItem value="online">Online</SelectItem>
-                                                            <SelectItem value="parent_visit">Parent Visit</SelectItem>
-                                                        </SelectContent>
-                                                    </Select>
-                                                ) : (
-                                                    <div className="text-xs font-medium text-white capitalize">{selectedLead?.visit_type || "N/A"}</div>
+                                                    <div className="text-sm font-medium text-white mt-0.5">{selectedLead?.last_contacted_at ? formatDate(selectedLead.last_contacted_at) : <span className="text-slate-600">Never</span>}</div>
                                                 )}
                                             </div>
                                         </div>
+                                    </section>
+
+                                    {/* 3. Notes */}
+                                    <section>
+                                        <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-3 border-b border-white/5 pb-1">Interest Notes</h4>
+                                        {isEditing ? (
+                                            <textarea
+                                                className="w-full h-24 text-sm bg-black/20 border border-white/10 rounded-lg p-2 text-white resize-none"
+                                                value={formData.interest_notes || ""}
+                                                onChange={(e) => setFormData({ ...formData, interest_notes: e.target.value })}
+                                                placeholder="Add notes about this lead..."
+                                            />
+                                        ) : (
+                                            <div className="text-sm text-slate-300">{selectedLead?.interest_notes || <span className="text-slate-600">No notes</span>}</div>
+                                        )}
                                     </section>
 
                                     {/* Footer Note */}

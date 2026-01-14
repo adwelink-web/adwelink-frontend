@@ -21,14 +21,9 @@ import {
 } from "@/components/ui/dialog"
 import { getStudents, deleteStudent, updateStudent } from "./actions"
 
-interface Student {
-    id: string
-    name: string | null
-    phone: string | null
-    lead_status: string | null
-    created_at: string | null
-    institute_id: string | null
-}
+import { Database } from "@/lib/database.types"
+
+type Student = Database["public"]["Tables"]["students"]["Row"]
 
 export default function StudentsPage() {
     const [students, setStudents] = React.useState<Student[]>([])
@@ -71,7 +66,7 @@ export default function StudentsPage() {
         setFormData({
             name: student.name || "",
             phone: student.phone || "",
-            lead_status: student.lead_status || "Enrolled"
+            status: student.status || "Enrolled"
         })
         setIsDialogOpen(true)
     }
@@ -171,7 +166,7 @@ export default function StudentsPage() {
                                                     </td>
                                                     <td className="px-6 py-4">
                                                         <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 capitalize">
-                                                            {student.lead_status || "Enrolled"}
+                                                            {student.status || "Enrolled"}
                                                         </Badge>
                                                     </td>
                                                     <td className="px-6 py-4 text-xs text-slate-500">
@@ -233,8 +228,8 @@ export default function StudentsPage() {
                         <div className="space-y-1.5">
                             <label className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Status</label>
                             <Input
-                                value={formData.lead_status || ""}
-                                onChange={(e) => setFormData({ ...formData, lead_status: e.target.value })}
+                                value={formData.status || ""}
+                                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                                 className="bg-white/5 border-white/10 focus:border-emerald-500/50"
                             />
                         </div>

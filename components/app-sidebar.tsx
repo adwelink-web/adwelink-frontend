@@ -15,6 +15,11 @@ import {
     LogOut,
     Sparkles,
     Store,
+    Activity,
+    Bell,
+    HelpCircle,
+    BarChart3,
+    Inbox,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -81,33 +86,61 @@ export function AppSidebar({ className, user }: SidebarProps) {
             label: "Dashboard",
             icon: LayoutDashboard,
             href: "/super-admin",
-            color: "text-violet-500", // The "Crown" color
+            color: "text-violet-500",
         },
         {
             label: "Institutes",
             icon: Store,
             href: "/super-admin/institutes",
-            color: "text-blue-500", // Corporate/Business
+            color: "text-blue-500",
         },
         {
             label: "All Leads",
             icon: Users,
             href: "/super-admin/leads",
-            color: "text-emerald-500", // Growth/Success
+            color: "text-emerald-500",
+        },
+        {
+            label: "Billing",
+            icon: CreditCard,
+            href: "/super-admin/billing",
+            color: "text-amber-500",
+        },
+        {
+            label: "Analytics",
+            icon: BarChart3,
+            href: "/super-admin/analytics",
+            color: "text-cyan-500",
+        },
+        {
+            label: "Alerts",
+            icon: Bell,
+            href: "/super-admin/alerts",
+            color: "text-red-500",
+        },
+        {
+            label: "Activity",
+            icon: Activity,
+            href: "/super-admin/activity",
+            color: "text-slate-400",
         },
         {
             label: "Inbound",
-            icon: MessageSquare,
+            icon: Inbox,
             href: "/super-admin/inbound",
-            color: "text-pink-500", // Engagement
+            color: "text-pink-500",
         },
-        // Onboard is an action, but usually accessible via Institutes page, 
-        // keeping it in nav for quick access as per original layout
+        {
+            label: "Support",
+            icon: HelpCircle,
+            href: "/super-admin/support",
+            color: "text-orange-500",
+        },
         {
             label: "Onboard Client",
-            icon: Users, // using Users as generic placeholder if UserPlus not imported
+            icon: Users,
             href: "/super-admin/onboard",
-            color: "text-amber-500", // Action/Caution/New
+            color: "text-amber-500",
             title: "Action"
         },
     ]
@@ -131,7 +164,12 @@ export function AppSidebar({ className, user }: SidebarProps) {
             href: "/settings",
             color: "text-slate-400",
         },
-        // Billing hidden
+        {
+            label: "Billing",
+            icon: CreditCard,
+            href: "/billing",
+            color: "text-amber-500",
+        },
         {
             label: "Feedback",
             icon: MessageSquare,

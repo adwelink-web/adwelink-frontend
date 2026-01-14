@@ -35,7 +35,7 @@ export async function getDashboardData() {
 
         // Query 5: Recent Leads
         supabase.from("leads")
-            .select("id, name, phone, status, created_at, course_interest, lead_source, next_followup_date")
+            .select("id, name, phone, status, created_at, interested_course, source, last_contacted_at")
             .eq("institute_id", institute_id)
             .order("created_at", { ascending: false })
             .limit(5)
