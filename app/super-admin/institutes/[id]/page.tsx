@@ -1,4 +1,4 @@
-import { createServerClient } from "@/lib/supabase-server"
+import { createAdminClient } from "@/lib/supabase-server"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -7,7 +7,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 
 async function getInstituteDetails(id: string) {
-    const supabase = await createServerClient()
+    const supabase = createAdminClient()
 
     // Get institute
     const { data: institute } = await supabase

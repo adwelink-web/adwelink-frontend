@@ -15,8 +15,6 @@ import {
     LogOut,
     Sparkles,
     Store,
-    Activity,
-    Bell,
     HelpCircle,
     BarChart3,
     Inbox,
@@ -82,6 +80,7 @@ export function AppSidebar({ className, user }: SidebarProps) {
     }
 
     const superAdminRoutes: Route[] = [
+        // Core Operations
         {
             label: "Dashboard",
             icon: LayoutDashboard,
@@ -100,6 +99,7 @@ export function AppSidebar({ className, user }: SidebarProps) {
             href: "/super-admin/leads",
             color: "text-emerald-500",
         },
+        // Money & Insights
         {
             label: "Billing",
             icon: CreditCard,
@@ -112,18 +112,7 @@ export function AppSidebar({ className, user }: SidebarProps) {
             href: "/super-admin/analytics",
             color: "text-cyan-500",
         },
-        {
-            label: "Alerts",
-            icon: Bell,
-            href: "/super-admin/alerts",
-            color: "text-red-500",
-        },
-        {
-            label: "Activity",
-            icon: Activity,
-            href: "/super-admin/activity",
-            color: "text-slate-400",
-        },
+        // Communication
         {
             label: "Inbound",
             icon: Inbox,
@@ -136,11 +125,18 @@ export function AppSidebar({ className, user }: SidebarProps) {
             href: "/super-admin/support",
             color: "text-orange-500",
         },
+        // Settings & Actions
+        {
+            label: "Settings",
+            icon: Settings,
+            href: "/super-admin/settings",
+            color: "text-slate-400",
+        },
         {
             label: "Onboard Client",
             icon: Users,
             href: "/super-admin/onboard",
-            color: "text-amber-500",
+            color: "text-green-500",
             title: "Action"
         },
     ]
@@ -200,6 +196,12 @@ export function AppSidebar({ className, user }: SidebarProps) {
             color: "text-violet-500",
             title: "Feed",
             isLive: true,
+        },
+        {
+            label: "Support",
+            icon: HelpCircle,
+            href: "/workspace/support",
+            color: "text-orange-500",
         },
         {
             label: "Give Feedback",

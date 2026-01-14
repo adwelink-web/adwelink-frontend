@@ -1,4 +1,4 @@
-import { createServerClient } from "@/lib/supabase-server"
+import { createAdminClient } from "@/lib/supabase-server"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Users, MessageSquare, Star, Mail, Inbox } from "lucide-react"
 
 export default async function InboundPage() {
-    const supabase = await createServerClient()
+    const supabase = createAdminClient()
 
     const [waitlistResults, feedbackResults] = await Promise.all([
         supabase.from('waitlist').select('*').order('created_at', { ascending: false }),
