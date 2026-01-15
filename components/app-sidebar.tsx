@@ -263,7 +263,7 @@ export function AppSidebar({ className, user }: SidebarProps) {
             </div>
 
             {/* 3. Navigation Routes - Scrollable */}
-            <ScrollArea className="flex-1 px-4 pb-2">
+            <ScrollArea className="flex-1 min-h-0 px-4 pb-2">
                 <div className="space-y-1">
                     {displayRoutes.map((route) => (
                         <Link
@@ -286,8 +286,8 @@ export function AppSidebar({ className, user }: SidebarProps) {
                 </div>
             </ScrollArea>
 
-            {/* 3. Footer (Plan & Profile) */}
-            <div className="mt-auto p-4 border-t border-white/5 bg-black/20">
+            {/* 4. Footer (Plan & Profile) - Fixed at bottom */}
+            <div className="shrink-0 p-4 border-t border-white/5 bg-black/20">
                 {/* Only show plan details in Institute Mode? Or always? Always is fine. */}
                 <div className="mb-4 rounded-md bg-gradient-to-r from-amber-500/10 to-transparent p-3 border border-amber-500/20">
                     <div className="flex items-center justify-between mb-1">
