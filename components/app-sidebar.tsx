@@ -257,8 +257,8 @@ export function AppSidebar({ className, user }: SidebarProps) {
                 {/* <div className="h-4"></div> */}
             </div>
 
-            {/* 2. Navigation Routes */}
-            <ScrollArea className="flex-1 px-4 py-4">
+            {/* 2. Navigation Routes - Limited height to ensure footer visibility */}
+            <ScrollArea className="flex-1 px-4 py-4 max-h-[calc(100vh-280px)]">
                 <div className="mb-2 px-2 text-[10px] uppercase text-slate-500 font-bold tracking-wider">
                     {isSuperAdminMode ? "Super Admin Controls" : isInstituteMode ? "Institute Controls" : "Workspace Tools"}
                 </div>
