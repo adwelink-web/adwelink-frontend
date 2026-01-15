@@ -135,13 +135,28 @@ export default async function AMSWorkspacePage() {
                                 ) : (
                                     recentLeads.map((lead) => (
                                         <Link key={lead.id} href={`/workspace/leads?phone=${lead.phone}`} className="block">
-                                            <div className="flex flex-col sm:flex-row items-center justify-between p-2.5 bg-white/5 border-b sm:border border-white/5 sm:rounded-lg hover:bg-white/10 transition-colors gap-2">
+                                            <div className="flex flex-col sm:flex-row items-center justify-between p-2.5 bg-white/5 border-b sm:border border-white/5 sm:rounded-lg hover:bg-white/10 transition-colors gap-2 group/item">
                                                 <div className="flex items-center gap-4 w-full sm:w-auto">
-                                                    <div className="h-9 w-9 shrink-0 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs shadow-inner ring-1 ring-white/20">
-                                                        {lead.name ? lead.name.charAt(0).toUpperCase() : '?'}
+                                                    <div className="relative">
+                                                        <div className="h-9 w-9 shrink-0 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs shadow-inner ring-1 ring-white/20">
+                                                            {lead.name ? lead.name.charAt(0).toUpperCase() : '?'}
+                                                        </div>
+                                                        {lead.lead_score && lead.lead_score > 0 && (
+                                                            <div className={`absolute -bottom-1 -right-1 h-4 w-4 rounded-full flex items-center justify-center text-[8px] font-bold ring-1 ring-[#0B0F19] ${lead.lead_score >= 70 ? 'bg-green-500 text-black' : lead.lead_score >= 40 ? 'bg-amber-500 text-black' : 'bg-slate-500 text-white'}`}>
+                                                                {lead.lead_score}
+                                                            </div>
+                                                        )}
                                                     </div>
                                                     <div className="min-w-0 flex-1">
-                                                        <p className="text-sm font-medium text-white truncate">{lead.name || "Unknown Caller"}</p>
+                                                        <p className="text-sm font-medium text-white truncate flex items-center gap-2">
+                                                            {lead.name || "Unknown Caller"}
+                                                            {lead.ai_notes && (
+                                                                <span className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[9px] bg-violet-500/10 text-violet-300 border border-violet-500/20 max-w-[150px] truncate">
+                                                                    <Sparkles className="h-2 w-2 mr-1" />
+                                                                    {lead.ai_notes.slice(0, 20)}...
+                                                                </span>
+                                                            )}
+                                                        </p>
                                                         <p className="text-xs text-muted-foreground flex items-center gap-1">
                                                             <Phone className="h-3 w-3" /> {lead.phone}
                                                             {lead.source && (

@@ -3,13 +3,16 @@
 import { createServerClient } from "@/lib/supabase-server"
 import { revalidatePath } from "next/cache"
 import { getAuthenticatedInstituteId } from "@/lib/auth-utils"
+import { Database } from "@/lib/database.types"
 
-interface LeadCreateData {
-    phone: string
-    [key: string]: unknown
-}
+// Use generated types for type safety - Schema IS the Brain (DaaB)
+type LeadInsert = Database["public"]["Tables"]["leads"]["Insert"]
+type LeadUpdate = Database["public"]["Tables"]["leads"]["Update"]
 
-export async function updateLead(leadId: string, data: Record<string, unknown>) {
+// For createLead, we omit institute_id as it's auto-injected server-side
+export type LeadCreateData = Omit<LeadInsert, "institute_id" | "id" | "created_at" | "updated_at">
+
+export async function updateLead(leadId: string, data: LeadUpdate) {
     const supabase = await createServerClient()
     const institute_id = await getAuthenticatedInstituteId(supabase)
 
@@ -36,7 +39,7 @@ export async function createLead(data: LeadCreateData) {
     const { data: lead, error } = await supabase
         .from("leads")
         .insert([{
-            ...(data as any),
+            ...data,
             institute_id
         }])
         .select()

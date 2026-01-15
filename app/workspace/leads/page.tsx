@@ -16,9 +16,8 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { updateLead, createLead, deleteLead } from "./actions"
+import { updateLead, createLead, deleteLead, LeadCreateData } from "./actions"
 import { getCourses } from "../courses/actions"
-import { format } from "date-fns" // We might need to install date-fns or use native Intl
 
 type Lead = Database["public"]["Tables"]["leads"]["Row"]
 
@@ -50,8 +49,7 @@ export default function LeadsPage() {
                     alert("Phone number is required")
                     return
                 }
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const response = await createLead(updateData as any) // Type assertion needed due to Partial vs Interface mismatch, but validation ensures safety
+                const response = await createLead(updateData as LeadCreateData)
                 if (response.success && response.data) {
                     setLeads([response.data, ...leads])
                     setDialogOpen(false)
