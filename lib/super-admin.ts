@@ -4,8 +4,6 @@
 // List of super admin emails
 export const SUPER_ADMIN_EMAILS = [
     "thekashidasmongre@gmail.com",
-    "sharma.demo@gmail.com",
-    "admin@adwelink.com"
 ];
 
 // Check if user is super admin
