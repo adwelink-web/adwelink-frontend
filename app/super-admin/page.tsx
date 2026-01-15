@@ -144,7 +144,7 @@ export default async function SuperAdminDashboard() {
     }
 
     return (
-        <div className="h-full w-full overflow-hidden flex flex-col relative">
+        <div className="h-[calc(100vh-40px)] w-full overflow-hidden flex flex-col relative">
             {/* Main Scrollable Container */}
             <div className="flex-1 w-full h-full overflow-y-auto custom-scrollbar relative z-10">
 
@@ -217,7 +217,7 @@ export default async function SuperAdminDashboard() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
                         {/* Institutes List */}
-                        <Card className="bg-gradient-to-br from-violet-500/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-violet-500/20">
+                        <Card className="bg-gradient-to-br from-violet-500/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-violet-500/20 flex flex-col">
                             <CardHeader className="flex flex-row items-center justify-between">
                                 <div className="space-y-1">
                                     <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
@@ -232,51 +232,53 @@ export default async function SuperAdminDashboard() {
                                     </Badge>
                                 </Link>
                             </CardHeader>
-                            <CardContent className="p-0 max-h-[280px] overflow-y-auto custom-scrollbar">
-                                <Table>
-                                    <TableHeader className="sticky top-0 bg-[#0B0F19]">
-                                        <TableRow className="hover:bg-transparent border-white/5">
-                                            <TableHead className="pl-6">Name</TableHead>
-                                            <TableHead>Usage</TableHead>
-                                            <TableHead className="text-right pr-6">Status</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {metrics.institutes.slice(0, 5).map((inst) => (
-                                            <Link href={`/super-admin/institutes/${inst.id}`} key={inst.id} className="contents">
-                                                <TableRow className="hover:bg-white/10 border-white/5 cursor-pointer transition-colors">
-                                                    <TableCell className="pl-6 py-3">
-                                                        <div className="font-medium text-white text-sm">{inst.name}</div>
-                                                        <div className="text-xs text-muted-foreground">{inst.city || "No city"}</div>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <div className="text-sm font-mono font-medium text-white">{inst.messages_used || 0}</div>
-                                                        <div className="w-16 h-1 bg-white/10 rounded-full mt-1 overflow-hidden">
-                                                            <div className="h-full bg-violet-500 rounded-full" style={{ width: `${Math.min(((inst.messages_used || 0) / (inst.message_limit || 50)) * 100, 100)}%` }}></div>
-                                                        </div>
-                                                    </TableCell>
-                                                    <TableCell className="text-right pr-6">
-                                                        <Badge variant="secondary" className="text-[10px] uppercase font-bold">
-                                                            {inst.current_plan || "Trial"}
-                                                        </Badge>
+                            <CardContent className="p-0 flex-1 overflow-hidden">
+                                <div className="max-h-[350px] overflow-y-auto custom-scrollbar">
+                                    <Table>
+                                        <TableHeader className="sticky top-0 bg-[#0B0F19] z-20 shadow-sm">
+                                            <TableRow className="hover:bg-transparent border-white/5">
+                                                <TableHead className="pl-6 text-white/70 font-bold bg-[#0B0F19]">Name</TableHead>
+                                                <TableHead className="text-white/70 font-bold bg-[#0B0F19]">Usage</TableHead>
+                                                <TableHead className="text-right pr-6 text-white/70 font-bold bg-[#0B0F19]">Status</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {metrics.institutes.slice(0, 8).map((inst) => (
+                                                <Link href={`/super-admin/institutes/${inst.id}`} key={inst.id} className="contents">
+                                                    <TableRow className="hover:bg-white/10 border-white/5 cursor-pointer transition-colors">
+                                                        <TableCell className="pl-6 py-3">
+                                                            <div className="font-medium text-white text-sm line-clamp-1">{inst.name}</div>
+                                                            <div className="text-xs text-muted-foreground">{inst.city || "No city"}</div>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <div className="text-sm font-mono font-medium text-white">{inst.messages_used || 0}</div>
+                                                            <div className="w-16 h-1 bg-white/10 rounded-full mt-1 overflow-hidden">
+                                                                <div className="h-full bg-violet-500 rounded-full" style={{ width: `${Math.min(((inst.messages_used || 0) / (inst.message_limit || 50)) * 100, 100)}%` }}></div>
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell className="text-right pr-6">
+                                                            <Badge variant="secondary" className="text-[10px] uppercase font-bold">
+                                                                {inst.current_plan || "Trial"}
+                                                            </Badge>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                </Link>
+                                            ))}
+                                            {metrics.institutes.length === 0 && (
+                                                <TableRow>
+                                                    <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
+                                                        No institutes found.
                                                     </TableCell>
                                                 </TableRow>
-                                            </Link>
-                                        ))}
-                                        {metrics.institutes.length === 0 && (
-                                            <TableRow>
-                                                <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
-                                                    No institutes found.
-                                                </TableCell>
-                                            </TableRow>
-                                        )}
-                                    </TableBody>
-                                </Table>
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                                </div>
                             </CardContent>
                         </Card>
 
                         {/* Recent Leads */}
-                        <Card className="bg-gradient-to-br from-emerald-500/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-emerald-500/20">
+                        <Card className="bg-gradient-to-br from-emerald-500/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-emerald-500/20 flex flex-col">
                             <CardHeader className="flex flex-row items-center justify-between">
                                 <div className="space-y-1">
                                     <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
@@ -291,45 +293,47 @@ export default async function SuperAdminDashboard() {
                                     </Badge>
                                 </Link>
                             </CardHeader>
-                            <CardContent className="p-0 max-h-[280px] overflow-y-auto custom-scrollbar">
-                                <Table>
-                                    <TableHeader className="sticky top-0 bg-[#0B0F19]">
-                                        <TableRow className="hover:bg-transparent border-white/5">
-                                            <TableHead className="pl-6">Lead Name</TableHead>
-                                            <TableHead>Institute</TableHead>
-                                            <TableHead className="text-right pr-6">Status</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {metrics.recentLeads.map((lead: any) => (
-                                            <TableRow key={lead.id} className="hover:bg-white/10 border-white/5 cursor-pointer transition-colors">
-                                                <TableCell className="pl-6 py-3">
-                                                    <div className="font-medium text-white text-sm">{lead.name || "Unknown"}</div>
-                                                    <div className="text-xs text-muted-foreground">{new Date(lead.created_at).toLocaleDateString()}</div>
-                                                </TableCell>
-                                                <TableCell className="text-xs text-muted-foreground">
-                                                    {lead.institutes?.name || "Unknown"}
-                                                </TableCell>
-                                                <TableCell className="text-right pr-6">
-                                                    <Badge variant={
-                                                        lead.status === 'hot' ? 'destructive' :
-                                                            lead.status === 'warm' ? 'default' :
-                                                                lead.status === 'fresh' ? 'secondary' : 'outline'
-                                                    } className="text-[10px] uppercase">
-                                                        {lead.status || "New"}
-                                                    </Badge>
-                                                </TableCell>
+                            <CardContent className="p-0 flex-1 overflow-hidden">
+                                <div className="max-h-[350px] overflow-y-auto custom-scrollbar">
+                                    <Table>
+                                        <TableHeader className="sticky top-0 bg-[#0B0F19] z-20 shadow-sm">
+                                            <TableRow className="hover:bg-transparent border-white/5">
+                                                <TableHead className="pl-6 text-white/70 font-bold bg-[#0B0F19]">Lead Name</TableHead>
+                                                <TableHead className="text-white/70 font-bold bg-[#0B0F19]">Institute</TableHead>
+                                                <TableHead className="text-right pr-6 text-white/70 font-bold bg-[#0B0F19]">Status</TableHead>
                                             </TableRow>
-                                        ))}
-                                        {metrics.recentLeads.length === 0 && (
-                                            <TableRow>
-                                                <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
-                                                    No leads found.
-                                                </TableCell>
-                                            </TableRow>
-                                        )}
-                                    </TableBody>
-                                </Table>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {metrics.recentLeads.map((lead: any) => (
+                                                <TableRow key={lead.id} className="hover:bg-white/10 border-white/5 cursor-pointer transition-colors">
+                                                    <TableCell className="pl-6 py-3">
+                                                        <div className="font-medium text-white text-sm line-clamp-1">{lead.name || "Unknown"}</div>
+                                                        <div className="text-xs text-muted-foreground">{new Date(lead.created_at).toLocaleDateString()}</div>
+                                                    </TableCell>
+                                                    <TableCell className="text-xs text-muted-foreground max-w-[120px] truncate">
+                                                        {lead.institutes?.name || "Unknown"}
+                                                    </TableCell>
+                                                    <TableCell className="text-right pr-6">
+                                                        <Badge variant={
+                                                            lead.status === 'hot' ? 'destructive' :
+                                                                lead.status === 'warm' ? 'default' :
+                                                                    lead.status === 'fresh' ? 'secondary' : 'outline'
+                                                        } className="text-[10px] uppercase">
+                                                            {lead.status || "New"}
+                                                        </Badge>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                            {metrics.recentLeads.length === 0 && (
+                                                <TableRow>
+                                                    <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
+                                                        No leads found.
+                                                    </TableCell>
+                                                </TableRow>
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                                </div>
                             </CardContent>
                         </Card>
                     </div>
