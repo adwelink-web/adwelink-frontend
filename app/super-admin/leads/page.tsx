@@ -15,6 +15,7 @@ import { Users, Download, Filter } from "lucide-react"
 async function getAllLeads() {
     const supabase = createAdminClient()
 
+    // FK constraint now exists, can use proper join
     const { data: leads } = await supabase
         .from("leads")
         .select(`

@@ -40,7 +40,7 @@ async function getMetrics() {
     // Calculate total messages used
     const totalMessages = institutes?.reduce((sum, inst) => sum + (inst.messages_used || 0), 0) || 0
 
-    // Get recent leads
+    // Get recent leads with institute names (FK constraint exists)
     const { data: recentLeads } = await supabase
         .from("leads")
         .select(`
@@ -88,7 +88,8 @@ export default async function SuperAdminDashboard() {
             subtext: "Active clients",
             icon: Building2,
             color: "violet",
-            trend: "+2 this week"
+            trend: "+2 this week",
+            href: "/super-admin/institutes"
         },
         {
             label: "Total Leads",
@@ -96,7 +97,8 @@ export default async function SuperAdminDashboard() {
             subtext: `+${metrics.todayLeads} today`,
             icon: Users,
             color: "emerald",
-            trend: "Growing"
+            trend: "Growing",
+            href: "/super-admin/leads"
         },
         {
             label: "Messages Sent",
@@ -104,7 +106,8 @@ export default async function SuperAdminDashboard() {
             subtext: "Across all institutes",
             icon: MessageSquare,
             color: "cyan",
-            trend: "Active"
+            trend: "Active",
+            href: "/super-admin/analytics"
         },
         {
             label: "Monthly Revenue",
@@ -112,7 +115,8 @@ export default async function SuperAdminDashboard() {
             subtext: "From subscriptions",
             icon: IndianRupee,
             color: "amber",
-            trend: "Recurring"
+            trend: "Recurring",
+            href: "/super-admin/billing"
         }
     ]
 
@@ -183,28 +187,29 @@ export default async function SuperAdminDashboard() {
                     {/* Stats Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         {stats.map((stat, i) => (
-                            <Card
-                                key={i}
-                                className={`bg-gradient-to-br ${colorClasses[stat.color].gradient} border-white/10 backdrop-blur-md shadow-lg ${colorClasses[stat.color].border} hover:scale-[1.02] transition-all h-full`}
-                            >
-                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium text-slate-200">
-                                        {stat.label}
-                                    </CardTitle>
-                                    <stat.icon className={`h-4 w-4 ${colorClasses[stat.color].icon}`} />
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-2xl font-bold text-white">{stat.value}</div>
-                                    <div className="flex items-center gap-2 mt-1">
-                                        <Badge variant="secondary" className="text-[10px] uppercase px-1.5 h-5">
-                                            {stat.trend}
-                                        </Badge>
-                                        <p className="text-xs text-muted-foreground">
-                                            {stat.subtext}
-                                        </p>
-                                    </div>
-                                </CardContent>
-                            </Card>
+                            <Link href={stat.href} key={i}>
+                                <Card
+                                    className={`bg-gradient-to-br ${colorClasses[stat.color].gradient} border-white/10 backdrop-blur-md shadow-lg ${colorClasses[stat.color].border} hover:scale-[1.02] transition-all h-full cursor-pointer`}
+                                >
+                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                        <CardTitle className="text-sm font-medium text-slate-200">
+                                            {stat.label}
+                                        </CardTitle>
+                                        <stat.icon className={`h-4 w-4 ${colorClasses[stat.color].icon}`} />
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="text-2xl font-bold text-white">{stat.value}</div>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <Badge variant="secondary" className="text-[10px] uppercase px-1.5 h-5">
+                                                {stat.trend}
+                                            </Badge>
+                                            <p className="text-xs text-muted-foreground">
+                                                {stat.subtext}
+                                            </p>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </Link>
                         ))}
                     </div>
 
@@ -227,9 +232,9 @@ export default async function SuperAdminDashboard() {
                                     </Badge>
                                 </Link>
                             </CardHeader>
-                            <CardContent className="p-0">
+                            <CardContent className="p-0 max-h-[280px] overflow-y-auto custom-scrollbar">
                                 <Table>
-                                    <TableHeader>
+                                    <TableHeader className="sticky top-0 bg-[#0B0F19]">
                                         <TableRow className="hover:bg-transparent border-white/5">
                                             <TableHead className="pl-6">Name</TableHead>
                                             <TableHead>Usage</TableHead>
@@ -238,23 +243,25 @@ export default async function SuperAdminDashboard() {
                                     </TableHeader>
                                     <TableBody>
                                         {metrics.institutes.slice(0, 5).map((inst) => (
-                                            <TableRow key={inst.id} className="hover:bg-white/5 border-white/5">
-                                                <TableCell className="pl-6 py-3">
-                                                    <div className="font-medium text-white text-sm">{inst.name}</div>
-                                                    <div className="text-xs text-muted-foreground">{inst.city || "No city"}</div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div className="text-sm font-mono font-medium text-white">{inst.messages_used || 0}</div>
-                                                    <div className="w-16 h-1 bg-white/10 rounded-full mt-1 overflow-hidden">
-                                                        <div className="h-full bg-violet-500 rounded-full" style={{ width: `${Math.min(((inst.messages_used || 0) / (inst.message_limit || 50)) * 100, 100)}%` }}></div>
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell className="text-right pr-6">
-                                                    <Badge variant="secondary" className="text-[10px] uppercase font-bold">
-                                                        {inst.current_plan || "Trial"}
-                                                    </Badge>
-                                                </TableCell>
-                                            </TableRow>
+                                            <Link href={`/super-admin/institutes/${inst.id}`} key={inst.id} className="contents">
+                                                <TableRow className="hover:bg-white/10 border-white/5 cursor-pointer transition-colors">
+                                                    <TableCell className="pl-6 py-3">
+                                                        <div className="font-medium text-white text-sm">{inst.name}</div>
+                                                        <div className="text-xs text-muted-foreground">{inst.city || "No city"}</div>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div className="text-sm font-mono font-medium text-white">{inst.messages_used || 0}</div>
+                                                        <div className="w-16 h-1 bg-white/10 rounded-full mt-1 overflow-hidden">
+                                                            <div className="h-full bg-violet-500 rounded-full" style={{ width: `${Math.min(((inst.messages_used || 0) / (inst.message_limit || 50)) * 100, 100)}%` }}></div>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell className="text-right pr-6">
+                                                        <Badge variant="secondary" className="text-[10px] uppercase font-bold">
+                                                            {inst.current_plan || "Trial"}
+                                                        </Badge>
+                                                    </TableCell>
+                                                </TableRow>
+                                            </Link>
                                         ))}
                                         {metrics.institutes.length === 0 && (
                                             <TableRow>
@@ -284,9 +291,9 @@ export default async function SuperAdminDashboard() {
                                     </Badge>
                                 </Link>
                             </CardHeader>
-                            <CardContent className="p-0">
+                            <CardContent className="p-0 max-h-[280px] overflow-y-auto custom-scrollbar">
                                 <Table>
-                                    <TableHeader>
+                                    <TableHeader className="sticky top-0 bg-[#0B0F19]">
                                         <TableRow className="hover:bg-transparent border-white/5">
                                             <TableHead className="pl-6">Lead Name</TableHead>
                                             <TableHead>Institute</TableHead>
@@ -294,28 +301,26 @@ export default async function SuperAdminDashboard() {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {metrics.recentLeads.map((lead: any) => {
-                                            return (
-                                                <TableRow key={lead.id} className="hover:bg-white/5 border-white/5">
-                                                    <TableCell className="pl-6 py-3">
-                                                        <div className="font-medium text-white text-sm">{lead.name || "Unknown"}</div>
-                                                        <div className="text-xs text-muted-foreground">{new Date(lead.created_at).toLocaleDateString()}</div>
-                                                    </TableCell>
-                                                    <TableCell className="text-xs text-muted-foreground">
-                                                        {lead.institutes?.name || "Unknown"}
-                                                    </TableCell>
-                                                    <TableCell className="text-right pr-6">
-                                                        <Badge variant={
-                                                            lead.status === 'hot' ? 'destructive' :
-                                                                lead.status === 'warm' ? 'default' :
-                                                                    lead.status === 'fresh' ? 'secondary' : 'outline'
-                                                        } className="text-[10px] uppercase">
-                                                            {lead.status || "New"}
-                                                        </Badge>
-                                                    </TableCell>
-                                                </TableRow>
-                                            )
-                                        })}
+                                        {metrics.recentLeads.map((lead: any) => (
+                                            <TableRow key={lead.id} className="hover:bg-white/10 border-white/5 cursor-pointer transition-colors">
+                                                <TableCell className="pl-6 py-3">
+                                                    <div className="font-medium text-white text-sm">{lead.name || "Unknown"}</div>
+                                                    <div className="text-xs text-muted-foreground">{new Date(lead.created_at).toLocaleDateString()}</div>
+                                                </TableCell>
+                                                <TableCell className="text-xs text-muted-foreground">
+                                                    {lead.institutes?.name || "Unknown"}
+                                                </TableCell>
+                                                <TableCell className="text-right pr-6">
+                                                    <Badge variant={
+                                                        lead.status === 'hot' ? 'destructive' :
+                                                            lead.status === 'warm' ? 'default' :
+                                                                lead.status === 'fresh' ? 'secondary' : 'outline'
+                                                    } className="text-[10px] uppercase">
+                                                        {lead.status || "New"}
+                                                    </Badge>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
                                         {metrics.recentLeads.length === 0 && (
                                             <TableRow>
                                                 <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
