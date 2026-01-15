@@ -416,18 +416,33 @@ export default function LeadsPage() {
                             <ScrollArea className="h-[calc(85vh-130px)]">
                                 <div className="p-5 pb-20 space-y-5">
 
-                                    {/* 1. Lead Info Summary */}
+                                    {/* 1. AI Notes */}
                                     <section>
                                         <div className="rounded-xl bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 border border-violet-500/20 p-4 relative overflow-hidden">
-                                            <div className="absolute top-0 right-0 p-3 opacity-10"><Sparkles className="h-10 w-10 text-violet-500" /></div>
-                                            <h4 className="text-[10px] font-bold uppercase tracking-widest text-violet-400 mb-3 flex items-center gap-2">
-                                                <Sparkles className="h-3 w-3" /> Lead Summary
-                                            </h4>
-                                            <div className="flex items-center gap-6 mb-2">
+                                            <div className="flex items-start justify-between gap-4">
                                                 <div className="flex-1">
-                                                    <p className="text-sm text-violet-200/90 leading-relaxed">
-                                                        {selectedLead?.ai_notes || "No notes available yet."}
-                                                    </p>
+                                                    <h4 className="text-[10px] font-bold uppercase tracking-widest text-violet-400 mb-3 flex items-center gap-2">
+                                                        <Sparkles className="h-3 w-3" /> AI Notes
+                                                    </h4>
+                                                    {isEditing ? (
+                                                        <textarea
+                                                            className="w-full h-20 text-sm bg-black/30 border border-white/10 rounded-lg p-2 text-white resize-none"
+                                                            value={formData.ai_notes || ""}
+                                                            onChange={(e) => setFormData({ ...formData, ai_notes: e.target.value })}
+                                                            placeholder="Add notes about this lead..."
+                                                        />
+                                                    ) : (
+                                                        <p className="text-sm text-violet-200/90 leading-relaxed">
+                                                            {selectedLead?.ai_notes || "No notes available yet."}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                                {/* Lead Score - Big & Attractive */}
+                                                <div className="flex flex-col items-center justify-center min-w-[80px] h-20 rounded-xl bg-black/30 border border-white/10">
+                                                    <span className="text-[9px] text-slate-500 uppercase font-semibold mb-1">Score</span>
+                                                    <span className={`text-3xl font-black ${(selectedLead?.lead_score ?? 0) >= 70 ? 'text-green-400' : (selectedLead?.lead_score ?? 0) >= 40 ? 'text-yellow-400' : 'text-slate-500'}`}>
+                                                        {selectedLead?.lead_score ?? '-'}
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
@@ -632,20 +647,6 @@ export default function LeadsPage() {
                                         </div>
                                     </section>
 
-                                    {/* 6. AI Notes (Editable) */}
-                                    <section>
-                                        <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-3 border-b border-white/5 pb-1">AI Notes</h4>
-                                        {isEditing ? (
-                                            <textarea
-                                                className="w-full h-24 text-sm bg-black/20 border border-white/10 rounded-lg p-2 text-white resize-none"
-                                                value={formData.ai_notes || ""}
-                                                onChange={(e) => setFormData({ ...formData, ai_notes: e.target.value })}
-                                                placeholder="Add notes about this lead..."
-                                            />
-                                        ) : (
-                                            <div className="text-sm text-slate-300">{selectedLead?.ai_notes || <span className="text-slate-600">No notes</span>}</div>
-                                        )}
-                                    </section>
 
                                     {/* Footer Note */}
                                     {!isCreating && (
