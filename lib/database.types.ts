@@ -490,43 +490,73 @@ export type Database = {
       }
       leads: {
         Row: {
+          ai_notes: string | null
+          budget_range: string | null
+          city: string | null
           created_at: string | null
+          current_class: string | null
           id: string
-          institute_id: string | null
-          interest_notes: string | null
+          institute_id: string
           interested_course: string | null
-          last_contacted_at: string | null
+          lead_score: number | null
           name: string | null
+          next_followup: string | null
+          parent_name: string | null
+          parent_phone: string | null
           phone: string
+          preferred_mode: string | null
           source: string | null
           status: string | null
+          target_year: string | null
           updated_at: string | null
+          visit_date: string | null
+          visit_type: string | null
         }
         Insert: {
+          ai_notes?: string | null
+          budget_range?: string | null
+          city?: string | null
           created_at?: string | null
+          current_class?: string | null
           id?: string
-          institute_id?: string | null
-          interest_notes?: string | null
+          institute_id: string
           interested_course?: string | null
-          last_contacted_at?: string | null
+          lead_score?: number | null
           name?: string | null
+          next_followup?: string | null
+          parent_name?: string | null
+          parent_phone?: string | null
           phone: string
+          preferred_mode?: string | null
           source?: string | null
           status?: string | null
+          target_year?: string | null
           updated_at?: string | null
+          visit_date?: string | null
+          visit_type?: string | null
         }
         Update: {
+          ai_notes?: string | null
+          budget_range?: string | null
+          city?: string | null
           created_at?: string | null
+          current_class?: string | null
           id?: string
-          institute_id?: string | null
-          interest_notes?: string | null
+          institute_id?: string
           interested_course?: string | null
-          last_contacted_at?: string | null
+          lead_score?: number | null
           name?: string | null
+          next_followup?: string | null
+          parent_name?: string | null
+          parent_phone?: string | null
           phone?: string
+          preferred_mode?: string | null
           source?: string | null
           status?: string | null
+          target_year?: string | null
           updated_at?: string | null
+          visit_date?: string | null
+          visit_type?: string | null
         }
         Relationships: [
           {

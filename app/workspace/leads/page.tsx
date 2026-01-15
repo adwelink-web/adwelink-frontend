@@ -109,8 +109,8 @@ export default function LeadsPage() {
             lead.status || '',
             lead.source || '',
             lead.interested_course || '',
-            lead.interest_notes?.replace(/,/g, ';').replace(/\n/g, ' ') || '',
-            lead.last_contacted_at ? new Date(lead.last_contacted_at).toLocaleDateString('en-IN') : '',
+            lead.ai_notes?.replace(/,/g, ';').replace(/\n/g, ' ') || '',
+            lead.next_followup ? new Date(lead.next_followup).toLocaleDateString('en-IN') : '',
             lead.created_at ? new Date(lead.created_at).toLocaleDateString('en-IN') : ''
         ])
 
@@ -273,9 +273,9 @@ export default function LeadsPage() {
                                                 <span className="text-slate-700">-</span>
                                             </td>
                                             <td className="px-6 py-4 align-middle">
-                                                {lead.last_contacted_at ? (
+                                                {lead.next_followup ? (
                                                     <div className="text-xs text-slate-400 font-medium">
-                                                        {formatDate(lead.last_contacted_at)}
+                                                        {formatDate(lead.next_followup)}
                                                     </div>
                                                 ) : <span className="text-slate-700">-</span>}
                                             </td>
@@ -422,7 +422,7 @@ export default function LeadsPage() {
                                             <div className="flex items-center gap-6 mb-2">
                                                 <div className="flex-1">
                                                     <p className="text-sm text-violet-200/90 leading-relaxed">
-                                                        {selectedLead?.interest_notes || "No notes available yet."}
+                                                        {selectedLead?.ai_notes || "No notes available yet."}
                                                     </p>
                                                 </div>
                                             </div>
@@ -454,16 +454,16 @@ export default function LeadsPage() {
                                                 )}
                                             </div>
                                             <div>
-                                                <label className="text-[9px] text-slate-500 uppercase font-semibold">Last Contacted</label>
+                                                <label className="text-[9px] text-slate-500 uppercase font-semibold">Next Follow-up</label>
                                                 {isEditing ? (
                                                     <Input
                                                         type="date"
                                                         className="h-6 text-xs bg-black/20 border-white/10 mt-0.5 px-1 w-full"
-                                                        value={getSafeDateValue(formData.last_contacted_at)}
-                                                        onChange={(e) => setFormData({ ...formData, last_contacted_at: e.target.value })}
+                                                        value={getSafeDateValue(formData.next_followup)}
+                                                        onChange={(e) => setFormData({ ...formData, next_followup: e.target.value })}
                                                     />
                                                 ) : (
-                                                    <div className="text-sm font-medium text-white mt-0.5">{selectedLead?.last_contacted_at ? formatDate(selectedLead.last_contacted_at) : <span className="text-slate-600">Never</span>}</div>
+                                                    <div className="text-sm font-medium text-white mt-0.5">{selectedLead?.next_followup ? formatDate(selectedLead.next_followup) : <span className="text-slate-600">Not Set</span>}</div>
                                                 )}
                                             </div>
                                         </div>
@@ -475,12 +475,12 @@ export default function LeadsPage() {
                                         {isEditing ? (
                                             <textarea
                                                 className="w-full h-24 text-sm bg-black/20 border border-white/10 rounded-lg p-2 text-white resize-none"
-                                                value={formData.interest_notes || ""}
-                                                onChange={(e) => setFormData({ ...formData, interest_notes: e.target.value })}
+                                                value={formData.ai_notes || ""}
+                                                onChange={(e) => setFormData({ ...formData, ai_notes: e.target.value })}
                                                 placeholder="Add notes about this lead..."
                                             />
                                         ) : (
-                                            <div className="text-sm text-slate-300">{selectedLead?.interest_notes || <span className="text-slate-600">No notes</span>}</div>
+                                            <div className="text-sm text-slate-300">{selectedLead?.ai_notes || <span className="text-slate-600">No notes</span>}</div>
                                         )}
                                     </section>
 
