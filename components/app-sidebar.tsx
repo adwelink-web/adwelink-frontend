@@ -257,11 +257,13 @@ export function AppSidebar({ className, user }: SidebarProps) {
                 {/* <div className="h-4"></div> */}
             </div>
 
-            {/* 2. Navigation Routes - Limited height to ensure footer visibility */}
-            <ScrollArea className="flex-1 px-4 py-4 max-h-[calc(100vh-280px)]">
-                <div className="mb-2 px-2 text-[10px] uppercase text-slate-500 font-bold tracking-wider">
-                    {isSuperAdminMode ? "Super Admin Controls" : isInstituteMode ? "Institute Controls" : "Workspace Tools"}
-                </div>
+            {/* 2. Navigation Section Label - Fixed (not scrollable) */}
+            <div className="px-6 pt-4 pb-2 text-[10px] uppercase text-slate-500 font-bold tracking-wider">
+                {isSuperAdminMode ? "Super Admin Controls" : isInstituteMode ? "Institute Controls" : "Workspace Tools"}
+            </div>
+
+            {/* 3. Navigation Routes - Scrollable */}
+            <ScrollArea className="flex-1 px-4 pb-2">
                 <div className="space-y-1">
                     {displayRoutes.map((route) => (
                         <Link
