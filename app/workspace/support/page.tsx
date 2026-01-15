@@ -14,8 +14,7 @@ import {
     CheckCircle,
     AlertCircle,
     MessageSquare,
-    Clock,
-    ChevronDown
+    Clock
 } from "lucide-react"
 import { createClient } from "@/lib/supabase"
 import {
@@ -55,13 +54,17 @@ export default function SupportPage() {
             if (!user) throw new Error("Not authenticated")
 
             // Get institute_id from staff_members
-            const { data: staffData } = await supabase
-                .from("staff_members")
+            const { data: staffData, error: staffError } = await supabase
+                .from("staff_members" as any)
                 .select("institute_id")
                 .eq("id", user.id)
                 .single()
 
-            const instituteId = staffData?.institute_id
+            if (staffError || !(staffData as any)?.institute_id) {
+                throw new Error("Could not find your institute. Please contact support.")
+            }
+
+            const instituteId = (staffData as any).institute_id
 
             // Insert support ticket
             const { error: insertError } = await supabase
