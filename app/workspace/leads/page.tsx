@@ -270,7 +270,11 @@ export default function LeadsPage() {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 align-middle">
-                                                <span className="text-slate-700">-</span>
+                                                {lead.lead_score !== null ? (
+                                                    <span className={`text-sm font-semibold ${lead.lead_score >= 70 ? 'text-green-400' : lead.lead_score >= 40 ? 'text-yellow-400' : 'text-slate-400'}`}>
+                                                        {lead.lead_score}
+                                                    </span>
+                                                ) : <span className="text-slate-700">-</span>}
                                             </td>
                                             <td className="px-6 py-4 align-middle">
                                                 {lead.next_followup ? (
@@ -429,10 +433,49 @@ export default function LeadsPage() {
                                         </div>
                                     </section>
 
-                                    {/* 2. Lead Details */}
+                                    {/* 2. Student Info */}
                                     <section>
-                                        <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-3 border-b border-white/5 pb-1">Lead Details</h4>
-                                        <div className="grid grid-cols-2 gap-4">
+                                        <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-3 border-b border-white/5 pb-1">Student Info</h4>
+                                        <div className="grid grid-cols-3 gap-4">
+                                            <div>
+                                                <label className="text-[9px] text-slate-500 uppercase font-semibold">Current Class</label>
+                                                {isEditing ? (
+                                                    <Input
+                                                        className="h-6 text-sm bg-black/20 border-white/10 mt-0.5 px-2"
+                                                        value={formData.current_class || ""}
+                                                        onChange={(e) => setFormData({ ...formData, current_class: e.target.value })}
+                                                        placeholder="e.g. 12th"
+                                                    />
+                                                ) : (
+                                                    <div className="text-sm font-medium text-white mt-0.5">{selectedLead?.current_class || <span className="text-slate-600">-</span>}</div>
+                                                )}
+                                            </div>
+                                            <div>
+                                                <label className="text-[9px] text-slate-500 uppercase font-semibold">City</label>
+                                                {isEditing ? (
+                                                    <Input
+                                                        className="h-6 text-sm bg-black/20 border-white/10 mt-0.5 px-2"
+                                                        value={formData.city || ""}
+                                                        onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                                                        placeholder="City"
+                                                    />
+                                                ) : (
+                                                    <div className="text-sm font-medium text-white mt-0.5">{selectedLead?.city || <span className="text-slate-600">-</span>}</div>
+                                                )}
+                                            </div>
+                                            <div>
+                                                <label className="text-[9px] text-slate-500 uppercase font-semibold">Lead Score</label>
+                                                <div className={`text-sm font-bold mt-0.5 ${(selectedLead?.lead_score || 0) >= 70 ? 'text-green-400' : (selectedLead?.lead_score || 0) >= 40 ? 'text-yellow-400' : 'text-slate-400'}`}>
+                                                    {selectedLead?.lead_score ?? <span className="text-slate-600 font-medium">-</span>}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+
+                                    {/* 3. Academic Interest */}
+                                    <section>
+                                        <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-3 border-b border-white/5 pb-1">Academic Interest</h4>
+                                        <div className="grid grid-cols-3 gap-4">
                                             <div>
                                                 <label className="text-[9px] text-slate-500 uppercase font-semibold">Interested Course</label>
                                                 {isEditing ? (
@@ -454,12 +497,132 @@ export default function LeadsPage() {
                                                 )}
                                             </div>
                                             <div>
+                                                <label className="text-[9px] text-slate-500 uppercase font-semibold">Target Year</label>
+                                                {isEditing ? (
+                                                    <Input
+                                                        className="h-6 text-sm bg-black/20 border-white/10 mt-0.5 px-2"
+                                                        value={formData.target_year || ""}
+                                                        onChange={(e) => setFormData({ ...formData, target_year: e.target.value })}
+                                                        placeholder="e.g. 2025"
+                                                    />
+                                                ) : (
+                                                    <div className="text-sm font-medium text-white mt-0.5">{selectedLead?.target_year || <span className="text-slate-600">-</span>}</div>
+                                                )}
+                                            </div>
+                                            <div>
+                                                <label className="text-[9px] text-slate-500 uppercase font-semibold">Preferred Mode</label>
+                                                {isEditing ? (
+                                                    <Select
+                                                        value={formData.preferred_mode || ""}
+                                                        onValueChange={(val) => setFormData({ ...formData, preferred_mode: val })}
+                                                    >
+                                                        <SelectTrigger className="h-6 text-sm bg-black/20 border-white/10 mt-0.5 px-2">
+                                                            <SelectValue placeholder="Select Mode" />
+                                                        </SelectTrigger>
+                                                        <SelectContent className="bg-[#161B22] border-white/10 text-white">
+                                                            <SelectItem value="offline">Offline</SelectItem>
+                                                            <SelectItem value="online">Online</SelectItem>
+                                                            <SelectItem value="hybrid">Hybrid</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                ) : (
+                                                    <div className="text-sm font-medium text-white mt-0.5 capitalize">{selectedLead?.preferred_mode || <span className="text-slate-600">-</span>}</div>
+                                                )}
+                                            </div>
+                                            <div>
+                                                <label className="text-[9px] text-slate-500 uppercase font-semibold">Budget Range</label>
+                                                {isEditing ? (
+                                                    <Input
+                                                        className="h-6 text-sm bg-black/20 border-white/10 mt-0.5 px-2"
+                                                        value={formData.budget_range || ""}
+                                                        onChange={(e) => setFormData({ ...formData, budget_range: e.target.value })}
+                                                        placeholder="e.g. 50k-1L"
+                                                    />
+                                                ) : (
+                                                    <div className="text-sm font-medium text-white mt-0.5">{selectedLead?.budget_range || <span className="text-slate-600">-</span>}</div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </section>
+
+                                    {/* 4. Parent Details */}
+                                    <section>
+                                        <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-3 border-b border-white/5 pb-1">Parent / Guardian</h4>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="text-[9px] text-slate-500 uppercase font-semibold">Parent Name</label>
+                                                {isEditing ? (
+                                                    <Input
+                                                        className="h-6 text-sm bg-black/20 border-white/10 mt-0.5 px-2"
+                                                        value={formData.parent_name || ""}
+                                                        onChange={(e) => setFormData({ ...formData, parent_name: e.target.value })}
+                                                        placeholder="Parent Name"
+                                                    />
+                                                ) : (
+                                                    <div className="text-sm font-medium text-white mt-0.5">{selectedLead?.parent_name || <span className="text-slate-600">-</span>}</div>
+                                                )}
+                                            </div>
+                                            <div>
+                                                <label className="text-[9px] text-slate-500 uppercase font-semibold">Parent Phone</label>
+                                                {isEditing ? (
+                                                    <Input
+                                                        className="h-6 text-sm bg-black/20 border-white/10 mt-0.5 px-2"
+                                                        value={formData.parent_phone || ""}
+                                                        onChange={(e) => setFormData({ ...formData, parent_phone: e.target.value })}
+                                                        placeholder="Phone Number"
+                                                    />
+                                                ) : (
+                                                    <div className="text-sm font-medium text-white mt-0.5 font-mono">{selectedLead?.parent_phone || <span className="text-slate-600 font-sans">-</span>}</div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </section>
+
+                                    {/* 5. Visit & Follow-up */}
+                                    <section>
+                                        <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-3 border-b border-white/5 pb-1">Visit & Follow-up</h4>
+                                        <div className="grid grid-cols-3 gap-4">
+                                            <div>
+                                                <label className="text-[9px] text-slate-500 uppercase font-semibold">Visit Type</label>
+                                                {isEditing ? (
+                                                    <Select
+                                                        value={formData.visit_type || ""}
+                                                        onValueChange={(val) => setFormData({ ...formData, visit_type: val })}
+                                                    >
+                                                        <SelectTrigger className="h-6 text-sm bg-black/20 border-white/10 mt-0.5 px-2">
+                                                            <SelectValue placeholder="Select Type" />
+                                                        </SelectTrigger>
+                                                        <SelectContent className="bg-[#161B22] border-white/10 text-white">
+                                                            <SelectItem value="walk_in">Walk-in</SelectItem>
+                                                            <SelectItem value="scheduled">Scheduled</SelectItem>
+                                                            <SelectItem value="demo_class">Demo Class</SelectItem>
+                                                            <SelectItem value="counseling">Counseling</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                ) : (
+                                                    <div className="text-sm font-medium text-white mt-0.5 capitalize">{selectedLead?.visit_type?.replace('_', ' ') || <span className="text-slate-600">-</span>}</div>
+                                                )}
+                                            </div>
+                                            <div>
+                                                <label className="text-[9px] text-slate-500 uppercase font-semibold">Visit Date</label>
+                                                {isEditing ? (
+                                                    <Input
+                                                        type="datetime-local"
+                                                        className="h-6 text-xs bg-black/20 border-white/10 mt-0.5 px-1 w-full"
+                                                        value={getSafeDateValue(formData.visit_date, true)}
+                                                        onChange={(e) => setFormData({ ...formData, visit_date: e.target.value })}
+                                                    />
+                                                ) : (
+                                                    <div className="text-sm font-medium text-white mt-0.5">{selectedLead?.visit_date ? formatDate(selectedLead.visit_date) : <span className="text-slate-600">-</span>}</div>
+                                                )}
+                                            </div>
+                                            <div>
                                                 <label className="text-[9px] text-slate-500 uppercase font-semibold">Next Follow-up</label>
                                                 {isEditing ? (
                                                     <Input
-                                                        type="date"
+                                                        type="datetime-local"
                                                         className="h-6 text-xs bg-black/20 border-white/10 mt-0.5 px-1 w-full"
-                                                        value={getSafeDateValue(formData.next_followup)}
+                                                        value={getSafeDateValue(formData.next_followup, true)}
                                                         onChange={(e) => setFormData({ ...formData, next_followup: e.target.value })}
                                                     />
                                                 ) : (
@@ -469,9 +632,9 @@ export default function LeadsPage() {
                                         </div>
                                     </section>
 
-                                    {/* 3. Notes */}
+                                    {/* 6. AI Notes (Editable) */}
                                     <section>
-                                        <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-3 border-b border-white/5 pb-1">Interest Notes</h4>
+                                        <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-3 border-b border-white/5 pb-1">AI Notes</h4>
                                         {isEditing ? (
                                             <textarea
                                                 className="w-full h-24 text-sm bg-black/20 border border-white/10 rounded-lg p-2 text-white resize-none"
