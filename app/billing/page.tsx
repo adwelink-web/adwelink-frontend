@@ -70,155 +70,149 @@ export default async function BillingPage() {
                 </div>
             </div>
 
-            {/* Main Grid - Compact Layout */}
-            <div className="flex-1 min-h-0 grid grid-cols-1 md:grid-cols-2 gap-4 z-10">
+            {/* Main Grid - Ultra Compact Layout */}
+            <div className="flex-1 min-h-0 grid grid-cols-1 md:grid-cols-2 gap-3 z-10 text-xs">
 
                 {/* Left Column: Plan & Usage */}
-                <div className="flex flex-col gap-4 min-h-0">
+                <div className="flex flex-col gap-3 min-h-0">
 
                     {/* 1. Plan Card */}
                     <Card className="flex-none bg-gradient-to-br from-amber-500/[0.08] to-transparent border-amber-500/20 backdrop-blur-xl shadow-lg rounded-xl overflow-hidden">
-                        <CardHeader className="py-3 px-4 border-b border-white/5">
+                        <CardHeader className="py-2 px-3 border-b border-white/5">
                             <div className="flex items-center justify-between">
-                                <CardTitle className="text-amber-500 flex items-center gap-2 text-sm uppercase tracking-wide font-bold">
-                                    <Sparkles className="h-4 w-4" />
+                                <CardTitle className="text-amber-500 flex items-center gap-1.5 text-xs uppercase tracking-wide font-bold">
+                                    <Sparkles className="h-3.5 w-3.5" />
                                     {currentPlan} Plan
                                 </CardTitle>
-                                <div className="text-xl font-bold text-white leading-none">
+                                <div className="text-lg font-bold text-white leading-none">
                                     {formatCurrency(PLAN_PRICES[currentPlan] || 0)}
-                                    <span className="text-xs text-slate-500 font-normal ml-1">/mo</span>
+                                    <span className="text-[10px] text-slate-500 font-normal ml-0.5">/mo</span>
                                 </div>
                             </div>
                         </CardHeader>
-                        <CardContent className="p-4 grid grid-cols-2 gap-2">
-                            {(PLAN_FEATURES[currentPlan] || []).map((feature, i) => (
-                                <div key={i} className="flex items-center gap-1.5 text-xs text-slate-300">
-                                    <ShieldCheck className="h-3 w-3 text-emerald-500 shrink-0" />
-                                    <span className="truncate">{feature}</span>
-                                </div>
-                            ))}
-                            <div className="col-span-2 mt-2">
-                                <Button size="sm" className="w-full bg-amber-500 text-black hover:bg-amber-600 font-bold h-8 text-xs rounded-lg uppercase tracking-wider">
-                                    <Zap className="mr-1.5 h-3 w-3" /> Upgrade Plan
-                                </Button>
+                        <CardContent className="p-3">
+                            <div className="grid grid-cols-2 gap-x-2 gap-y-1 mb-3">
+                                {(PLAN_FEATURES[currentPlan] || []).map((feature, i) => (
+                                    <div key={i} className="flex items-center gap-1.5 text-[10px] text-slate-300">
+                                        <ShieldCheck className="h-2.5 w-2.5 text-emerald-500 shrink-0" />
+                                        <span className="truncate">{feature}</span>
+                                    </div>
+                                ))}
                             </div>
+                            <Button size="sm" className="w-full bg-amber-500 text-black hover:bg-amber-600 font-bold h-7 text-[10px] rounded-md uppercase tracking-wider">
+                                <Zap className="mr-1 h-3 w-3" /> Upgrade
+                            </Button>
                         </CardContent>
                     </Card>
 
                     {/* 2. Usage Card */}
                     <Card className="flex-none bg-gradient-to-br from-violet-500/[0.08] to-transparent border-violet-500/20 backdrop-blur-xl shadow-lg rounded-xl overflow-hidden">
-                        <CardHeader className="py-3 px-4 border-b border-white/5">
-                            <CardTitle className="text-white flex items-center justify-between text-sm uppercase tracking-wide font-bold">
-                                <span className="flex items-center gap-2">
-                                    <MessageSquare className="h-4 w-4 text-violet-500" /> Message Usage
+                        <CardHeader className="py-2 px-3 border-b border-white/5">
+                            <CardTitle className="text-white flex items-center justify-between text-xs uppercase tracking-wide font-bold">
+                                <span className="flex items-center gap-1.5">
+                                    <MessageSquare className="h-3.5 w-3.5 text-violet-500" /> Message Usage
                                 </span>
-                                <span className={`text-xs ${usagePercent > 80 ? 'text-red-400' : 'text-emerald-400'}`}>{usagePercent}%</span>
+                                <span className={`text-[10px] ${usagePercent > 80 ? 'text-red-400' : 'text-emerald-400'}`}>{usagePercent}%</span>
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className="p-4 space-y-3">
+                        <CardContent className="p-3 space-y-2">
                             <div className="flex items-end justify-between leading-none">
-                                <span className="text-2xl font-bold text-white">{messagesUsed.toLocaleString('en-IN')}</span>
-                                <span className="text-slate-500 text-xs mb-1">of {messageLimit.toLocaleString('en-IN')} limit</span>
+                                <span className="text-xl font-bold text-white">{messagesUsed.toLocaleString('en-IN')}</span>
+                                <span className="text-slate-500 text-[10px]">/ {messageLimit.toLocaleString('en-IN')}</span>
                             </div>
-                            <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                            <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
                                 <div
                                     className={`h-full rounded-full transition-all ${usagePercent > 80 ? 'bg-red-500' : usagePercent > 50 ? 'bg-amber-500' : 'bg-emerald-500'}`}
                                     style={{ width: `${usagePercent}%` }}
                                 />
                             </div>
                             {usagePercent > 80 && (
-                                <div className="flex items-center gap-1.5 text-red-400 text-[10px] bg-red-500/5 p-1.5 rounded border border-red-500/10">
+                                <div className="flex items-center gap-1 text-red-400 text-[10px] bg-red-500/5 p-1 rounded border border-red-500/10 justify-center">
                                     <AlertCircle className="h-3 w-3" />
-                                    <span>Limit Reached! Upgrade now.</span>
+                                    <span>Limit Reached!</span>
                                 </div>
                             )}
                         </CardContent>
                     </Card>
 
-                    {/* 3. Payment Methods (Compact) */}
+                    {/* 3. Payment Methods (Ultra Compact) */}
                     <Card className="flex-1 bg-white/5 border-white/10 shadow-lg rounded-xl overflow-hidden min-h-0 flex flex-col">
-                        <CardHeader className="py-3 px-4 border-b border-white/5 bg-white/[0.02]">
-                            <CardTitle className="text-slate-200 flex items-center gap-2 text-xs uppercase tracking-wider font-bold">
+                        <CardHeader className="py-2 px-3 border-b border-white/5 bg-white/[0.02]">
+                            <CardTitle className="text-slate-200 flex items-center gap-1.5 text-xs uppercase tracking-wider font-bold">
                                 <CreditCard className="h-3 w-3" /> Payment Methods
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="p-0 overflow-y-auto custom-scrollbar flex-1">
-                            <div className="p-3 space-y-2">
-                                {/* UPI */}
-                                <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5 hover:border-white/10 transition-colors group cursor-pointer">
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-8 w-8 rounded bg-[#0B0F19] flex items-center justify-center text-[9px] font-bold text-emerald-500 border border-white/10">UPI</div>
-                                        <div>
-                                            <p className="text-xs font-semibold text-white">UPI / Apps</p>
-                                            <p className="text-[10px] text-slate-500">PhonePe, GPay</p>
+                            <div className="p-2 space-y-1.5">
+                                {[
+                                    { label: 'UPI / Apps', sub: 'PhonePe, GPay', color: 'text-emerald-500', code: 'UPI' },
+                                    { label: 'Net Banking', sub: 'All Banks', color: 'text-blue-500', code: 'NET' },
+                                    //{ label: 'Cards', sub: 'Credit/Debit', color: 'text-amber-500', code: 'CARD' } // Removed 3rd to make it super fit or keep tiny? Let's keep 2 visible without scroll mostly.
+                                ].map((item, i) => (
+                                    <div key={i} className="flex items-center justify-between p-1.5 rounded-lg bg-white/5 border border-white/5 hover:border-white/10 transition-colors group cursor-pointer">
+                                        <div className="flex items-center gap-2">
+                                            <div className={`h-6 w-6 rounded bg-[#0B0F19] flex items-center justify-center text-[8px] font-bold ${item.color} border border-white/10`}>{item.code}</div>
+                                            <div>
+                                                <p className="text-[10px] font-semibold text-white leading-none">{item.label}</p>
+                                                <p className="text-[9px] text-slate-500 leading-none mt-0.5">{item.sub}</p>
+                                            </div>
                                         </div>
+                                        <Plus className="h-3 w-3 text-slate-500 group-hover:text-white" />
                                     </div>
-                                    <Plus className="h-4 w-4 text-slate-500 group-hover:text-white" />
-                                </div>
-                                {/* Bank */}
-                                <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5 hover:border-white/10 transition-colors group cursor-pointer">
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-8 w-8 rounded bg-[#0B0F19] flex items-center justify-center text-[9px] font-bold text-blue-500 border border-white/10">NET</div>
-                                        <div>
-                                            <p className="text-xs font-semibold text-white">Net Banking</p>
-                                            <p className="text-[10px] text-slate-500">All Banks</p>
-                                        </div>
-                                    </div>
-                                    <Plus className="h-4 w-4 text-slate-500 group-hover:text-white" />
-                                </div>
+                                ))}
                             </div>
                         </CardContent>
                     </Card>
                 </div>
 
-                {/* Right Column: Invoice History (Full Height) */}
+                {/* Right Column: Invoice History (Full Height, Compact Table) */}
                 <Card className="flex flex-col bg-white/5 border-white/10 shadow-lg rounded-xl overflow-hidden min-h-0 h-full">
-                    <CardHeader className="py-3 px-4 border-b border-white/5 bg-white/[0.02] flex-none">
+                    <CardHeader className="py-2 px-3 border-b border-white/5 bg-white/[0.02] flex-none">
                         <div className="flex items-center justify-between">
-                            <CardTitle className="text-slate-200 flex items-center gap-2 text-xs uppercase tracking-wider font-bold">
-                                <ReceiptText className="h-3 w-3" /> Payment History
+                            <CardTitle className="text-slate-200 flex items-center gap-1.5 text-xs uppercase tracking-wider font-bold">
+                                <ReceiptText className="h-3 w-3" /> History
                             </CardTitle>
-                            <span className="text-[10px] text-slate-500">Last 12 months</span>
+                            <span className="text-[9px] text-slate-500">Recent</span>
                         </div>
                     </CardHeader>
                     <CardContent className="p-0 flex-1 min-h-0 overflow-hidden relative">
                         <ScrollArea className="h-full w-full">
                             <table className="w-full text-left border-collapse">
-                                <thead className="sticky top-0 bg-[#0B0F19] z-10 text-[10px] uppercase text-slate-500 font-semibold border-b border-white/5">
+                                <thead className="sticky top-0 bg-[#0B0F19] z-10 text-[9px] uppercase text-slate-500 font-semibold border-b border-white/5">
                                     <tr>
-                                        <th className="px-4 py-2 bg-[#0B0F19]">Date</th>
-                                        <th className="px-4 py-2 bg-[#0B0F19]">Amount</th>
-                                        <th className="px-4 py-2 bg-[#0B0F19]">Status</th>
-                                        <th className="px-4 py-2 bg-[#0B0F19] text-right">Rec.</th>
+                                        <th className="px-3 py-1.5 bg-[#0B0F19]">Date</th>
+                                        <th className="px-3 py-1.5 bg-[#0B0F19]">Amount</th>
+                                        <th className="px-3 py-1.5 bg-[#0B0F19]">Status</th>
+                                        <th className="px-3 py-1.5 bg-[#0B0F19] text-right">#</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-white/5 text-xs">
+                                <tbody className="divide-y divide-white/5 text-[10px]">
                                     {payments.length === 0 ? (
                                         <tr>
-                                            <td colSpan={4} className="px-4 py-8 text-center text-slate-500">
-                                                No payments yet.
+                                            <td colSpan={4} className="px-3 py-6 text-center text-slate-500">
+                                                No payments found.
                                             </td>
                                         </tr>
                                     ) : (
                                         payments.map((payment) => (
                                             <tr key={payment.id} className="hover:bg-white/5 transition-colors group">
-                                                <td className="px-4 py-2.5 text-slate-300 whitespace-nowrap">
+                                                <td className="px-3 py-2 text-slate-300 whitespace-nowrap">
                                                     {formatDate(payment.payment_date)}
                                                 </td>
-                                                <td className="px-4 py-2.5 text-white font-medium">
+                                                <td className="px-3 py-2 text-white font-medium">
                                                     {formatCurrency(payment.amount)}
                                                 </td>
-                                                <td className="px-4 py-2.5">
-                                                    <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase ${payment.status === 'success' || payment.status === 'completed'
+                                                <td className="px-3 py-2">
+                                                    <span className={`px-1 py-0.5 rounded text-[8px] font-bold uppercase ${payment.status === 'success' || payment.status === 'completed'
                                                             ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
                                                             : 'bg-red-500/10 text-red-500 border border-red-500/20'
                                                         }`}>
                                                         {payment.status === 'success' || payment.status === 'completed' ? 'Paid' : 'Failed'}
                                                     </span>
                                                 </td>
-                                                <td className="px-4 py-2.5 text-right">
-                                                    <Button size="icon" variant="ghost" className="h-6 w-6 text-slate-500 hover:text-white hover:bg-white/10">
-                                                        <Download className="h-3 w-3" />
+                                                <td className="px-3 py-2 text-right">
+                                                    <Button size="icon" variant="ghost" className="h-5 w-5 text-slate-500 hover:text-white hover:bg-white/10">
+                                                        <Download className="h-2.5 w-2.5" />
                                                     </Button>
                                                 </td>
                                             </tr>
