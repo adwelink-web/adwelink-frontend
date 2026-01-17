@@ -137,89 +137,86 @@ export default async function BillingPage() {
 
                     {/* 3. Payment Methods (Full Width & Table Standard) */}
                     <Card className="flex-1 bg-gradient-to-br from-blue-500/5 to-transparent border-white/10 backdrop-blur-md shadow-lg flex flex-col min-h-0">
-                        <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <div className="space-y-1">
-                                <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
-                                    <CreditCard className="h-4 w-4 text-blue-500" />
-                                    Payment Methods
-                                </CardTitle>
-                                <CardDescription className="text-xs">Manage your cards & UPI</CardDescription>
+                        <CardHeader className="flex flex-col gap-4 pb-0">
+                            {/* Card Title Row */}
+                            <div className="flex flex-row items-center justify-between">
+                                <div className="space-y-1">
+                                    <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
+                                        <CreditCard className="h-4 w-4 text-blue-500" />
+                                        Payment Methods
+                                    </CardTitle>
+                                    <CardDescription className="text-xs">Manage your cards & UPI</CardDescription>
+                                </div>
+                                <Button variant="ghost" size="icon" className="h-6 w-6 text-slate-400 hover:text-white">
+                                    <Plus className="h-4 w-4" />
+                                </Button>
                             </div>
-                            <Button variant="ghost" size="icon" className="h-6 w-6 text-slate-400 hover:text-white">
-                                <Plus className="h-4 w-4" />
-                            </Button>
+
+                            {/* Fixed Table Header Row (No Scroll) */}
+                            <div className="grid grid-cols-12 px-2 py-2 border-b border-white/5 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                <div className="col-span-5 pl-2">Method</div>
+                                <div className="col-span-4">Status</div>
+                                <div className="col-span-3 text-right pr-2">Action</div>
+                            </div>
                         </CardHeader>
-                        <CardContent className="p-0 overflow-hidden flex-1 relative">
-                            <div className="absolute inset-0 overflow-y-auto custom-scrollbar">
-                                <div className="min-w-full inline-block align-middle">
-                                    <Table>
-                                        <TableHeader className="sticky top-0 bg-[#0B0F19]/80 backdrop-blur-md z-10 border-b border-white/5 shadow-sm">
-                                            <TableRow className="hover:bg-transparent border-none">
-                                                <TableHead className="pl-4 py-2 h-9 text-xs font-bold text-white/70 w-[40%]">Method</TableHead>
-                                                <TableHead className="py-2 h-9 text-xs font-bold text-white/70">Status</TableHead>
-                                                <TableHead className="pr-4 py-2 h-9 text-right text-xs font-bold text-white/70">Action</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            <TableRow className="hover:bg-white/5 border-b border-white/5 group transition-colors">
-                                                <TableCell className="pl-4 py-2.5">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="h-7 w-7 rounded bg-[#0B0F19] flex items-center justify-center text-[8px] font-bold text-emerald-500 border border-white/10 shadow-inner">UPI</div>
-                                                        <div>
-                                                            <div className="font-semibold text-white text-xs">UPI / Apps</div>
-                                                            <div className="text-[10px] text-slate-500">PhonePe, GPay</div>
-                                                        </div>
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell className="py-2.5">
-                                                    <Badge variant="secondary" className="text-[9px] h-4 bg-emerald-500/10 text-emerald-500 border-none px-1.5">Active</Badge>
-                                                </TableCell>
-                                                <TableCell className="pr-4 py-2.5 text-right">
-                                                    <Button size="icon" variant="ghost" className="h-6 w-6 text-slate-400 hover:text-white hover:bg-white/10">
-                                                        <Zap className="h-3 w-3" />
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                            <TableRow className="hover:bg-white/5 border-b border-white/5 group transition-colors">
-                                                <TableCell className="pl-4 py-2.5">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="h-7 w-7 rounded bg-[#0B0F19] flex items-center justify-center text-[8px] font-bold text-blue-500 border border-white/10 shadow-inner">NET</div>
-                                                        <div>
-                                                            <div className="font-semibold text-white text-xs">Net Banking</div>
-                                                            <div className="text-[10px] text-slate-500">All Banks</div>
-                                                        </div>
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell className="py-2.5">
-                                                    <span className="text-[10px] text-slate-500">Not Connected</span>
-                                                </TableCell>
-                                                <TableCell className="pr-4 py-2.5 text-right">
-                                                    <Button size="sm" variant="ghost" className="h-6 text-[10px] text-slate-400 hover:text-white hover:bg-white/10 px-2">
-                                                        Connect
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                            <TableRow className="hover:bg-white/5 border-none group transition-colors">
-                                                <TableCell className="pl-4 py-2.5">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="h-7 w-7 rounded bg-[#0B0F19] flex items-center justify-center text-[8px] font-bold text-amber-500 border border-white/10 shadow-inner">CARD</div>
-                                                        <div>
-                                                            <div className="font-semibold text-white text-xs">Debit / Credit</div>
-                                                            <div className="text-[10px] text-slate-500">Mastercard, Visa</div>
-                                                        </div>
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell className="py-2.5">
-                                                    <span className="text-[10px] text-slate-500">Not Connected</span>
-                                                </TableCell>
-                                                <TableCell className="pr-4 py-2.5 text-right">
-                                                    <Button size="sm" variant="ghost" className="h-6 text-[10px] text-slate-400 hover:text-white hover:bg-white/10 px-2">
-                                                        Connect
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        </TableBody>
-                                    </Table>
+
+                        <CardContent className="p-0 overflow-y-auto custom-scrollbar flex-1">
+                            <div className="p-2 space-y-1">
+                                {/* Row 1: UPI */}
+                                <div className="grid grid-cols-12 items-center p-2 rounded-lg hover:bg-white/5 transition-colors group">
+                                    <div className="col-span-5 flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-lg bg-[#0B0F19] flex items-center justify-center text-[9px] font-bold text-emerald-500 border border-white/10 shadow-inner">UPI</div>
+                                        <div>
+                                            <div className="font-semibold text-white text-xs">UPI / Apps</div>
+                                            <div className="text-[10px] text-slate-500">PhonePe, GPay</div>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-4">
+                                        <Badge variant="secondary" className="text-[9px] h-5 bg-emerald-500/10 text-emerald-500 border-none px-2 rounded-md">Active</Badge>
+                                    </div>
+                                    <div className="col-span-3 text-right">
+                                        <Button size="icon" variant="ghost" className="h-7 w-7 text-slate-400 hover:text-white hover:bg-white/10">
+                                            <Zap className="h-3.5 w-3.5" />
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                {/* Row 2: Net Banking */}
+                                <div className="grid grid-cols-12 items-center p-2 rounded-lg hover:bg-white/5 transition-colors group">
+                                    <div className="col-span-5 flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-lg bg-[#0B0F19] flex items-center justify-center text-[9px] font-bold text-blue-500 border border-white/10 shadow-inner">NET</div>
+                                        <div>
+                                            <div className="font-semibold text-white text-xs">Net Banking</div>
+                                            <div className="text-[10px] text-slate-500">All Banks</div>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-4 text-[10px] text-slate-500">
+                                        Not Connected
+                                    </div>
+                                    <div className="col-span-3 text-right">
+                                        <Button size="sm" variant="ghost" className="h-7 text-[10px] text-slate-400 hover:text-white hover:bg-white/10 px-3 border border-white/5">
+                                            Connect
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                {/* Row 3: Cards */}
+                                <div className="grid grid-cols-12 items-center p-2 rounded-lg hover:bg-white/5 transition-colors group">
+                                    <div className="col-span-5 flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-lg bg-[#0B0F19] flex items-center justify-center text-[9px] font-bold text-amber-500 border border-white/10 shadow-inner">card</div>
+                                        <div>
+                                            <div className="font-semibold text-white text-xs">Debit / Credit</div>
+                                            <div className="text-[10px] text-slate-500">Mastercard, Visa</div>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-4 text-[10px] text-slate-500">
+                                        Not Connected
+                                    </div>
+                                    <div className="col-span-3 text-right">
+                                        <Button size="sm" variant="ghost" className="h-7 text-[10px] text-slate-400 hover:text-white hover:bg-white/10 px-3 border border-white/5">
+                                            Connect
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
                         </CardContent>
@@ -228,67 +225,63 @@ export default async function BillingPage() {
 
                 {/* Right Column: History (Re-styled to Match Super Admin Table) */}
                 <Card className="flex flex-col bg-gradient-to-br from-emerald-500/5 to-transparent border-white/10 backdrop-blur-md shadow-lg min-h-0 h-full">
-                    <CardHeader className="flex flex-row items-center justify-between pb-0 pt-4 px-4 flex-none">
-                        <div className="space-y-1">
-                            <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
-                                <ReceiptText className="h-4 w-4 text-emerald-500" />
-                                Payment History
-                            </CardTitle>
-                            <CardDescription className="text-xs">Recent transactions and invoices</CardDescription>
+                    <CardHeader className="flex flex-col gap-4 pb-0 pt-4 px-4 flex-none">
+                        <div className="flex flex-row items-center justify-between">
+                            <div className="space-y-1">
+                                <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
+                                    <ReceiptText className="h-4 w-4 text-emerald-500" />
+                                    Payment History
+                                </CardTitle>
+                                <CardDescription className="text-xs">Recent transactions and invoices</CardDescription>
+                            </div>
+                            <Badge variant="outline" className="text-[10px] border-white/10 text-slate-400">
+                                Recent
+                            </Badge>
                         </div>
-                        <Badge variant="outline" className="text-[10px] border-white/10 text-slate-400">
-                            Recent
-                        </Badge>
+
+                        {/* Fixed Table Header Row */}
+                        <div className="grid grid-cols-12 px-2 py-2 border-b border-white/5 text-xs font-bold text-slate-400 uppercase tracking-wider bg-white/[0.02] rounded-t-lg">
+                            <div className="col-span-4 pl-2">Date</div>
+                            <div className="col-span-3">Amount</div>
+                            <div className="col-span-3">Status</div>
+                            <div className="col-span-2 text-right pr-2">#</div>
+                        </div>
                     </CardHeader>
 
-                    <CardContent className="p-0 flex-1 min-h-0 overflow-hidden relative mt-4">
-                        <ScrollArea className="h-full w-full">
-                            <table className="w-full text-left border-collapse">
-                                <thead className="sticky top-0 bg-[#0B0F19]/50 backdrop-blur-md z-20 shadow-sm border-b border-white/5">
-                                    <tr>
-                                        <th className="pl-6 py-3 text-xs font-bold text-white/70">Date</th>
-                                        <th className="py-3 text-xs font-bold text-white/70">Amount</th>
-                                        <th className="py-3 text-xs font-bold text-white/70">Status</th>
-                                        <th className="pr-6 py-3 text-right text-xs font-bold text-white/70">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-white/5">
-                                    {payments.length === 0 ? (
-                                        <tr>
-                                            <td colSpan={4} className="px-6 py-8 text-center text-muted-foreground text-xs">
-                                                No payments found.
-                                            </td>
-                                        </tr>
-                                    ) : (
-                                        payments.map((payment) => (
-                                            <tr key={payment.id} className="hover:bg-white/5 transition-colors group cursor-pointer">
-                                                <td className="pl-6 py-3">
-                                                    <div className="font-medium text-white text-xs">{formatDate(payment.payment_date)}</div>
-                                                    <div className="text-[10px] text-slate-500 uppercase">{payment.payment_method || "UPI"}</div>
-                                                </td>
-                                                <td className="py-3 text-white font-medium text-xs">
-                                                    {formatCurrency(payment.amount)}
-                                                </td>
-                                                <td className="py-3">
-                                                    <Badge variant={
-                                                        payment.status === 'success' || payment.status === 'completed' ? 'default' :
-                                                            payment.status === 'pending' ? 'secondary' : 'destructive'
-                                                    } className={`text-[10px] uppercase h-5 px-1.5 ${payment.status === 'success' || payment.status === 'completed' ? 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20' : ''
-                                                        }`}>
-                                                        {payment.status === 'success' || payment.status === 'completed' ? 'Paid' : payment.status}
-                                                    </Badge>
-                                                </td>
-                                                <td className="pr-6 py-3 text-right">
-                                                    <Button size="icon" variant="ghost" className="h-7 w-7 text-slate-400 hover:text-white hover:bg-white/10">
-                                                        <Download className="h-3.5 w-3.5" />
-                                                    </Button>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    )}
-                                </tbody>
-                            </table>
-                        </ScrollArea>
+                    <CardContent className="p-0 flex-1 min-h-0 overflow-y-auto custom-scrollbar relative">
+                        <div className="p-2 space-y-1">
+                            {payments.length === 0 ? (
+                                <div className="px-6 py-8 text-center text-muted-foreground text-xs">
+                                    No payments found.
+                                </div>
+                            ) : (
+                                payments.map((payment) => (
+                                    <div key={payment.id} className="grid grid-cols-12 items-center p-2 rounded-lg hover:bg-white/5 transition-colors group cursor-pointer text-xs">
+                                        <div className="col-span-4 pl-2">
+                                            <div className="font-medium text-white">{formatDate(payment.payment_date)}</div>
+                                            <div className="text-[10px] text-slate-500 uppercase">{payment.payment_method || "UPI"}</div>
+                                        </div>
+                                        <div className="col-span-3 text-white font-medium">
+                                            {formatCurrency(payment.amount)}
+                                        </div>
+                                        <div className="col-span-3">
+                                            <Badge variant={
+                                                payment.status === 'success' || payment.status === 'completed' ? 'default' :
+                                                    payment.status === 'pending' ? 'secondary' : 'destructive'
+                                            } className={`text-[9px] uppercase h-5 px-1.5 ${payment.status === 'success' || payment.status === 'completed' ? 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20' : ''
+                                                }`}>
+                                                {payment.status === 'success' || payment.status === 'completed' ? 'Paid' : payment.status}
+                                            </Badge>
+                                        </div>
+                                        <div className="col-span-2 text-right pr-2">
+                                            <Button size="icon" variant="ghost" className="h-7 w-7 text-slate-400 hover:text-white hover:bg-white/10">
+                                                <Download className="h-3.5 w-3.5" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
                     </CardContent>
                 </Card>
             </div>
