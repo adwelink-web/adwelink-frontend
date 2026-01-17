@@ -153,9 +153,9 @@ export default async function BillingPage() {
                             </div>
 
                             {/* Fixed Table Header Row (No Scroll) */}
-                            <div className="grid grid-cols-12 px-3 py-2 border-b border-white/5 text-xs font-bold text-slate-400 uppercase tracking-wider">
-                                <div className="col-span-6 pl-2">Method</div>
-                                <div className="col-span-3">Status</div>
+                            <div className="grid grid-cols-12 px-2 py-2 border-b border-white/5 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                <div className="col-span-5 pl-2">Method</div>
+                                <div className="col-span-4">Status</div>
                                 <div className="col-span-3 text-right pr-2">Action</div>
                             </div>
                         </CardHeader>
@@ -163,15 +163,15 @@ export default async function BillingPage() {
                         <CardContent className="p-0 overflow-y-auto custom-scrollbar flex-1">
                             <div className="p-2 space-y-1">
                                 {/* Row 1: UPI */}
-                                <div className="grid grid-cols-12 items-center px-3 py-2 rounded-lg hover:bg-white/5 transition-colors group">
-                                    <div className="col-span-6 flex items-center gap-3">
+                                <div className="grid grid-cols-12 items-center p-2 rounded-lg hover:bg-white/5 transition-colors group">
+                                    <div className="col-span-5 flex items-center gap-3">
                                         <div className="h-8 w-8 rounded-lg bg-[#0B0F19] flex items-center justify-center text-[9px] font-bold text-emerald-500 border border-white/10 shadow-inner">UPI</div>
                                         <div>
                                             <div className="font-semibold text-white text-xs">UPI / Apps</div>
                                             <div className="text-[10px] text-slate-500">PhonePe, GPay</div>
                                         </div>
                                     </div>
-                                    <div className="col-span-3">
+                                    <div className="col-span-4">
                                         <Badge variant="secondary" className="text-[9px] h-5 bg-emerald-500/10 text-emerald-500 border-none px-2 rounded-md">Active</Badge>
                                     </div>
                                     <div className="col-span-3 text-right">
@@ -182,15 +182,15 @@ export default async function BillingPage() {
                                 </div>
 
                                 {/* Row 2: Net Banking */}
-                                <div className="grid grid-cols-12 items-center px-3 py-2 rounded-lg hover:bg-white/5 transition-colors group">
-                                    <div className="col-span-6 flex items-center gap-3">
+                                <div className="grid grid-cols-12 items-center p-2 rounded-lg hover:bg-white/5 transition-colors group">
+                                    <div className="col-span-5 flex items-center gap-3">
                                         <div className="h-8 w-8 rounded-lg bg-[#0B0F19] flex items-center justify-center text-[9px] font-bold text-blue-500 border border-white/10 shadow-inner">NET</div>
                                         <div>
                                             <div className="font-semibold text-white text-xs">Net Banking</div>
                                             <div className="text-[10px] text-slate-500">All Banks</div>
                                         </div>
                                     </div>
-                                    <div className="col-span-3 text-[10px] text-slate-500">
+                                    <div className="col-span-4 text-[10px] text-slate-500">
                                         Not Connected
                                     </div>
                                     <div className="col-span-3 text-right">
@@ -201,15 +201,15 @@ export default async function BillingPage() {
                                 </div>
 
                                 {/* Row 3: Cards */}
-                                <div className="grid grid-cols-12 items-center px-3 py-2 rounded-lg hover:bg-white/5 transition-colors group">
-                                    <div className="col-span-6 flex items-center gap-3">
+                                <div className="grid grid-cols-12 items-center p-2 rounded-lg hover:bg-white/5 transition-colors group">
+                                    <div className="col-span-5 flex items-center gap-3">
                                         <div className="h-8 w-8 rounded-lg bg-[#0B0F19] flex items-center justify-center text-[9px] font-bold text-amber-500 border border-white/10 shadow-inner">CARD</div>
                                         <div>
                                             <div className="font-semibold text-white text-xs">Debit / Credit</div>
                                             <div className="text-[10px] text-slate-500">Mastercard, Visa</div>
                                         </div>
                                     </div>
-                                    <div className="col-span-3 text-[10px] text-slate-500">
+                                    <div className="col-span-4 text-[10px] text-slate-500">
                                         Not Connected
                                     </div>
                                     <div className="col-span-3 text-right">
