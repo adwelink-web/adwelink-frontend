@@ -76,64 +76,65 @@ export default async function BillingPage() {
                 {/* Left Column */}
                 <div className="flex flex-col gap-4 min-h-0">
 
-                    {/* 1. Plan Card (Re-styled) */}
-                    <Card className="flex-none bg-gradient-to-br from-amber-500/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-amber-500/20">
-                        <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <div className="space-y-1">
-                                <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
-                                    <Sparkles className="h-4 w-4 text-amber-500" />
-                                    {currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1)} Plan
-                                </CardTitle>
-                                <CardDescription className="text-xs">Current active subscription</CardDescription>
-                            </div>
-                            <Badge variant="outline" className="border-amber-500/20 text-amber-500 bg-amber-500/10">
-                                {formatCurrency(PLAN_PRICES[currentPlan] || 0)} /mo
-                            </Badge>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="grid grid-cols-2 gap-2 mb-3">
-                                {(PLAN_FEATURES[currentPlan] || []).map((feature, i) => (
-                                    <div key={i} className="flex items-center gap-2 text-xs text-slate-300">
-                                        <ShieldCheck className="h-3 w-3 text-emerald-500 shrink-0" />
-                                        <span className="truncate">{feature}</span>
-                                    </div>
-                                ))}
-                            </div>
-                            <Button className="w-full bg-amber-500 text-black hover:bg-amber-600 font-bold h-8 text-xs rounded-md shadow-lg shadow-amber-500/20">
-                                <Zap className="mr-2 h-3 w-3" /> Upgrade Plan
-                            </Button>
-                        </CardContent>
-                    </Card>
+                    {/* Top Row: Plan & Usage (Side by Side) */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {/* 1. Plan Card */}
+                        <Card className="bg-gradient-to-br from-amber-500/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-amber-500/20 h-full">
+                            <CardHeader className="flex flex-row items-start justify-between pb-2 space-y-0">
+                                <div className="space-y-1">
+                                    <CardTitle className="text-sm font-bold flex items-center gap-2 text-white">
+                                        <Sparkles className="h-4 w-4 text-amber-500" />
+                                        {currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1)} Plan
+                                    </CardTitle>
+                                    <CardDescription className="text-[10px]">Active subscription</CardDescription>
+                                </div>
+                                <Badge variant="outline" className="border-amber-500/20 text-amber-500 bg-amber-500/10 text-[10px] px-1.5 hidden lg:flex">
+                                    {formatCurrency(PLAN_PRICES[currentPlan] || 0)}/mo
+                                </Badge>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="space-y-2 mb-3">
+                                    {(PLAN_FEATURES[currentPlan] || []).slice(0, 2).map((feature, i) => (
+                                        <div key={i} className="flex items-center gap-2 text-[10px] text-slate-300">
+                                            <ShieldCheck className="h-3 w-3 text-emerald-500 shrink-0" />
+                                            <span className="truncate">{feature}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <Button className="w-full bg-amber-500 text-black hover:bg-amber-600 font-bold h-7 text-[10px] rounded-md shadow-lg shadow-amber-500/20">
+                                    <Zap className="mr-1.5 h-3 w-3" /> Upgrade
+                                </Button>
+                            </CardContent>
+                        </Card>
 
-                    {/* 2. Usage Card (Re-styled) */}
-                    <Card className="flex-none bg-gradient-to-br from-violet-500/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-violet-500/20">
-                        <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <div className="space-y-1">
-                                <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
+                        {/* 2. Usage Card */}
+                        <Card className="bg-gradient-to-br from-violet-500/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-violet-500/20 h-full">
+                            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                                <CardTitle className="text-sm font-bold flex items-center gap-2 text-white">
                                     <MessageSquare className="h-4 w-4 text-violet-500" />
                                     Usage
                                 </CardTitle>
-                                <CardDescription className="text-xs">Monthly message quota</CardDescription>
-                            </div>
-                            <span className={`text-xs font-bold ${usagePercent > 80 ? 'text-red-400' : 'text-emerald-400'}`}>
-                                {usagePercent}% Used
-                            </span>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                            <div className="flex items-end justify-between leading-none">
-                                <span className="text-2xl font-bold text-white">{messagesUsed.toLocaleString('en-IN')}</span>
-                                <span className="text-slate-500 text-xs mb-1">/ {messageLimit.toLocaleString('en-IN')}</span>
-                            </div>
-                            <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
-                                <div
-                                    className={`h-full rounded-full transition-all duration-500 ${usagePercent > 80 ? 'bg-red-500' : usagePercent > 50 ? 'bg-amber-500' : 'bg-emerald-500'}`}
-                                    style={{ width: `${usagePercent}%` }}
-                                />
-                            </div>
-                        </CardContent>
-                    </Card>
+                                <span className={`text-[10px] font-bold ${usagePercent > 80 ? 'text-red-400' : 'text-emerald-400'}`}>
+                                    {usagePercent}%
+                                </span>
+                            </CardHeader>
+                            <CardContent className="space-y-3">
+                                <div className="flex items-end justify-between leading-none mt-1">
+                                    <span className="text-xl font-bold text-white">{messagesUsed.toLocaleString('en-IN')}</span>
+                                    <span className="text-slate-500 text-[10px] mb-0.5">/ {messageLimit.toLocaleString('en-IN')}</span>
+                                </div>
+                                <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                                    <div
+                                        className={`h-full rounded-full transition-all duration-500 ${usagePercent > 80 ? 'bg-red-500' : usagePercent > 50 ? 'bg-amber-500' : 'bg-emerald-500'}`}
+                                        style={{ width: `${usagePercent}%` }}
+                                    />
+                                </div>
+                                <p className="text-[10px] text-slate-500">Resets on 1st of month</p>
+                            </CardContent>
+                        </Card>
+                    </div>
 
-                    {/* 3. Payment Methods (Re-styled) */}
+                    {/* 3. Payment Methods (Full Width) */}
                     <Card className="flex-1 bg-gradient-to-br from-blue-500/5 to-transparent border-white/10 backdrop-blur-md shadow-lg flex flex-col min-h-0">
                         <CardHeader className="flex flex-row items-center justify-between pb-2 bg-white/[0.02] border-b border-white/5">
                             <div className="space-y-1">
@@ -164,6 +165,16 @@ export default async function BillingPage() {
                                         <div className="h-8 w-8 rounded-lg bg-[#0B0F19] flex items-center justify-center text-[9px] font-bold text-blue-500 border border-white/10 shadow-inner">NET</div>
                                         <div>
                                             <p className="text-xs font-semibold text-white">Net Banking</p>
+                                            <p className="text-[10px] text-slate-500">Not Connected</p>
+                                        </div>
+                                    </div>
+                                    <Button size="sm" variant="ghost" className="h-6 text-[10px] text-slate-400 hover:text-white p-2">Add</Button>
+                                </div>
+                                <div className="flex items-center justify-between p-2.5 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 transition-colors group cursor-pointer">
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-lg bg-[#0B0F19] flex items-center justify-center text-[9px] font-bold text-amber-500 border border-white/10 shadow-inner">CARD</div>
+                                        <div>
+                                            <p className="text-xs font-semibold text-white">Debit / Credit</p>
                                             <p className="text-[10px] text-slate-500">Not Connected</p>
                                         </div>
                                     </div>
