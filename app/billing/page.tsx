@@ -4,6 +4,7 @@ import { CreditCard, Download, Sparkles, ReceiptText, ShieldCheck, MessageSquare
 import { getBillingData } from "./actions"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 // Plan pricing in INR
 const PLAN_PRICES: Record<string, number> = {
@@ -134,9 +135,9 @@ export default async function BillingPage() {
                         </Card>
                     </div>
 
-                    {/* 3. Payment Methods (Full Width) */}
+                    {/* 3. Payment Methods (Full Width & Table Standard) */}
                     <Card className="flex-1 bg-gradient-to-br from-blue-500/5 to-transparent border-white/10 backdrop-blur-md shadow-lg flex flex-col min-h-0">
-                        <CardHeader className="flex flex-row items-center justify-between pb-2 bg-white/[0.02] border-b border-white/5">
+                        <CardHeader className="flex flex-row items-center justify-between pb-2">
                             <div className="space-y-1">
                                 <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
                                     <CreditCard className="h-4 w-4 text-blue-500" />
@@ -148,37 +149,77 @@ export default async function BillingPage() {
                                 <Plus className="h-4 w-4" />
                             </Button>
                         </CardHeader>
-                        <CardContent className="p-0 overflow-y-auto custom-scrollbar flex-1">
-                            <div className="p-3 space-y-2">
-                                <div className="flex items-center justify-between p-2.5 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 transition-colors group cursor-pointer">
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-8 w-8 rounded-lg bg-[#0B0F19] flex items-center justify-center text-[9px] font-bold text-emerald-500 border border-white/10 shadow-inner">UPI</div>
-                                        <div>
-                                            <p className="text-xs font-semibold text-white">UPI / Apps</p>
-                                            <p className="text-[10px] text-slate-500">Connected</p>
-                                        </div>
-                                    </div>
-                                    <Badge variant="secondary" className="text-[9px] h-4 bg-emerald-500/10 text-emerald-500 border-none">Active</Badge>
-                                </div>
-                                <div className="flex items-center justify-between p-2.5 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 transition-colors group cursor-pointer">
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-8 w-8 rounded-lg bg-[#0B0F19] flex items-center justify-center text-[9px] font-bold text-blue-500 border border-white/10 shadow-inner">NET</div>
-                                        <div>
-                                            <p className="text-xs font-semibold text-white">Net Banking</p>
-                                            <p className="text-[10px] text-slate-500">Not Connected</p>
-                                        </div>
-                                    </div>
-                                    <Button size="sm" variant="ghost" className="h-6 text-[10px] text-slate-400 hover:text-white p-2">Add</Button>
-                                </div>
-                                <div className="flex items-center justify-between p-2.5 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 transition-colors group cursor-pointer">
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-8 w-8 rounded-lg bg-[#0B0F19] flex items-center justify-center text-[9px] font-bold text-amber-500 border border-white/10 shadow-inner">CARD</div>
-                                        <div>
-                                            <p className="text-xs font-semibold text-white">Debit / Credit</p>
-                                            <p className="text-[10px] text-slate-500">Not Connected</p>
-                                        </div>
-                                    </div>
-                                    <Button size="sm" variant="ghost" className="h-6 text-[10px] text-slate-400 hover:text-white p-2">Add</Button>
+                        <CardContent className="p-0 overflow-hidden flex-1 relative">
+                            <div className="absolute inset-0 overflow-y-auto custom-scrollbar">
+                                <div className="min-w-full inline-block align-middle">
+                                    <Table>
+                                        <TableHeader className="sticky top-0 bg-[#0B0F19]/80 backdrop-blur-md z-10 border-b border-white/5 shadow-sm">
+                                            <TableRow className="hover:bg-transparent border-none">
+                                                <TableHead className="pl-4 py-2 h-9 text-xs font-bold text-white/70 w-[40%]">Method</TableHead>
+                                                <TableHead className="py-2 h-9 text-xs font-bold text-white/70">Status</TableHead>
+                                                <TableHead className="pr-4 py-2 h-9 text-right text-xs font-bold text-white/70">Action</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            <TableRow className="hover:bg-white/5 border-b border-white/5 group transition-colors">
+                                                <TableCell className="pl-4 py-2.5">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="h-7 w-7 rounded bg-[#0B0F19] flex items-center justify-center text-[8px] font-bold text-emerald-500 border border-white/10 shadow-inner">UPI</div>
+                                                        <div>
+                                                            <div className="font-semibold text-white text-xs">UPI / Apps</div>
+                                                            <div className="text-[10px] text-slate-500">PhonePe, GPay</div>
+                                                        </div>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="py-2.5">
+                                                    <Badge variant="secondary" className="text-[9px] h-4 bg-emerald-500/10 text-emerald-500 border-none px-1.5">Active</Badge>
+                                                </TableCell>
+                                                <TableCell className="pr-4 py-2.5 text-right">
+                                                    <Button size="icon" variant="ghost" className="h-6 w-6 text-slate-400 hover:text-white hover:bg-white/10">
+                                                        <Zap className="h-3 w-3" />
+                                                    </Button>
+                                                </TableCell>
+                                            </TableRow>
+                                            <TableRow className="hover:bg-white/5 border-b border-white/5 group transition-colors">
+                                                <TableCell className="pl-4 py-2.5">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="h-7 w-7 rounded bg-[#0B0F19] flex items-center justify-center text-[8px] font-bold text-blue-500 border border-white/10 shadow-inner">NET</div>
+                                                        <div>
+                                                            <div className="font-semibold text-white text-xs">Net Banking</div>
+                                                            <div className="text-[10px] text-slate-500">All Banks</div>
+                                                        </div>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="py-2.5">
+                                                    <span className="text-[10px] text-slate-500">Not Connected</span>
+                                                </TableCell>
+                                                <TableCell className="pr-4 py-2.5 text-right">
+                                                    <Button size="sm" variant="ghost" className="h-6 text-[10px] text-slate-400 hover:text-white hover:bg-white/10 px-2">
+                                                        Connect
+                                                    </Button>
+                                                </TableCell>
+                                            </TableRow>
+                                            <TableRow className="hover:bg-white/5 border-none group transition-colors">
+                                                <TableCell className="pl-4 py-2.5">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="h-7 w-7 rounded bg-[#0B0F19] flex items-center justify-center text-[8px] font-bold text-amber-500 border border-white/10 shadow-inner">CARD</div>
+                                                        <div>
+                                                            <div className="font-semibold text-white text-xs">Debit / Credit</div>
+                                                            <div className="text-[10px] text-slate-500">Mastercard, Visa</div>
+                                                        </div>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="py-2.5">
+                                                    <span className="text-[10px] text-slate-500">Not Connected</span>
+                                                </TableCell>
+                                                <TableCell className="pr-4 py-2.5 text-right">
+                                                    <Button size="sm" variant="ghost" className="h-6 text-[10px] text-slate-400 hover:text-white hover:bg-white/10 px-2">
+                                                        Connect
+                                                    </Button>
+                                                </TableCell>
+                                            </TableRow>
+                                        </TableBody>
+                                    </Table>
                                 </div>
                             </div>
                         </CardContent>
@@ -203,12 +244,12 @@ export default async function BillingPage() {
                     <CardContent className="p-0 flex-1 min-h-0 overflow-hidden relative mt-4">
                         <ScrollArea className="h-full w-full">
                             <table className="w-full text-left border-collapse">
-                                <thead className="sticky top-0 bg-[#0B0F19] z-20 shadow-sm border-b border-white/5">
+                                <thead className="sticky top-0 bg-[#0B0F19]/50 backdrop-blur-md z-20 shadow-sm border-b border-white/5">
                                     <tr>
-                                        <th className="pl-6 py-3 text-xs font-bold text-white/70 bg-[#0B0F19]">Date</th>
-                                        <th className="py-3 text-xs font-bold text-white/70 bg-[#0B0F19]">Amount</th>
-                                        <th className="py-3 text-xs font-bold text-white/70 bg-[#0B0F19]">Status</th>
-                                        <th className="pr-6 py-3 text-right text-xs font-bold text-white/70 bg-[#0B0F19]">Action</th>
+                                        <th className="pl-6 py-3 text-xs font-bold text-white/70">Date</th>
+                                        <th className="py-3 text-xs font-bold text-white/70">Amount</th>
+                                        <th className="py-3 text-xs font-bold text-white/70">Status</th>
+                                        <th className="pr-6 py-3 text-right text-xs font-bold text-white/70">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-white/5">
