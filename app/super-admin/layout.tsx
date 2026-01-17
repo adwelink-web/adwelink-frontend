@@ -30,7 +30,7 @@ export default async function SuperAdminLayout({
                 
                 This file now acts only as a Security Barrier (Auth Guard).
             */}
-            <div className="w-full h-full overflow-y-auto custom-scrollbar p-0">
+            <div className="w-full h-full overflow-hidden p-0">
                 {children}
             </div>
         </>

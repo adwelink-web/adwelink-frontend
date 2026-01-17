@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase"
 import { Database } from "@/lib/database.types" // Use generated types
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 import { Plus, Phone, MapPin, Sparkles, ArrowUpRight, Trash2, Users, Download } from "lucide-react"
 import {
     Dialog,
@@ -200,99 +201,138 @@ export default function LeadsPage() {
 
     return (
         <>
-            <div className="flex-1 w-full flex flex-col overflow-hidden bg-transparent">
-                {/* Header Section (Transparent) */}
-                <div className="flex-none px-4 md:px-8 py-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-transparent relative z-20">
+            <div className="h-full w-full overflow-hidden flex flex-col relative p-4 md:p-8">
+                {/* Background Gradients - Violet Theme */}
+                <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+                    <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-violet-500/10 rounded-full blur-[100px]" />
+                    <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-fuchsia-500/10 rounded-full blur-[100px]" />
+                </div>
+
+                {/* Header - Compact */}
+                <div className="flex-none flex items-center justify-between z-10 mb-4 max-w-7xl mx-auto w-full">
                     <div>
-                        <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white flex items-center gap-3">
-                            <Users className="h-8 w-8 text-emerald-500" />
+                        <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                            <div className="h-8 w-8 rounded-lg bg-violet-500/20 flex items-center justify-center ring-1 ring-violet-500/30">
+                                <Users className="h-4 w-4 text-violet-500" />
+                            </div>
                             Lead Management
+                            <Badge className="h-5 px-1.5 text-[10px] bg-violet-500/20 text-violet-400">
+                                {leads.length}
+                            </Badge>
                         </h2>
-                        <p className="text-muted-foreground mt-1 text-sm md:text-base">Track Visits, Follow-ups, and Admissions.</p>
+                        <p className="text-muted-foreground text-xs mt-1 hidden md:block">Track Visits, Follow-ups, and Admissions</p>
                     </div>
-                    <div className="flex gap-2 w-full md:w-auto">
-                        <Button
-                            variant="outline"
-                            className="flex-1 md:flex-none border-white/20 text-white hover:bg-white/10 h-9 px-4 text-xs font-bold rounded-xl"
-                            onClick={exportToCSV}
-                        >
-                            <Download className="mr-2 h-4 w-4" /> Export CSV
+                    <div className="flex items-center gap-2">
+                        <Button variant="outline" size="sm" className="h-8 text-xs hover:bg-white/5 border-white/10 gap-2" onClick={exportToCSV}>
+                            <Download className="h-3.5 w-3.5" />
+                            <span className="hidden md:inline">Export</span>
                         </Button>
-                        <Button className="flex-1 md:flex-none bg-white text-black hover:bg-slate-200 h-9 px-4 text-xs font-bold rounded-xl shadow-lg" onClick={handleNewLead}>
-                            <Plus className="mr-2 h-4 w-4 stroke-[3px]" /> Add Lead
+                        <Button size="sm" className="h-8 text-xs bg-violet-600 hover:bg-violet-700 text-white gap-2" onClick={handleNewLead}>
+                            <Plus className="h-3.5 w-3.5" />
+                            <span className="hidden md:inline">Add Lead</span>
                         </Button>
                     </div>
                 </div>
 
-
-                {/* Content Section (Explicit constrained height to ensure scroll) */}
-                <div className="w-full px-4 md:px-8 pb-4 h-[calc(100vh-140px)]">
-                    <div className="w-full h-full bg-gradient-to-br from-violet-500/10 to-transparent border border-white/10 border-violet-500/20 shadow-2xl rounded-xl overflow-hidden flex flex-col relative">
-                        {/* Scrollbar Patch: Covers the top-right scrollbar track for a cleaner look */}
-                        <div className="absolute top-0 right-0 h-12 w-4 bg-[#0B0F19]/75 backdrop-blur-md z-40 border-b border-white/10" />
-
-                        <div className="flex flex-col flex-1 min-h-0 relative">
-                            {/* Fixed Header */}
-                            <div className="flex-none z-20 mx-0 border-b border-white/5 bg-[#0B0F19]/75 backdrop-blur-md">
-                                <div className="grid grid-cols-12 px-2 py-3 text-xs font-bold text-slate-400 uppercase tracking-wider">
-                                    <div className="col-span-3 pl-6">Candidate</div>
-                                    <div className="col-span-2">Source / City</div>
-                                    <div className="col-span-2">Interest</div>
-                                    <div className="col-span-1">Score</div>
-                                    <div className="col-span-2">Next Action</div>
-                                    <div className="col-span-1 text-center">Status</div>
-                                    <div className="col-span-1 text-right pr-6">Actions</div>
-                                </div>
-                            </div>
-
-                            {/* Scrollable Content */}
-                            <div className="flex-1 overflow-y-auto custom-scrollbar">
-                                {loading ? (
-                                    <div className="h-32 flex items-center justify-center text-slate-500 text-sm">
-                                        Syncing with Brain...
-                                    </div>
-                                ) : leads.map((lead) => (
-                                    <div key={lead.id} className="grid grid-cols-12 items-center px-2 py-0 border-b border-white/[0.03] hover:bg-white/[0.08] transition-colors cursor-pointer group" onClick={() => { setSelectedLead(lead); setDialogOpen(true) }}>
-                                        <div className="col-span-3 pl-6 py-4">
-                                            <div className="flex flex-col gap-1">
-                                                <span className="font-semibold text-slate-200 text-sm leading-tight">{lead.name || "Unknown"}</span>
-                                                <span className="text-xs text-slate-500 font-mono">{lead.phone}</span>
-                                            </div>
-                                        </div>
-                                        <div className="col-span-2 py-4">
-                                            <span className="text-sm text-slate-400 font-medium capitalize leading-normal">{lead.source || "-"}</span>
-                                        </div>
-                                        <div className="col-span-2 py-4">
-                                            <span className="text-sm text-slate-300 font-medium leading-normal">{lead.interested_course || '-'}</span>
-                                        </div>
-                                        <div className="col-span-1 py-4">
-                                            {lead.lead_score !== null ? (
-                                                <span className={`text-sm font-semibold ${lead.lead_score >= 70 ? 'text-green-400' : lead.lead_score >= 40 ? 'text-yellow-400' : 'text-slate-400'}`}>
-                                                    {lead.lead_score}
-                                                </span>
-                                            ) : <span className="text-slate-700">-</span>}
-                                        </div>
-                                        <div className="col-span-2 py-4">
-                                            {lead.next_followup ? (
-                                                <div className="text-xs text-slate-400 font-medium">
-                                                    {formatDate(lead.next_followup)}
-                                                </div>
-                                            ) : <span className="text-slate-700">-</span>}
-                                        </div>
-                                        <div className="col-span-1 py-4 text-center">
-                                            {getStatusBadge(lead.status)}
-                                        </div>
-                                        <div className="col-span-1 py-4 text-right pr-6">
-                                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-white/10 rounded-full transition-all">
-                                                <ArrowUpRight className="h-4 w-4 text-slate-600" />
-                                            </Button>
-                                        </div>
-                                    </div>
-                                ))}
+                {/* Main Card */}
+                <Card className="flex-1 min-h-0 bg-gradient-to-br from-violet-500/5 to-transparent border-white/10 backdrop-blur-md shadow-lg flex flex-col z-10 max-w-7xl mx-auto w-full overflow-hidden">
+                    <CardContent className="p-0 flex flex-col flex-1 min-h-0 overflow-hidden overflow-x-auto scrollbar-hidden">
+                        {/* Table Header */}
+                        <div className="flex-none z-20 px-6 mb-1 min-w-[1000px]">
+                            <div className="grid grid-cols-12 gap-4 px-2 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                <div className="col-span-3 pl-2">Candidate</div>
+                                <div className="col-span-2">Phone</div>
+                                <div className="col-span-2">Interest</div>
+                                <div className="col-span-1">Score</div>
+                                <div className="col-span-2">Status</div>
+                                <div className="col-span-1">Source</div>
+                                <div className="col-span-1 text-right pr-2">Date</div>
                             </div>
                         </div>
-                    </div>
-                </div>
+
+                        {/* Table Body */}
+                        <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hidden px-6 py-2 space-y-1 min-w-[1000px]">
+                            {loading ? (
+                                <div className="px-6 py-16 text-center text-muted-foreground">
+                                    <div className="flex flex-col items-center justify-center gap-2">
+                                        <div className="h-16 w-16 rounded-full bg-violet-500/10 flex items-center justify-center animate-pulse">
+                                            <Users className="h-8 w-8 text-muted-foreground/50" />
+                                        </div>
+                                        <p className="text-white font-medium mt-2">Syncing with Brain...</p>
+                                    </div>
+                                </div>
+                            ) : leads.length === 0 ? (
+                                <div className="px-6 py-16 text-center text-muted-foreground">
+                                    <div className="flex flex-col items-center justify-center gap-2">
+                                        <div className="h-16 w-16 rounded-full bg-violet-500/10 flex items-center justify-center">
+                                            <Users className="h-8 w-8 text-muted-foreground/50" />
+                                        </div>
+                                        <p className="text-white font-medium mt-2">No leads yet</p>
+                                        <p className="text-sm">Click "Add Lead" to create your first lead.</p>
+                                    </div>
+                                </div>
+                            ) : (
+                                leads.map((lead) => (
+                                    <div
+                                        key={lead.id}
+                                        className="grid grid-cols-12 gap-4 items-center p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group text-xs"
+                                        onClick={() => { setSelectedLead(lead); setDialogOpen(true) }}
+                                    >
+                                        {/* Candidate */}
+                                        <div className="col-span-3 pl-2">
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-white font-bold text-xs shadow-inner ring-1 ring-white/20">
+                                                    {(lead.name || "?").charAt(0).toUpperCase()}
+                                                </div>
+                                                <div>
+                                                    <div className="font-semibold text-white truncate max-w-[120px]">{lead.name || "Unknown"}</div>
+                                                    <div className="text-[10px] text-slate-500">{lead.city || "No city"}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Phone */}
+                                        <div className="col-span-2">
+                                            <p className="text-slate-300 font-mono text-xs">{lead.phone}</p>
+                                        </div>
+
+                                        {/* Interest */}
+                                        <div className="col-span-2">
+                                            <p className="text-slate-400 truncate max-w-[100px]">{lead.interested_course || "-"}</p>
+                                        </div>
+
+                                        {/* Score */}
+                                        <div className="col-span-1">
+                                            <span className={`font-bold font-mono ${(lead.lead_score || 0) >= 70 ? "text-emerald-500" :
+                                                    (lead.lead_score || 0) >= 40 ? "text-amber-500" :
+                                                        "text-slate-500"
+                                                }`}>
+                                                {lead.lead_score || 0}
+                                            </span>
+                                        </div>
+
+                                        {/* Status */}
+                                        <div className="col-span-2">
+                                            {getStatusBadge(lead.status)}
+                                        </div>
+
+                                        {/* Source */}
+                                        <div className="col-span-1">
+                                            <p className="text-slate-500 truncate text-[10px] uppercase">{lead.source || "-"}</p>
+                                        </div>
+
+                                        {/* Date */}
+                                        <div className="col-span-1 text-right pr-2">
+                                            <p className="text-slate-500">
+                                                {lead.created_at ? new Date(lead.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '-'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
             {/* REFACTORED MODAL DIALOG (POPUP) */}
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

@@ -157,6 +157,15 @@
     scrollbar-width: thin;
     scrollbar-color: #1E293B transparent;
   }
+
+  /* Hidden Scrollbar - scroll works but bar invisible */
+  .scrollbar-hidden {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari, Opera */
+  }
 }
 
 /* Smooth Scroll */
