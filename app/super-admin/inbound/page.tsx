@@ -61,53 +61,56 @@ export default async function InboundPage() {
                                     </CardTitle>
                                     <CardDescription>People asking for Early Access keys.</CardDescription>
                                 </CardHeader>
-                                <CardContent className="p-0">
-                                    {waitlist.length === 0 ? (
-                                        <div className="text-center py-16 text-muted-foreground">
-                                            <div className="h-16 w-16 rounded-full bg-violet-500/10 flex items-center justify-center mx-auto mb-4">
-                                                <Users className="h-8 w-8 text-violet-500/50" />
-                                            </div>
-                                            <p className="text-white font-medium">No waitlist requests yet</p>
-                                            <p className="text-sm mt-1">Requests will appear here when users sign up.</p>
+                                <CardContent className="p-0 flex flex-col relative">
+                                    {/* Fixed Header */}
+                                    <div className="flex-none -mt-4 z-20 mx-6 mb-2">
+                                        <div className="grid grid-cols-12 px-2 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                            <div className="col-span-6">Name</div>
+                                            <div className="col-span-3">Source</div>
+                                            <div className="col-span-3 text-right">Date</div>
                                         </div>
-                                    ) : (
-                                        <Table>
-                                            <TableHeader>
-                                                <TableRow className="border-white/5 hover:bg-transparent">
-                                                    <TableHead className="pl-6">Name</TableHead>
-                                                    <TableHead>Source</TableHead>
-                                                    <TableHead className="pr-6">Date</TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {waitlist.map((item) => (
-                                                    <TableRow key={item.id} className="border-white/5 hover:bg-white/5 transition-colors">
-                                                        <TableCell className="pl-6">
-                                                            <div className="flex items-center gap-3">
-                                                                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-bold text-xs ring-1 ring-white/20">
-                                                                    {(item.full_name || "?").charAt(0).toUpperCase()}
-                                                                </div>
-                                                                <div>
-                                                                    <div className="font-medium text-white">{item.full_name || "Unknown"}</div>
-                                                                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                                                        <Mail className="h-3 w-3" /> {item.contact}
-                                                                    </div>
+                                    </div>
+
+                                    {/* Scrollable Content */}
+                                    <div className="flex-1 overflow-y-auto custom-scrollbar px-6 py-2 space-y-1 max-h-[500px]">
+                                        {waitlist.length === 0 ? (
+                                            <div className="text-center py-16 text-muted-foreground">
+                                                <div className="h-16 w-16 rounded-full bg-violet-500/10 flex items-center justify-center mx-auto mb-4">
+                                                    <Users className="h-8 w-8 text-violet-500/50" />
+                                                </div>
+                                                <p className="text-white font-medium">No waitlist requests yet</p>
+                                                <p className="text-sm mt-1">Requests will appear here when users sign up.</p>
+                                            </div>
+                                        ) : (
+                                            waitlist.map((item) => (
+                                                <div key={item.id} className="grid grid-cols-12 items-center p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer border border-transparent hover:border-white/5">
+                                                    <div className="col-span-6 pl-2">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-bold text-xs ring-1 ring-white/20">
+                                                                {(item.full_name || "?").charAt(0).toUpperCase()}
+                                                            </div>
+                                                            <div>
+                                                                <div className="font-medium text-white text-sm">{item.full_name || "Unknown"}</div>
+                                                                <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                                                                    <Mail className="h-3 w-3" /> {item.contact}
                                                                 </div>
                                                             </div>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <Badge variant="secondary" className="text-[10px] uppercase">
-                                                                {item.source || "Website"}
-                                                            </Badge>
-                                                        </TableCell>
-                                                        <TableCell className="text-muted-foreground text-xs pr-6">
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-span-3">
+                                                        <Badge variant="secondary" className="text-[10px] uppercase">
+                                                            {item.source || "Website"}
+                                                        </Badge>
+                                                    </div>
+                                                    <div className="col-span-3 text-right">
+                                                        <span className="text-muted-foreground text-xs">
                                                             {new Date(item.created_at!).toLocaleDateString()}
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))}
-                                            </TableBody>
-                                        </Table>
-                                    )}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
                                 </CardContent>
                             </Card>
                         </TabsContent>

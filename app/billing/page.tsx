@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { CreditCard, Download, Sparkles, ReceiptText, ShieldCheck, MessageSquare, Zap, AlertCircle, Plus } from "lucide-react"
+import { CreditCard, Download, Sparkles, ReceiptText, ShieldCheck, MessageSquare, Zap, AlertCircle, Plus, Clock } from "lucide-react"
 import { getBillingData } from "./actions"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -49,12 +49,21 @@ export default async function BillingPage() {
         })
     }
 
-    return (
-        <div className="h-full w-full overflow-hidden flex flex-col p-4 gap-4 max-w-7xl mx-auto">
+    const monthlyRevenue = 45000 // Placeholder
+    // const subscriptionStatus = 'active' // This was already declared above, keeping the existing one.
 
-            {/* Ambient Background */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-                <div className="absolute top-[-10%] right-[-10%] w-[300px] h-[300px] bg-amber-600/5 blur-[80px] rounded-full" />
+    const usage = {
+        requests: messagesUsed,
+        limit: messageLimit,
+        nextReset: "2024-07-01" // Placeholder
+    }
+
+    return (
+        <div className="md:h-[calc(100vh-40px)] h-auto w-full md:overflow-hidden overflow-y-auto flex flex-col relative space-y-4 p-4 pb-20 md:pb-4 md:space-y-4 md:p-8 max-w-7xl mx-auto">
+            {/* Background Gradients */}
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-500/10 rounded-full blur-[100px]" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/10 rounded-full blur-[100px]" />
             </div>
 
             {/* Header - Compact */}
@@ -72,10 +81,10 @@ export default async function BillingPage() {
             </div>
 
             {/* Main Grid - Adwelink Standard Layout */}
-            <div className="flex-1 min-h-0 grid grid-cols-1 md:grid-cols-2 gap-4 z-10">
+            <div className="md:flex-1 md:min-h-0 grid grid-cols-1 md:grid-cols-2 gap-4 z-10">
 
                 {/* Left Column */}
-                <div className="flex flex-col gap-4 min-h-0">
+                <div className="flex flex-col gap-4 md:min-h-0 min-h-auto">
 
                     {/* Top Row: Plan & Usage (Side by Side) */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -102,44 +111,59 @@ export default async function BillingPage() {
                                         </div>
                                     ))}
                                 </div>
-                                <Button className="w-full bg-amber-500 text-black hover:bg-amber-600 font-bold h-7 text-[10px] rounded-md shadow-lg shadow-amber-500/20">
-                                    <Zap className="mr-1.5 h-3 w-3" /> Upgrade
+                                <Button size="sm" className="w-full h-7 text-[10px] bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white border-0 shadow-lg shadow-amber-900/20">
+                                    Upgrade Plan
                                 </Button>
                             </CardContent>
                         </Card>
 
                         {/* 2. Usage Card */}
                         <Card className="bg-gradient-to-br from-violet-500/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-violet-500/20 h-full">
-                            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                                <CardTitle className="text-sm font-bold flex items-center gap-2 text-white">
-                                    <MessageSquare className="h-4 w-4 text-violet-500" />
-                                    Usage
-                                </CardTitle>
-                                <span className={`text-[10px] font-bold ${usagePercent > 80 ? 'text-red-400' : 'text-emerald-400'}`}>
-                                    {usagePercent}%
-                                </span>
+                            <CardHeader className="flex flex-row items-start justify-between pb-2 space-y-0">
+                                <div className="space-y-1">
+                                    <CardTitle className="text-sm font-bold flex items-center gap-2 text-white">
+                                        <MessageSquare className="h-4 w-4 text-violet-500" />
+                                        Usage
+                                    </CardTitle>
+                                    <CardDescription className="text-[10px]">Current billing cycle</CardDescription>
+                                </div>
+                                <Badge variant="secondary" className="bg-violet-500/10 text-violet-400 text-[10px] px-1.5">
+                                    {Math.round((usage.requests / usage.limit) * 100)}%
+                                </Badge>
                             </CardHeader>
-                            <CardContent className="space-y-3">
-                                <div className="flex items-end justify-between leading-none mt-1">
-                                    <span className="text-xl font-bold text-white">{messagesUsed.toLocaleString('en-IN')}</span>
-                                    <span className="text-slate-500 text-[10px] mb-0.5">/ {messageLimit.toLocaleString('en-IN')}</span>
+                            <CardContent>
+                                <div className="space-y-3">
+                                    <div className="space-y-1">
+                                        <div className="flex justify-between text-[10px] text-slate-400">
+                                            <span>Requests</span>
+                                            <span className="text-white">{usage.requests.toLocaleString()} / {usage.limit.toLocaleString()}</span>
+                                        </div>
+                                        <div className="h-1.5 w-full bg-black/40 rounded-full overflow-hidden border border-white/5">
+                                            <div
+                                                className="h-full bg-violet-500 rounded-full transition-all duration-500"
+                                                style={{ width: `${Math.min((usage.requests / usage.limit) * 100, 100)}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="pt-1">
+                                        <div className="flex flex-row items-center justify-between text-[10px] text-slate-400 bg-white/5 p-1.5 rounded-lg border border-white/5">
+                                            <span>Next Reset</span>
+                                            <span className="text-white font-medium flex items-center gap-1">
+                                                <Clock className="h-3 w-3 text-slate-500" /> 12 Days
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
-                                    <div
-                                        className={`h-full rounded-full transition-all duration-500 ${usagePercent > 80 ? 'bg-red-500' : usagePercent > 50 ? 'bg-amber-500' : 'bg-emerald-500'}`}
-                                        style={{ width: `${usagePercent}%` }}
-                                    />
-                                </div>
-                                <p className="text-[10px] text-slate-500">Resets on 1st of month</p>
                             </CardContent>
                         </Card>
                     </div>
 
                     {/* 3. Payment Methods (Full Width & Table Standard) */}
-                    <Card className="flex-1 bg-gradient-to-br from-blue-500/5 to-transparent border-white/10 backdrop-blur-md shadow-lg flex flex-col min-h-0">
+                    <Card className="md:flex-1 md:h-auto h-[400px] bg-gradient-to-br from-blue-500/5 to-transparent border-white/10 backdrop-blur-md shadow-lg flex flex-col min-h-0">
                         <CardHeader className="flex flex-col gap-4 pb-0">
                             {/* Card Title Row */}
-                            <div className="flex flex-row items-center justify-between">
+                            {/* Card Title Row */}
+                            <div className="flex flex-row items-center justify-between w-full">
                                 <div className="space-y-1">
                                     <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
                                         <CreditCard className="h-4 w-4 text-blue-500" />
@@ -147,21 +171,24 @@ export default async function BillingPage() {
                                     </CardTitle>
                                     <CardDescription className="text-xs">Manage your cards & UPI</CardDescription>
                                 </div>
-                                <Button variant="ghost" size="icon" className="h-6 w-6 text-slate-400 hover:text-white">
+                                <Button variant="ghost" size="icon" className="h-6 w-6 text-slate-400 hover:text-white mr-2">
                                     <Plus className="h-4 w-4" />
                                 </Button>
                             </div>
 
-                            {/* Fixed Table Header Row (No Scroll) */}
-                            <div className="grid grid-cols-12 px-2 py-2 border-b border-white/5 text-xs font-bold text-slate-400 uppercase tracking-wider">
-                                <div className="col-span-5 pl-2">Method</div>
-                                <div className="col-span-4">Status</div>
-                                <div className="col-span-3 text-right pr-2">Action</div>
-                            </div>
                         </CardHeader>
 
-                        <CardContent className="p-0 overflow-y-auto custom-scrollbar flex-1">
-                            <div className="p-2 space-y-1">
+                        <CardContent className="p-0 flex flex-col flex-1 min-h-0 relative">
+                            {/* Simple Text Header */}
+                            <div className="flex-none -mt-4 z-20 mx-6 mb-2">
+                                <div className="grid grid-cols-12 px-2 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                    <div className="col-span-5">Method</div>
+                                    <div className="col-span-4">Status</div>
+                                    <div className="col-span-3 text-right">Action</div>
+                                </div>
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto custom-scrollbar py-2 space-y-1 px-6">
                                 {/* Row 1: UPI */}
                                 <div className="grid grid-cols-12 items-center p-2 rounded-lg hover:bg-white/5 transition-colors group">
                                     <div className="col-span-5 flex items-center gap-3">
@@ -218,15 +245,16 @@ export default async function BillingPage() {
                                         </Button>
                                     </div>
                                 </div>
+
                             </div>
                         </CardContent>
                     </Card>
                 </div>
 
                 {/* Right Column: History (Re-styled to Match Super Admin Table) */}
-                <Card className="flex flex-col bg-gradient-to-br from-emerald-500/5 to-transparent border-white/10 backdrop-blur-md shadow-lg min-h-0 h-full">
+                <Card className="flex flex-col bg-gradient-to-br from-emerald-500/5 to-transparent border-white/10 backdrop-blur-md shadow-lg md:min-h-0 md:h-full h-[500px]">
                     <CardHeader className="flex flex-col gap-4 pb-0 pt-4 px-4 flex-none">
-                        <div className="flex flex-row items-center justify-between">
+                        <div className="flex flex-row items-center justify-between w-full">
                             <div className="space-y-1">
                                 <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
                                     <ReceiptText className="h-4 w-4 text-emerald-500" />
@@ -234,22 +262,25 @@ export default async function BillingPage() {
                                 </CardTitle>
                                 <CardDescription className="text-xs">Recent transactions and invoices</CardDescription>
                             </div>
-                            <Badge variant="outline" className="text-[10px] border-white/10 text-slate-400">
+                            <Badge variant="outline" className="text-[10px] border-white/10 text-slate-400 mr-2">
                                 Recent
                             </Badge>
                         </div>
 
-                        {/* Fixed Table Header Row */}
-                        <div className="grid grid-cols-12 px-2 py-2 border-b border-white/5 text-xs font-bold text-slate-400 uppercase tracking-wider bg-white/[0.02] rounded-t-lg">
-                            <div className="col-span-4 pl-2">Date</div>
-                            <div className="col-span-3">Amount</div>
-                            <div className="col-span-3">Status</div>
-                            <div className="col-span-2 text-right pr-2">#</div>
-                        </div>
                     </CardHeader>
 
-                    <CardContent className="p-0 flex-1 min-h-0 overflow-y-auto custom-scrollbar relative">
-                        <div className="p-2 space-y-1">
+                    <CardContent className="p-0 flex flex-col flex-1 min-h-0 relative">
+                        {/* Simple Text Header */}
+                        <div className="flex-none -mt-4 z-20 mx-6 mb-2">
+                            <div className="grid grid-cols-12 px-2 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider shadow-sm">
+                                <div className="col-span-4 pl-2">Date</div>
+                                <div className="col-span-3">Amount</div>
+                                <div className="col-span-3">Status</div>
+                                <div className="col-span-2 text-right pr-2">#</div>
+                            </div>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto custom-scrollbar px-6 py-2 space-y-1">
                             {payments.length === 0 ? (
                                 <div className="px-6 py-8 text-center text-muted-foreground text-xs">
                                     No payments found.
@@ -292,6 +323,6 @@ export default async function BillingPage() {
                     Need help? email <span className="text-slate-400 hover:text-white cursor-pointer transition-colors">support@adwelink.com</span>
                 </p>
             </div>
-        </div>
+        </div >
     )
 }

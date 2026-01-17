@@ -231,68 +231,65 @@ export default function LeadsPage() {
                         {/* Scrollbar Patch: Covers the top-right scrollbar track for a cleaner look */}
                         <div className="absolute top-0 right-0 h-12 w-4 bg-[#0B0F19]/75 backdrop-blur-md z-40 border-b border-white/10" />
 
-                        <div className="flex-1 overflow-y-auto custom-scrollbar relative">
-                            <table className="w-full text-sm text-left border-collapse min-w-[1000px]">
-                                <thead className="sticky top-0 z-20 bg-[#0B0F19]/75 backdrop-blur-md border-b border-white/5 shadow-sm">
-                                    <tr className="text-left">
-                                        <th className="h-12 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Candidate</th>
-                                        <th className="h-12 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider w-[180px]">Source / City</th>
-                                        <th className="h-12 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Interest</th>
-                                        <th className="h-12 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Score</th>
-                                        <th className="h-12 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider">Next Action</th>
-                                        <th className="h-12 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider text-center">Status</th>
-                                        <th className="h-12 px-6 font-medium text-slate-400 text-xs uppercase tracking-wider text-right">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-white/5">
-                                    {loading ? (
-                                        <tr>
-                                            <td colSpan={7} className="h-32 text-center text-slate-500 text-sm">Syncing with Brain...</td>
-                                        </tr>
-                                    ) : leads.map((lead) => (
-                                        <tr key={lead.id} className="hover:bg-white/[0.08] group cursor-pointer border-b border-white/[0.03] transition-all duration-150" onClick={() => { setSelectedLead(lead); setDialogOpen(true) }}>
-                                            <td className="px-6 py-4 align-middle">
-                                                <div className="flex flex-col gap-1">
-                                                    <span className="font-semibold text-slate-200 text-sm leading-tight">{lead.name || "Unknown"}</span>
-                                                    <span className="text-xs text-slate-500 font-mono">{lead.phone}</span>
+                        <div className="flex flex-col flex-1 min-h-0 relative">
+                            {/* Fixed Header */}
+                            <div className="flex-none z-20 mx-0 border-b border-white/5 bg-[#0B0F19]/75 backdrop-blur-md">
+                                <div className="grid grid-cols-12 px-2 py-3 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                    <div className="col-span-3 pl-6">Candidate</div>
+                                    <div className="col-span-2">Source / City</div>
+                                    <div className="col-span-2">Interest</div>
+                                    <div className="col-span-1">Score</div>
+                                    <div className="col-span-2">Next Action</div>
+                                    <div className="col-span-1 text-center">Status</div>
+                                    <div className="col-span-1 text-right pr-6">Actions</div>
+                                </div>
+                            </div>
+
+                            {/* Scrollable Content */}
+                            <div className="flex-1 overflow-y-auto custom-scrollbar">
+                                {loading ? (
+                                    <div className="h-32 flex items-center justify-center text-slate-500 text-sm">
+                                        Syncing with Brain...
+                                    </div>
+                                ) : leads.map((lead) => (
+                                    <div key={lead.id} className="grid grid-cols-12 items-center px-2 py-0 border-b border-white/[0.03] hover:bg-white/[0.08] transition-colors cursor-pointer group" onClick={() => { setSelectedLead(lead); setDialogOpen(true) }}>
+                                        <div className="col-span-3 pl-6 py-4">
+                                            <div className="flex flex-col gap-1">
+                                                <span className="font-semibold text-slate-200 text-sm leading-tight">{lead.name || "Unknown"}</span>
+                                                <span className="text-xs text-slate-500 font-mono">{lead.phone}</span>
+                                            </div>
+                                        </div>
+                                        <div className="col-span-2 py-4">
+                                            <span className="text-sm text-slate-400 font-medium capitalize leading-normal">{lead.source || "-"}</span>
+                                        </div>
+                                        <div className="col-span-2 py-4">
+                                            <span className="text-sm text-slate-300 font-medium leading-normal">{lead.interested_course || '-'}</span>
+                                        </div>
+                                        <div className="col-span-1 py-4">
+                                            {lead.lead_score !== null ? (
+                                                <span className={`text-sm font-semibold ${lead.lead_score >= 70 ? 'text-green-400' : lead.lead_score >= 40 ? 'text-yellow-400' : 'text-slate-400'}`}>
+                                                    {lead.lead_score}
+                                                </span>
+                                            ) : <span className="text-slate-700">-</span>}
+                                        </div>
+                                        <div className="col-span-2 py-4">
+                                            {lead.next_followup ? (
+                                                <div className="text-xs text-slate-400 font-medium">
+                                                    {formatDate(lead.next_followup)}
                                                 </div>
-                                            </td>
-                                            <td className="px-6 py-4 align-middle">
-                                                <div className="flex flex-col gap-1 mt-0.5">
-                                                    <span className="text-sm text-slate-400 font-medium capitalize leading-normal">{lead.source || "-"}</span>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 align-middle">
-                                                <div className="flex flex-col gap-1">
-                                                    <span className="text-sm text-slate-300 font-medium leading-normal">{lead.interested_course || '-'}</span>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 align-middle">
-                                                {lead.lead_score !== null ? (
-                                                    <span className={`text-sm font-semibold ${lead.lead_score >= 70 ? 'text-green-400' : lead.lead_score >= 40 ? 'text-yellow-400' : 'text-slate-400'}`}>
-                                                        {lead.lead_score}
-                                                    </span>
-                                                ) : <span className="text-slate-700">-</span>}
-                                            </td>
-                                            <td className="px-6 py-4 align-middle">
-                                                {lead.next_followup ? (
-                                                    <div className="text-xs text-slate-400 font-medium">
-                                                        {formatDate(lead.next_followup)}
-                                                    </div>
-                                                ) : <span className="text-slate-700">-</span>}
-                                            </td>
-                                            <td className="px-6 py-4 align-middle text-center">
-                                                {getStatusBadge(lead.status)}
-                                            </td>
-                                            <td className="px-6 py-4 align-middle text-right">
-                                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-white/10 rounded-full transition-all">
-                                                    <ArrowUpRight className="h-4 w-4 text-slate-600" />
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                            ) : <span className="text-slate-700">-</span>}
+                                        </div>
+                                        <div className="col-span-1 py-4 text-center">
+                                            {getStatusBadge(lead.status)}
+                                        </div>
+                                        <div className="col-span-1 py-4 text-right pr-6">
+                                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-white/10 rounded-full transition-all">
+                                                <ArrowUpRight className="h-4 w-4 text-slate-600" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>

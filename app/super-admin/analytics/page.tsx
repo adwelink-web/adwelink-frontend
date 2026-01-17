@@ -363,36 +363,40 @@ export default async function AnalyticsPage() {
                                 </CardTitle>
                                 <CardDescription>Ranked by total leads generated</CardDescription>
                             </CardHeader>
-                            <CardContent className="p-0">
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow className="hover:bg-transparent border-white/5">
-                                            <TableHead className="pl-6">Rank</TableHead>
-                                            <TableHead>Institute</TableHead>
-                                            <TableHead className="text-right pr-6">Leads</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {data.topInstitutes.map((inst, i) => (
-                                            <TableRow key={inst.id} className="border-white/5 hover:bg-white/5">
-                                                <TableCell className="pl-6">
-                                                    <Badge variant={i === 0 ? "default" : "secondary"} className="text-xs">
+                            <CardContent className="p-0 flex flex-col relative">
+                                {/* Fixed Header */}
+                                <div className="flex-none -mt-4 z-20 mx-6 mb-2">
+                                    <div className="grid grid-cols-12 px-2 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                        <div className="col-span-2 pl-6">Rank</div>
+                                        <div className="col-span-7">Institute</div>
+                                        <div className="col-span-3 text-right pr-6">Leads</div>
+                                    </div>
+                                </div>
+
+                                {/* Scrollable Content */}
+                                <div className="flex-1 overflow-y-auto custom-scrollbar px-6 py-2 space-y-1 max-h-[350px]">
+                                    {data.topInstitutes.length === 0 ? (
+                                        <div className="text-center py-8 text-muted-foreground text-sm">
+                                            No data yet
+                                        </div>
+                                    ) : (
+                                        data.topInstitutes.map((inst, i) => (
+                                            <div key={inst.id} className="grid grid-cols-12 items-center p-2 rounded-lg hover:bg-white/5 transition-colors border border-transparent hover:border-white/5">
+                                                <div className="col-span-2 pl-6">
+                                                    <Badge variant={i === 0 ? "default" : "secondary"} className="text-[10px] h-5 px-1.5">
                                                         #{i + 1}
                                                     </Badge>
-                                                </TableCell>
-                                                <TableCell className="font-medium text-white">{inst.name}</TableCell>
-                                                <TableCell className="text-right pr-6 font-bold text-emerald-400">{inst.count}</TableCell>
-                                            </TableRow>
-                                        ))}
-                                        {data.topInstitutes.length === 0 && (
-                                            <TableRow>
-                                                <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
-                                                    No data yet
-                                                </TableCell>
-                                            </TableRow>
-                                        )}
-                                    </TableBody>
-                                </Table>
+                                                </div>
+                                                <div className="col-span-7 font-medium text-white text-sm">
+                                                    {inst.name}
+                                                </div>
+                                                <div className="col-span-3 text-right pr-6 font-bold text-emerald-400 text-sm">
+                                                    {inst.count}
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
                             </CardContent>
                         </Card>
                     </div>
