@@ -18,6 +18,7 @@ import {
     HelpCircle,
     BarChart3,
     Inbox,
+    CalendarDays,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -188,6 +189,20 @@ export function AppSidebar({ className, user }: SidebarProps) {
             href: "/workspace/leads",
             color: "text-pink-500",
             title: "Leads"
+        },
+        {
+            label: "Courses",
+            icon: GraduationCap,
+            href: "/workspace/courses",
+            color: "text-emerald-500",
+            title: "Catalog"
+        },
+        {
+            label: "Visits",
+            icon: CalendarDays,
+            href: "/workspace/visits",
+            color: "text-teal-400",
+            title: "AMS"
         },
         {
             label: "Chat",
