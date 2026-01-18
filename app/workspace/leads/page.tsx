@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Plus, Phone, MapPin, Sparkles, ArrowUpRight, Trash2, Users, Download } from "lucide-react"
+import Link from "next/link"
 import {
     Dialog,
     DialogContent,
@@ -235,10 +236,10 @@ export default function LeadsPage() {
                 </div>
 
                 {/* Main Card */}
-                <Card className="flex-1 min-h-0 bg-gradient-to-br from-violet-500/5 to-transparent border-white/10 backdrop-blur-md shadow-lg flex flex-col z-10 max-w-7xl mx-auto w-full overflow-hidden">
-                    <CardContent className="p-0 flex flex-col flex-1 min-h-0 overflow-hidden overflow-x-auto scrollbar-hidden">
+                <Card className="flex-1 min-h-0 bg-transparent md:bg-gradient-to-br md:from-violet-500/5 md:to-transparent border-0 md:border md:border-white/10 shadow-none md:backdrop-blur-md md:shadow-lg flex flex-col z-10 max-w-7xl mx-auto w-full overflow-hidden">
+                    <CardContent className="p-0 flex flex-col flex-1 min-h-0 overflow-hidden md:overflow-x-auto overflow-x-hidden scrollbar-hidden">
                         {/* Table Header */}
-                        <div className="flex-none z-20 px-6 mb-1 min-w-[1000px]">
+                        <div className="flex-none z-20 px-6 mb-1 min-w-[1000px] hidden md:block">
                             <div className="grid grid-cols-12 gap-4 px-2 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
                                 <div className="col-span-3 pl-2">Candidate</div>
                                 <div className="col-span-2">Phone</div>
@@ -251,7 +252,7 @@ export default function LeadsPage() {
                         </div>
 
                         {/* Table Body */}
-                        <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hidden px-6 py-2 space-y-1 min-w-[1000px]">
+                        <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hidden px-4 md:px-6 py-2 space-y-1 w-full md:min-w-[1000px]">
                             {loading ? (
                                 <div className="px-6 py-16 text-center text-muted-foreground">
                                     <div className="flex flex-col items-center justify-center gap-2">
@@ -273,61 +274,104 @@ export default function LeadsPage() {
                                 </div>
                             ) : (
                                 leads.map((lead) => (
-                                    <div
+                                    <Link
                                         key={lead.id}
-                                        className="grid grid-cols-12 gap-4 items-center p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group text-xs"
-                                        onClick={() => { setSelectedLead(lead); setDialogOpen(true) }}
+                                        href={`/workspace/leads/${lead.id}`}
+                                        className="block"
                                     >
-                                        {/* Candidate */}
-                                        <div className="col-span-3 pl-2">
-                                            <div className="flex items-center gap-3">
-                                                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-white font-bold text-xs shadow-inner ring-1 ring-white/20">
-                                                    {(lead.name || "?").charAt(0).toUpperCase()}
+                                        <div
+                                            className="hidden md:grid grid-cols-12 gap-4 items-center p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group text-xs"
+                                        >
+                                            {/* Candidate */}
+                                            <div className="col-span-3 pl-2">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-white font-bold text-xs shadow-inner ring-1 ring-white/20">
+                                                        {(lead.name || "?").charAt(0).toUpperCase()}
+                                                    </div>
+                                                    <div>
+                                                        <div className="font-semibold text-white truncate max-w-[120px]">{lead.name || "Unknown"}</div>
+                                                        <div className="text-[10px] text-slate-500">{lead.city || "No city"}</div>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <div className="font-semibold text-white truncate max-w-[120px]">{lead.name || "Unknown"}</div>
-                                                    <div className="text-[10px] text-slate-500">{lead.city || "No city"}</div>
-                                                </div>
+                                            </div>
+
+                                            {/* Phone */}
+                                            <div className="col-span-2">
+                                                <p className="text-slate-300 font-mono text-xs">{lead.phone}</p>
+                                            </div>
+
+                                            {/* Interest */}
+                                            <div className="col-span-2">
+                                                <p className="text-slate-400 truncate max-w-[100px]">{lead.interested_course || "-"}</p>
+                                            </div>
+
+                                            {/* Score */}
+                                            <div className="col-span-1">
+                                                <span className={`font-bold font-mono ${(lead.lead_score || 0) >= 70 ? "text-emerald-500" :
+                                                    (lead.lead_score || 0) >= 40 ? "text-amber-500" :
+                                                        "text-slate-500"
+                                                    }`}>
+                                                    {lead.lead_score || 0}
+                                                </span>
+                                            </div>
+
+                                            {/* Status */}
+                                            <div className="col-span-2">
+                                                {getStatusBadge(lead.status)}
+                                            </div>
+
+                                            {/* Source */}
+                                            <div className="col-span-1">
+                                                <p className="text-slate-500 truncate text-[10px] uppercase">{lead.source || "-"}</p>
+                                            </div>
+
+                                            {/* Date */}
+                                            <div className="col-span-1 text-right pr-2">
+                                                <p className="text-slate-500">
+                                                    {lead.created_at ? new Date(lead.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '-'}
+                                                </p>
                                             </div>
                                         </div>
 
-                                        {/* Phone */}
-                                        <div className="col-span-2">
-                                            <p className="text-slate-300 font-mono text-xs">{lead.phone}</p>
-                                        </div>
+                                        {/* MOBILE CARD VIEW */}
+                                        <div className="md:hidden flex flex-col bg-white/5 border border-white/5 p-4 rounded-xl gap-3 mb-3">
+                                            {/* Header */}
+                                            <div className="flex items-start justify-between gap-4">
+                                                <div className="flex items-center gap-3 min-w-0 flex-1">
+                                                    <div className="h-10 w-10 shrink-0 rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-white font-bold text-sm shadow-inner ring-1 ring-white/20">
+                                                        {(lead.name || "?").charAt(0).toUpperCase()}
+                                                    </div>
+                                                    <div className="min-w-0 flex-1">
+                                                        <div className="font-semibold text-white text-sm truncate">{lead.name || "Unknown"}</div>
+                                                        <div className="flex items-center gap-2 text-xs text-slate-400 mt-0.5 truncate">
+                                                            <Phone className="h-3 w-3 shrink-0" />
+                                                            {lead.phone}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="text-right shrink-0">
+                                                    <div className={`font-bold font-mono text-sm ${(lead.lead_score || 0) >= 70 ? "text-emerald-500" : (lead.lead_score || 0) >= 40 ? "text-amber-500" : "text-slate-500"}`}>
+                                                        {lead.lead_score || 0}
+                                                    </div>
+                                                    <div className="text-[10px] text-slate-500 uppercase mt-0.5">{lead.source || "N/A"}</div>
+                                                </div>
+                                            </div>
 
-                                        {/* Interest */}
-                                        <div className="col-span-2">
-                                            <p className="text-slate-400 truncate max-w-[100px]">{lead.interested_course || "-"}</p>
+                                            {/* Footer Info */}
+                                            <div className="flex items-center justify-between border-t border-white/5 pt-3 mt-1">
+                                                <div className="flex flex-col gap-1 min-w-0 flex-1 mr-2">
+                                                    <div className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Interest</div>
+                                                    <div className="text-xs text-slate-300 truncate">{lead.interested_course || "-"}</div>
+                                                </div>
+                                                <div className="flex flex-col gap-1 items-end">
+                                                    {getStatusBadge(lead.status)}
+                                                    <div className="text-[10px] text-slate-600 mt-1">
+                                                        {lead.created_at ? new Date(lead.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '-'}
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-
-                                        {/* Score */}
-                                        <div className="col-span-1">
-                                            <span className={`font-bold font-mono ${(lead.lead_score || 0) >= 70 ? "text-emerald-500" :
-                                                    (lead.lead_score || 0) >= 40 ? "text-amber-500" :
-                                                        "text-slate-500"
-                                                }`}>
-                                                {lead.lead_score || 0}
-                                            </span>
-                                        </div>
-
-                                        {/* Status */}
-                                        <div className="col-span-2">
-                                            {getStatusBadge(lead.status)}
-                                        </div>
-
-                                        {/* Source */}
-                                        <div className="col-span-1">
-                                            <p className="text-slate-500 truncate text-[10px] uppercase">{lead.source || "-"}</p>
-                                        </div>
-
-                                        {/* Date */}
-                                        <div className="col-span-1 text-right pr-2">
-                                            <p className="text-slate-500">
-                                                {lead.created_at ? new Date(lead.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '-'}
-                                            </p>
-                                        </div>
-                                    </div>
+                                    </Link>
                                 ))
                             )}
                         </div>

@@ -91,18 +91,30 @@ export default function StudentsPage() {
     )
 
     return (
-        <div className="h-[calc(100vh-40px)] w-full overflow-hidden flex flex-col">
-            <div className="max-w-7xl mx-auto p-4 md:p-8 flex-1 flex flex-col min-h-0 overflow-hidden space-y-6 w-full">
-                {/* Header Section */}
-                <div className="flex-none flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                    <div>
-                        <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white flex items-center gap-3">
-                            <GraduationCap className="h-8 w-8 text-emerald-500" />
-                            Active Students
-                        </h2>
-                        <p className="text-muted-foreground mt-1 text-sm md:text-base">Manage your enrolled student database.</p>
-                    </div>
+        <div className="h-full w-full overflow-hidden flex flex-col relative p-4 md:p-8">
+            {/* Background Gradients */}
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/10 rounded-full blur-[100px]" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-teal-500/10 rounded-full blur-[100px]" />
+            </div>
+
+            {/* Header - Compact */}
+            <div className="flex-none flex items-center justify-between z-10 mb-4 max-w-7xl mx-auto w-full">
+                <div>
+                    <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                        <div className="h-8 w-8 rounded-lg bg-emerald-500/20 flex items-center justify-center ring-1 ring-emerald-500/30">
+                            <GraduationCap className="h-4 w-4 text-emerald-500" />
+                        </div>
+                        Active Students
+                        <Badge className="h-5 px-1.5 text-[10px] bg-emerald-500/20 text-emerald-400">
+                            {filteredStudents.length}
+                        </Badge>
+                    </h2>
+                    <p className="text-muted-foreground text-xs mt-1 hidden md:block">Manage your enrolled student database</p>
                 </div>
+            </div>
+
+            <div className="flex-1 min-h-0 flex flex-col z-10 max-w-7xl mx-auto w-full space-y-4">
 
                 {/* Filters Row */}
                 <div className="flex-none flex flex-col sm:flex-row gap-3">
@@ -121,82 +133,89 @@ export default function StudentsPage() {
                 </div>
 
                 {/* Students Table */}
-                <div className="flex-1 min-h-0 flex flex-col">
-                    <Card className="max-h-full bg-white/5 border-white/10 flex flex-col overflow-hidden !p-0 !m-0 !border-0 shadow-none">
-                        <CardContent className="flex-1 min-h-0 !p-0 !m-0 overflow-hidden flex flex-col">
-                            <div className="flex flex-col flex-1 min-h-0 relative">
-                                {/* Fixed Header */}
-                                <div className="flex-none z-20 mx-0 border-b border-white/5 bg-[#0B0F19]/75 backdrop-blur-md">
-                                    <div className="grid grid-cols-12 px-2 py-3 text-xs font-bold text-slate-400 uppercase tracking-wider">
-                                        <div className="col-span-3 pl-6">Student</div>
-                                        <div className="col-span-3">Contact</div>
-                                        <div className="col-span-2">Status</div>
-                                        <div className="col-span-2">Joined Date</div>
-                                        <div className="col-span-2 text-right pr-6">Actions</div>
+                <Card className="flex-1 min-h-0 bg-gradient-to-br from-emerald-500/5 to-transparent border-white/10 backdrop-blur-md shadow-lg flex flex-col overflow-hidden">
+                    <CardContent className="p-0 flex flex-col flex-1 min-h-0">
+                        {/* Fixed Header */}
+                        <div className="flex-none z-20 px-6 mb-1">
+                            <div className="grid grid-cols-12 gap-4 px-2 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                <div className="col-span-3 pl-2">Student</div>
+                                <div className="col-span-3">Contact</div>
+                                <div className="col-span-2">Status</div>
+                                <div className="col-span-2">Joined Date</div>
+                                <div className="col-span-2 text-right pr-2">Actions</div>
+                            </div>
+                        </div>
+
+                        {/* Scrollable Content */}
+                        <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hidden px-6 py-2 space-y-1">
+                            {loading ? (
+                                <div className="px-6 py-16 text-center text-muted-foreground">
+                                    <div className="flex flex-col items-center justify-center gap-2">
+                                        <div className="h-16 w-16 rounded-full bg-emerald-500/10 flex items-center justify-center animate-pulse">
+                                            <GraduationCap className="h-8 w-8 text-muted-foreground/50" />
+                                        </div>
+                                        <p className="text-white font-medium mt-2">Syncing with Brain...</p>
                                     </div>
                                 </div>
-
-                                {/* Scrollable Content */}
-                                <div className="flex-1 overflow-y-auto custom-scrollbar">
-                                    {loading ? (
-                                        <div className="h-32 flex items-center justify-center text-slate-500 text-sm">
-                                            Syncing with Brain...
+                            ) : filteredStudents.length === 0 ? (
+                                <div className="px-6 py-16 text-center text-muted-foreground">
+                                    <div className="flex flex-col items-center justify-center gap-2">
+                                        <div className="h-16 w-16 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                                            <GraduationCap className="h-8 w-8 text-muted-foreground/50" />
                                         </div>
-                                    ) : filteredStudents.length === 0 ? (
-                                        <div className="h-32 flex items-center justify-center text-slate-500 text-sm">
-                                            No students found.
-                                        </div>
-                                    ) : (
-                                        filteredStudents.map((student) => (
-                                            <div
-                                                key={student.id}
-                                                className="grid grid-cols-12 items-center px-2 py-2 border-b border-white/[0.02] hover:bg-white/[0.04] transition-colors cursor-pointer group"
-                                                onClick={() => handleEdit(student)}
-                                            >
-                                                <div className="col-span-3 pl-6">
-                                                    <div className="flex items-center gap-3">
-                                                        <Avatar className="h-8 w-8 border border-white/10 shadow-sm group-hover:border-emerald-500/30 transition-colors">
-                                                            <AvatarFallback className="bg-emerald-500/10 text-emerald-500 text-[10px] font-bold">
-                                                                {student.name?.charAt(0) || "S"}
-                                                            </AvatarFallback>
-                                                        </Avatar>
-                                                        <span className="font-semibold text-slate-200 group-hover:text-white transition-colors">{student.name}</span>
-                                                    </div>
-                                                </div>
-                                                <div className="col-span-3 font-mono text-xs text-slate-400">
-                                                    {student.phone}
-                                                </div>
-                                                <div className="col-span-2">
-                                                    <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 capitalize">
-                                                        {student.status || "Enrolled"}
-                                                    </Badge>
-                                                </div>
-                                                <div className="col-span-2 text-xs text-slate-500">
-                                                    {student.created_at ? new Date(student.created_at).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }) : "-"}
-                                                </div>
-                                                <div className="col-span-2 text-right pr-6">
-                                                    <div className="flex justify-end gap-2">
-                                                        <Button size="icon" variant="ghost" className="h-8 w-8 text-slate-500 hover:text-white hover:bg-white/10">
-                                                            <ArrowUpRight className="h-4 w-4" />
-                                                        </Button>
-                                                        <Button
-                                                            size="icon"
-                                                            variant="ghost"
-                                                            className="h-8 w-8 text-slate-500 hover:text-red-500 hover:bg-red-500/10"
-                                                            onClick={(e) => handleDelete(student.id, e)}
-                                                        >
-                                                            <Trash2 className="h-4 w-4" />
-                                                        </Button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))
-                                    )}
+                                        <p className="text-white font-medium mt-2">No students found</p>
+                                        <p className="text-sm">Students will appear here once leads are converted</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
+                            ) : (
+                                filteredStudents.map((student) => (
+                                    <div
+                                        key={student.id}
+                                        className="grid grid-cols-12 gap-4 items-center p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group text-xs"
+                                        onClick={() => handleEdit(student)}
+                                    >
+                                        <div className="col-span-3 pl-2">
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold text-xs shadow-inner ring-1 ring-white/20">
+                                                    {student.name?.charAt(0).toUpperCase() || "S"}
+                                                </div>
+                                                <div className="font-semibold text-white truncate max-w-[120px]">{student.name}</div>
+                                            </div>
+                                        </div>
+                                        <div className="col-span-3">
+                                            <p className="text-slate-300 font-mono text-xs">{student.phone}</p>
+                                        </div>
+                                        <div className="col-span-2">
+                                            <Badge variant="secondary" className="text-[9px] uppercase h-5 px-1.5 bg-emerald-500/10 text-emerald-400">
+                                                {student.status || "Enrolled"}
+                                            </Badge>
+                                        </div>
+                                        <div className="col-span-2">
+                                            <p className="text-slate-500">
+                                                {student.created_at ? new Date(student.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : "-"}
+                                            </p>
+                                        </div>
+                                        <div className="col-span-2 text-right pr-2">
+                                            <div className="flex justify-end gap-1">
+                                                <Button size="icon" variant="ghost" className="h-7 w-7 text-slate-400 hover:text-white hover:bg-white/10">
+                                                    <ArrowUpRight className="h-3.5 w-3.5" />
+                                                </Button>
+                                                <Button
+                                                    size="icon"
+                                                    variant="ghost"
+                                                    className="h-7 w-7 text-slate-400 hover:text-red-500 hover:bg-red-500/10"
+                                                    onClick={(e) => handleDelete(student.id, e)}
+                                                >
+                                                    <Trash2 className="h-3.5 w-3.5" />
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
 
             {/* MANAGEMENT DIALOG */}

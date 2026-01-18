@@ -295,32 +295,38 @@ export type Database = {
       courses: {
         Row: {
           created_at: string | null
-          description: string | null
           duration_months: number | null
-          fee: number | null
           id: string
           institute_id: string | null
+          mode: string | null
           name: string
+          registration_fee: number | null
+          target_class: string | null
+          total_fee: number | null
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
-          description?: string | null
           duration_months?: number | null
-          fee?: number | null
           id?: string
           institute_id?: string | null
+          mode?: string | null
           name: string
+          registration_fee?: number | null
+          target_class?: string | null
+          total_fee?: number | null
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
-          description?: string | null
           duration_months?: number | null
-          fee?: number | null
           id?: string
           institute_id?: string | null
+          mode?: string | null
           name?: string
+          registration_fee?: number | null
+          target_class?: string | null
+          total_fee?: number | null
           updated_at?: string | null
         }
         Relationships: [

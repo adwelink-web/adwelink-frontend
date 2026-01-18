@@ -71,9 +71,11 @@ export default function CoursesPage() {
         setSelectedCourse(null)
         setFormData({
             name: "",
-            fee: 0,
+            total_fee: 0,
+            registration_fee: 0,
             duration_months: 12,
-            description: "Offline",
+            mode: "Offline",
+            target_class: "",
         })
         setIsEditing(false)
         setDialogOpen(true)
@@ -138,75 +140,93 @@ export default function CoursesPage() {
 
     const filteredCourses = courses.filter(c =>
         c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (c.description?.toLowerCase() || "").includes(searchQuery.toLowerCase())
+        (c.mode?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+        (c.target_class?.toLowerCase() || "").includes(searchQuery.toLowerCase())
     )
 
     return (
-        <div className="h-[calc(100vh-40px)] w-full overflow-hidden flex flex-col">
-            {/* Main Scrollable Container */}
-            <div className="flex-1 w-full h-full overflow-y-auto custom-scrollbar relative">
+        <div className="h-full w-full overflow-hidden flex flex-col relative p-4 md:p-8">
+            {/* Background Gradients */}
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/10 rounded-full blur-[100px]" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-teal-500/10 rounded-full blur-[100px]" />
+            </div>
 
-                {/* Header Section (Transparent & Static) */}
-                <div className="px-4 md:px-8 py-6 mb-6">
-                    <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 max-w-7xl mx-auto">
-                        <div className="space-y-1">
-                            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white flex items-center gap-3">
-                                <BookOpen className="h-8 w-8 text-emerald-500" />
-                                Courses & Fees
-                                <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 text-[10px] py-0 px-2 uppercase tracking-widest hidden sm:inline-flex">
-                                    {courses.length} Active
-                                </Badge>
-                            </h2>
-                            <p className="text-muted-foreground text-sm md:text-base">Manage your batch details, student categories, and fee structures.</p>
+            {/* Header - Compact */}
+            <div className="flex-none flex items-center justify-between z-10 mb-4 max-w-7xl mx-auto w-full">
+                <div>
+                    <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                        <div className="h-8 w-8 rounded-lg bg-emerald-500/20 flex items-center justify-center ring-1 ring-emerald-500/30">
+                            <BookOpen className="h-4 w-4 text-emerald-500" />
                         </div>
-
-                        <div className="flex items-center gap-3 w-full md:w-auto">
-                            <Button
-                                onClick={handleNewCourse}
-                                className="flex-1 md:flex-none bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 h-10 px-5 font-bold rounded-xl"
-                            >
-                                <Plus className="mr-2 h-4 w-4 stroke-[3px]" /> Add New Course
-                            </Button>
-                        </div>
-                    </div>
-
-                    <div className="relative z-10 flex flex-col sm:flex-row gap-4 mt-6 max-w-7xl mx-auto">
-                        <div className="relative flex-1 group">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-white transition-colors" />
-                            <Input
-                                placeholder="Search by name, batch or standard..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="bg-black/20 border-white/10 pl-10 h-10 rounded-xl text-white text-sm focus:bg-black/40 transition-colors"
-                            />
-                        </div>
-                    </div>
+                        Courses & Fees
+                        <Badge className="h-5 px-1.5 text-[10px] bg-emerald-500/20 text-emerald-400">
+                            {courses.length}
+                        </Badge>
+                    </h2>
+                    <p className="text-muted-foreground text-xs mt-1 hidden md:block">Manage your batch details, student categories, and fee structures</p>
                 </div>
+                <div className="flex items-center gap-2">
+                    <Button
+                        onClick={handleNewCourse}
+                        size="sm"
+                        className="h-8 text-xs bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
+                    >
+                        <Plus className="h-3.5 w-3.5" />
+                        <span className="hidden md:inline">Add Course</span>
+                    </Button>
+                </div>
+            </div>
+
+            {/* Search Bar */}
+            <div className="flex-none z-10 mb-4 max-w-7xl mx-auto w-full">
+                <div className="relative group">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-white transition-colors" />
+                    <Input
+                        placeholder="Search by name, batch or standard..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="bg-black/20 border-white/10 pl-10 h-9 rounded-lg text-white text-sm focus:bg-black/40 transition-colors max-w-md"
+                    />
+                </div>
+            </div>
+
+            {/* Main Scrollable Container */}
+            <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar z-10 max-w-7xl mx-auto w-full overflow-x-visible">
 
                 {/* Data Cards (Scrollable Content) */}
-                <div className="pb-20 px-4 md:px-8 max-w-7xl mx-auto">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div className="pb-20 px-4 md:px-8 max-w-7xl mx-auto pt-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 p-1">
                         {loading ? (
                             [1, 2, 3].map(i => (
                                 <div key={i} className="h-56 rounded-2xl bg-white/5 border border-white/10 animate-pulse" />
                             ))
                         ) : filteredCourses.length === 0 ? (
-                            <div className="col-span-full py-24 text-center rounded-2xl border border-dashed border-white/10">
-                                <LayoutGrid className="h-12 w-12 text-slate-700 mx-auto mb-4" />
-                                <h3 className="text-xl font-bold text-white mb-1">No Courses Yet</h3>
-                                <p className="text-slate-500 text-sm">Create your first course to begin enrollment management.</p>
+                            <div className="col-span-full py-16 text-center">
+                                <div className="flex flex-col items-center justify-center gap-2">
+                                    <div className="h-12 w-12 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                                        <LayoutGrid className="h-6 w-6 text-muted-foreground/50" />
+                                    </div>
+                                    <p className="text-white font-medium mt-2 text-sm">No Courses Yet</p>
+                                    <p className="text-xs text-muted-foreground">Create your first course to begin enrollment management</p>
+                                </div>
                             </div>
                         ) : (
                             filteredCourses.map((course) => (
                                 <Card
                                     key={course.id}
-                                    className="bg-gradient-to-br from-violet-500/10 to-transparent border-white/10 border-violet-500/20 backdrop-blur-md shadow-xl hover:border-primary/50 hover:scale-[1.02] transition-all group relative overflow-hidden rounded-2xl"
+                                    className="bg-gradient-to-br from-emerald-500/5 to-transparent border-white/10 backdrop-blur-md shadow-lg hover:border-emerald-500/30 hover:scale-[1.02] transition-all group relative overflow-hidden"
                                 >
-                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                                        <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-slate-500 flex items-center gap-1.5 leading-none">
-                                            <Hash className="h-3 w-3" /> {course.id.slice(0, 8)}
-                                        </CardTitle>
-                                        <div className="flex items-center gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
+                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 p-3 pb-2">
+                                        <div className="flex items-center gap-2">
+                                            <div className="h-8 w-8 rounded-lg bg-emerald-500/20 flex items-center justify-center ring-1 ring-emerald-500/30">
+                                                <BookOpen className="h-4 w-4 text-emerald-500" />
+                                            </div>
+                                            <div className="text-sm font-bold text-white truncate max-w-[140px]">
+                                                {course.name}
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
@@ -234,45 +254,36 @@ export default function CoursesPage() {
                                         </div>
                                     </CardHeader>
 
-                                    <CardContent className="pt-0">
-                                        <div className="space-y-4">
-                                            <div className="space-y-1.5">
-                                                <div className="text-lg font-bold text-white leading-tight">
-                                                    {course.name}
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <Badge variant="outline" className="bg-primary/5 text-[9px] text-primary border-primary/20 uppercase py-0 px-2 font-black tracking-tight rounded-md">
-                                                        {course.description || "Offline"}
+                                    <CardContent className="p-3 pt-0">
+                                        <div className="space-y-3">
+                                            <div className="flex items-center gap-2 flex-wrap">
+                                                <Badge variant="secondary" className="text-[9px] uppercase h-5 px-1.5 bg-emerald-500/10 text-emerald-400">
+                                                    {course.mode || "Offline"}
+                                                </Badge>
+                                                <Badge variant="outline" className="text-[9px] h-5 px-1.5">
+                                                    {course.duration_months || 12} Months
+                                                </Badge>
+                                                {course.target_class && (
+                                                    <Badge variant="outline" className="text-[9px] h-5 px-1.5 bg-blue-500/10 text-blue-400 border-blue-500/20">
+                                                        Class {course.target_class}
                                                     </Badge>
-                                                    <div className="flex items-center gap-1 text-[10px] text-slate-400 font-bold uppercase tracking-tight">
-                                                        <Layers className="h-3 w-3 text-sky-400" /> Course ID: <span className="text-white">{course.id.slice(0, 8)}</span>
-                                                    </div>
-                                                </div>
+                                                )}
                                             </div>
 
-                                            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
-                                                <div className="space-y-1">
-                                                    <div className="text-[9px] text-slate-500 uppercase font-bold tracking-widest">Total Fee</div>
-                                                    <div className="text-xl font-bold text-white font-mono leading-none flex items-baseline gap-1">
-                                                        <span className="text-xs font-bold text-slate-500">₹</span>
-                                                        {Number(course.fee || 0).toLocaleString()}
-                                                    </div>
+                                            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/5">
+                                                <div>
+                                                    <p className="text-[9px] text-slate-500 uppercase font-bold tracking-wider">Total Fee</p>
+                                                    <p className="text-lg font-bold text-white font-mono">
+                                                        <span className="text-xs text-slate-500">₹</span>
+                                                        {Number(course.total_fee || 0).toLocaleString()}
+                                                    </p>
                                                 </div>
-                                                <div className="space-y-1 text-right">
-                                                    <div className="text-[9px] text-slate-500 uppercase font-bold tracking-widest">Duration</div>
-                                                    <div className="text-sm font-bold text-slate-300 flex items-center justify-end gap-1.5">
-                                                        <Clock className="h-3.5 w-3.5 text-slate-600" /> {course.duration_months} Months
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="flex items-center justify-between pt-4 border-t border-white/5 opacity-60">
-                                                <div className="flex items-center gap-1.5 text-[9px] text-slate-500 font-bold uppercase tracking-widest">
-                                                    <Calendar className="h-3 w-3" />
-                                                    {course.created_at ? new Date(course.created_at).toLocaleDateString() : 'N/A'}
-                                                </div>
-                                                <div className="text-[9px] text-slate-500 uppercase font-bold tracking-widest">
-                                                    Duration: <span className="text-white">{course.duration_months || 12} Months</span>
+                                                <div className="text-right">
+                                                    <p className="text-[9px] text-slate-500 uppercase font-bold tracking-wider">Registration</p>
+                                                    <p className="text-sm font-bold text-emerald-400 font-mono">
+                                                        <span className="text-xs text-slate-500">₹</span>
+                                                        {Number(course.registration_fee || 0).toLocaleString()}
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
@@ -318,11 +329,20 @@ export default function CoursesPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600 ml-1">Description / Mode</label>
+                                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600 ml-1">Mode</label>
                                     <Input
                                         placeholder="e.g. Offline, Online, or Hybrid"
-                                        value={formData.description || ""}
-                                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                        value={formData.mode || ""}
+                                        onChange={(e) => setFormData({ ...formData, mode: e.target.value })}
+                                        className="bg-white/[0.03] border-white/10 text-white h-12 text-sm font-medium rounded-xl"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600 ml-1">Target Class</label>
+                                    <Input
+                                        placeholder="e.g. 10th, 12th, Graduate"
+                                        value={formData.target_class || ""}
+                                        onChange={(e) => setFormData({ ...formData, target_class: e.target.value })}
                                         className="bg-white/[0.03] border-white/10 text-white h-12 text-sm font-medium rounded-xl"
                                     />
                                 </div>
@@ -333,14 +353,26 @@ export default function CoursesPage() {
                                 <h4 className="text-[10px] font-bold text-primary uppercase tracking-[0.3em] mb-5">Fees & Program Cycle</h4>
                                 <div className="grid grid-cols-2 gap-5">
                                     <div className="space-y-2">
-                                        <label className="text-[9px] font-bold uppercase text-slate-600">Course Fee</label>
+                                        <label className="text-[9px] font-bold uppercase text-slate-600">Total Fee</label>
                                         <div className="relative">
                                             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 font-mono text-xs">₹</span>
                                             <Input
                                                 type="number"
-                                                value={formData.fee || ""}
-                                                onChange={(e) => setFormData({ ...formData, fee: parseFloat(e.target.value) })}
+                                                value={formData.total_fee || ""}
+                                                onChange={(e) => setFormData({ ...formData, total_fee: parseFloat(e.target.value) })}
                                                 className="bg-primary/5 border-primary/20 text-primary pl-7 h-11 font-mono font-black text-sm rounded-xl"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[9px] font-bold uppercase text-slate-600">Registration Fee</label>
+                                        <div className="relative">
+                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 font-mono text-xs">₹</span>
+                                            <Input
+                                                type="number"
+                                                value={formData.registration_fee || ""}
+                                                onChange={(e) => setFormData({ ...formData, registration_fee: parseFloat(e.target.value) })}
+                                                className="bg-emerald-500/10 border-emerald-500/20 text-emerald-400 pl-7 h-11 font-mono font-black text-sm rounded-xl"
                                             />
                                         </div>
                                     </div>

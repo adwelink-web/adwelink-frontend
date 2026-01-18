@@ -1,10 +1,33 @@
 import { BookOpen, Lock, Sparkles, GraduationCap } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 
 export default function TrainingPage() {
     return (
-        <div className="h-[calc(100vh-40px)] w-full overflow-hidden flex flex-col">
-            <div className="p-4 md:p-8 max-w-7xl mx-auto flex-1 flex items-center justify-center overflow-hidden">
+        <div className="h-full w-full overflow-hidden flex flex-col relative p-4 md:p-8">
+            {/* Background Gradients */}
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-500/10 rounded-full blur-[100px]" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-fuchsia-500/10 rounded-full blur-[100px]" />
+            </div>
+
+            {/* Header - Compact */}
+            <div className="flex-none flex items-center justify-between z-10 mb-4 max-w-7xl mx-auto w-full">
+                <div>
+                    <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                        <div className="h-8 w-8 rounded-lg bg-purple-500/20 flex items-center justify-center ring-1 ring-purple-500/30">
+                            <GraduationCap className="h-4 w-4 text-purple-500" />
+                        </div>
+                        AI Tutor Training
+                        <Badge className="h-5 px-1.5 text-[10px] bg-purple-500/20 text-purple-400">
+                            Coming Soon
+                        </Badge>
+                    </h2>
+                    <p className="text-muted-foreground text-xs mt-1 hidden md:block">Your AI Tutor is currently under development</p>
+                </div>
+            </div>
+
+            <div className="flex-1 min-h-0 z-10 max-w-7xl mx-auto w-full flex items-center justify-center">
                 <div className="relative w-full max-w-lg">
                     {/* Glow Effect */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-32 w-32 bg-purple-500/20 blur-[100px] rounded-full pointer-events-none" />

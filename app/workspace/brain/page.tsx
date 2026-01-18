@@ -17,14 +17,27 @@ export default function AgentBrainPage() {
     }
 
     return (
-        <div className="h-[calc(100vh-40px)] w-full overflow-hidden flex flex-col">
-            <div className="flex-1 flex flex-col w-full max-w-7xl mx-auto p-4 md:p-8 space-y-8 overflow-y-auto custom-scrollbar">
-                <div className="flex flex-col gap-1 text-center md:text-left">
-                    <h1 className="text-3xl font-bold text-white tracking-tight flex items-center justify-center md:justify-start gap-3">
-                        <BrainCircuit className="h-8 w-8 text-purple-400" /> Agent Brain Configuration
-                    </h1>
-                    <p className="text-slate-400">Fine-tune your AI&apos;s knowledge, behavior, and personality traits.</p>
+        <div className="h-full w-full overflow-hidden flex flex-col relative p-4 md:p-8">
+            {/* Background Gradients */}
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-500/10 rounded-full blur-[100px]" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-500/10 rounded-full blur-[100px]" />
+            </div>
+
+            {/* Header - Compact */}
+            <div className="flex-none flex items-center justify-between z-10 mb-4 max-w-7xl mx-auto w-full">
+                <div>
+                    <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                        <div className="h-8 w-8 rounded-lg bg-purple-500/20 flex items-center justify-center ring-1 ring-purple-500/30">
+                            <BrainCircuit className="h-4 w-4 text-purple-500" />
+                        </div>
+                        Agent Brain Configuration
+                    </h2>
+                    <p className="text-muted-foreground text-xs mt-1 hidden md:block">Fine-tune your AI&apos;s knowledge, behavior, and personality traits</p>
                 </div>
+            </div>
+
+            <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar z-10 max-w-7xl mx-auto w-full">
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-10">
                     <div className="lg:col-span-2 space-y-6">
