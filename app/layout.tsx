@@ -37,14 +37,32 @@ export default async function RootLayout({
   // CTO SHOCK ABSORBER: Wrap Auth in Try/Catch
   // This prevents the entire app from crashing (White Screen) if Supabase connection fails.
   let user = null
+  let institute = null
   try {
     const supabase = await createServerClient()
     const { data } = await supabase.auth.getUser()
     user = data.user
+
+    if (user) {
+      // Fetch basic institute context for the sidebar
+      // CTO NOTE: Using any cast for table name to avoid schema strictness if table is missing from types
+      const { data: profile } = await (supabase
+        .from("staff_members" as any)
+        .select("institute_id")
+        .eq("id", user.id)
+        .single() as any)
+
+      if (profile?.institute_id) {
+        const { data: instData } = await supabase
+          .from("institutes")
+          .select("id, name, current_plan, subscription_status, created_at")
+          .eq("id", profile.institute_id)
+          .single()
+        institute = instData
+      }
+    }
   } catch (error) {
-    console.error("CRITICAL: Root Layout Auth Failed. Rendering Public View.", error)
-    // We proceed with user = null, allowing the app to render in "Guest Mode"
-    // instead of crashing completely.
+    console.error("CRITICAL: Root Layout Auth/Context Failed. Rendering Public View.", error)
   }
 
   return (
@@ -52,7 +70,7 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
-        <SidebarWrapper user={user}>
+        <SidebarWrapper user={user} institute={institute}>
           {children}
         </SidebarWrapper>
         <Toaster />

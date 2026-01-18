@@ -33,9 +33,10 @@ import { User } from "@supabase/supabase-js"
 
 interface SidebarProps extends React.ComponentProps<"div"> {
     user: User | null
+    institute: any
 }
 
-export function AppSidebar({ className, user }: SidebarProps) {
+export function AppSidebar({ className, user, institute }: SidebarProps) {
     const pathname = usePathname()
     const router = useRouter()
     const [activeAgent, setActiveAgent] = React.useState("Aditi")
@@ -303,13 +304,15 @@ export function AppSidebar({ className, user }: SidebarProps) {
 
             {/* 4. Footer (Plan & Profile) - Fixed at bottom */}
             <div className="shrink-0 p-4 border-t border-white/5 bg-black/20">
-                {/* Only show plan details in Institute Mode? Or always? Always is fine. */}
+                {/* Dynamic Plan Display */}
                 <div className="mb-4 rounded-md bg-gradient-to-r from-amber-500/10 to-transparent p-3 border border-amber-500/20">
                     <div className="flex items-center justify-between mb-1">
                         <span className="text-xs font-bold text-amber-500 flex items-center gap-1">
-                            <Sparkles className="h-3 w-3" /> PREMIUM PLAN
+                            <Sparkles className="h-3 w-3" /> {(institute?.current_plan || "Free").toUpperCase()} PLAN
                         </span>
-                        <span className="text-[10px] text-muted-foreground">24d left</span>
+                        <span className="text-[10px] text-muted-foreground">
+                            {institute?.current_plan === 'free' ? 'No Expiry' : 'Active'}
+                        </span>
                     </div>
                 </div>
 

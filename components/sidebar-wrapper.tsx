@@ -19,9 +19,10 @@ import { User } from "@supabase/supabase-js"
 interface SidebarWrapperProps {
     children: React.ReactNode
     user: User | null
+    institute: any // Using any for now to avoid deep type investigation, but ideally we'd export the type
 }
 
-export function SidebarWrapper({ children, user }: SidebarWrapperProps) {
+export function SidebarWrapper({ children, user, institute }: SidebarWrapperProps) {
     const [open, setOpen] = useState(false)
     const [showBetaPopup, setShowBetaPopup] = useState(false)
     const pathname = usePathname()
@@ -65,7 +66,7 @@ export function SidebarWrapper({ children, user }: SidebarWrapperProps) {
         <div className="flex h-screen overflow-hidden relative">
             {/* Desktop Sidebar */}
             <div className="hidden md:flex w-64 h-full flex-col bg-sidebar border-r border-border shrink-0">
-                <AppSidebar user={user} />
+                <AppSidebar user={user} institute={institute} />
             </div>
 
             {/* Main Content Area */}
@@ -83,7 +84,7 @@ export function SidebarWrapper({ children, user }: SidebarWrapperProps) {
                             </SheetTrigger>
                             <SheetContent side="left" className="p-0 border-r border-white/10 w-72 bg-[#030712]">
                                 <SheetTitle className="sr-only">Mobile Navigation</SheetTitle>
-                                <AppSidebar user={user} />
+                                <AppSidebar user={user} institute={institute} />
                             </SheetContent>
                         </Sheet>
                     ) : (
