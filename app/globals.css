@@ -168,10 +168,10 @@
   }
 }
 
-/* Smooth Scroll */
-html {
+/* Smooth Scroll - DISABLED: was causing scroll jump issues */
+/* html {
   scroll-behavior: smooth;
-}
+} */
 
 /* ========================================
    PAGE LOAD ANIMATIONS

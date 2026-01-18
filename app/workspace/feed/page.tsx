@@ -3,7 +3,6 @@
 import * as React from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 
 import { MessageSquare, Hand, Send, Check, CheckCheck, Users, Sparkles, Search, Smile, ThumbsDown, ChevronDown, Plus, Image as ImageIcon, ArrowLeft } from "lucide-react"
 import { createClient } from "@/lib/supabase"
@@ -178,8 +177,9 @@ export default function FeedPage() {
 
     React.useEffect(() => {
         fetchHistory()
-        const interval = setInterval(fetchHistory, 5000)
-        return () => clearInterval(interval)
+        // TEMPORARILY DISABLED - Testing scroll issue
+        // const interval = setInterval(fetchHistory, 5000)
+        // return () => clearInterval(interval)
     }, [fetchHistory])
 
     React.useEffect(() => {
@@ -188,20 +188,35 @@ export default function FeedPage() {
         }
     }, [selectedSession, markAsRead])
 
+    // Simple scroll to bottom function (manual trigger only)
     const scrollToBottom = () => {
-        scrollBottomRef.current?.scrollIntoView({ behavior: "smooth" })
+        if (scrollContainerRef.current) {
+            // With flex-col-reverse, scrollTop = 0 is at bottom (latest)
+            scrollContainerRef.current.scrollTop = 0;
+        }
     }
 
-    React.useEffect(() => {
-        if (selectedSession) {
-            setTimeout(scrollToBottom, 100)
-        }
-    }, [selectedSession])
-
+    // Track if user has scrolled away from bottom
+    // Using ref to avoid re-render on every scroll
+    const scrollTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
     const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-        const target = e.currentTarget
-        const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 100
-        setShowScrollButton(!isAtBottom)
+        // Capture scrollTop immediately (before setTimeout)
+        const currentScrollTop = e.currentTarget.scrollTop;
+
+        // Clear previous timeout
+        if (scrollTimeoutRef.current) {
+            clearTimeout(scrollTimeoutRef.current);
+        }
+        // Debounce: only update state after scroll stops
+        scrollTimeoutRef.current = setTimeout(() => {
+            // With flex-col-reverse, scrollTop near 0 = at bottom (latest)
+            const isAtBottom = currentScrollTop <= 100;
+            const shouldShowButton = !isAtBottom;
+            // Only update if value changed
+            if (showScrollButton !== shouldShowButton) {
+                setShowScrollButton(shouldShowButton);
+            }
+        }, 100);
     }
 
     const handleSend = async () => {
@@ -292,9 +307,16 @@ export default function FeedPage() {
     // Session List Component
     const SessionList = ({ onSessionClick }: { onSessionClick: (sid: string) => void }) => (
         <div className="flex-1 min-h-0 w-full overflow-y-auto custom-scrollbar">
-            <div className="p-0">
+            <div className="p-2 space-y-1">
                 {loading ? (
-                    <div className="text-center p-8 text-xs text-slate-500">Syncing...</div>
+                    <div className="py-12 text-center">
+                        <div className="flex flex-col items-center justify-center gap-2">
+                            <div className="h-10 w-10 rounded-full bg-violet-500/10 flex items-center justify-center animate-pulse">
+                                <MessageSquare className="h-5 w-5 text-violet-400" />
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-2">Loading chats...</p>
+                        </div>
+                    </div>
                 ) : sessions.length === 0 ? (
                     <div className="py-12 text-center">
                         <div className="flex flex-col items-center justify-center gap-2">
@@ -319,45 +341,70 @@ export default function FeedPage() {
                             const sentiment = latestMsg?.sentiment?.toLowerCase();
                             const isUnread = sessionMsgs.some(m => m.user_message && !m.is_read);
                             const unreadCount = sessionMsgs.filter(m => m.user_message && !m.is_read).length;
+                            const isSelected = selectedSession === sessionId;
+                            const displayName = userMap[sessionId] || sessionId;
+                            const isPhoneNumber = !userMap[sessionId] && sessionId.startsWith('+');
 
                             return (
                                 <div
                                     key={i}
                                     onClick={() => onSessionClick(sessionId)}
-                                    className={`flex items-center gap-3 p-3 md:p-4 border-b border-white/5 cursor-pointer transition-all ${selectedSession === sessionId ? "bg-white/10 border-l-2 border-l-violet-500" : "hover:bg-white/[0.05] border-l-2 border-l-transparent"}`}
+                                    className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all duration-200 group
+                                        ${isSelected
+                                            ? "bg-violet-500/15 border border-violet-500/30 shadow-lg shadow-violet-500/5"
+                                            : "bg-white/[0.02] border border-transparent hover:bg-white/[0.05] hover:border-white/10"
+                                        }`}
                                 >
+                                    {/* Avatar */}
                                     <div className="relative shrink-0">
-                                        <Avatar className="h-10 w-10 border border-white/10">
-                                            <AvatarFallback className="bg-gradient-to-br from-slate-800 to-slate-900 text-slate-300 text-xs font-bold">
-                                                {(userMap[sessionId] || sessionId).charAt(0)}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                        {sentiment && (
-                                            <div className={`absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-[#0B0F19] flex items-center justify-center
-                                                ${sentiment === 'positive' ? 'bg-emerald-500' : sentiment === 'negative' ? 'bg-red-500' : 'bg-slate-500'}`}>
-                                                {sentiment === 'positive' ? <Smile className="h-2 w-2 text-white" /> : sentiment === 'negative' ? <ThumbsDown className="h-2 w-2 text-white" /> : null}
-                                            </div>
-                                        )}
+                                        <div className={`h-11 w-11 rounded-full flex items-center justify-center text-sm font-bold
+                                            ${isSelected
+                                                ? "bg-gradient-to-br from-violet-500 to-violet-700 text-white"
+                                                : isUnread
+                                                    ? "bg-gradient-to-br from-emerald-500 to-emerald-700 text-white"
+                                                    : "bg-gradient-to-br from-slate-600 to-slate-800 text-slate-300"
+                                            }`}>
+                                            {displayName.charAt(0).toUpperCase()}
+                                        </div>
+                                        {/* Online/Sentiment indicator */}
+                                        {/* Online/Sentiment indicator - REMOVED */}
                                     </div>
 
-                                    <div className="flex flex-col overflow-hidden gap-0.5 flex-1 text-left">
-                                        <div className="flex justify-between items-center w-full">
-                                            <span className={`text-sm tracking-tight ${selectedSession === sessionId ? "text-white font-semibold" : isUnread ? "text-white font-bold" : "text-slate-300 font-medium"} truncate`}>
-                                                {userMap[sessionId] || sessionId}
+                                    {/* Content */}
+                                    <div className="flex flex-col overflow-hidden gap-0.5 flex-1 min-w-0">
+                                        {/* Name + Time Row */}
+                                        <div className="flex justify-between items-center gap-2">
+                                            <span className={`truncate ${isSelected ? "text-white font-semibold" : isUnread ? "text-white font-bold" : "text-slate-200 font-medium"} text-sm`}>
+                                                {isPhoneNumber ? (
+                                                    <span className="font-mono">{displayName}</span>
+                                                ) : (
+                                                    displayName
+                                                )}
                                             </span>
                                             {latestMsg?.created_at && (
-                                                <span className={`text-[10px] ${isUnread ? "text-emerald-500 font-bold" : "text-slate-500"}`}>
+                                                <span className={`text-[10px] shrink-0 ${isUnread ? "text-emerald-400 font-bold" : "text-slate-500"}`}>
                                                     {new Date(latestMsg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                 </span>
                                             )}
                                         </div>
-                                        <div className="flex justify-between items-center w-full gap-2">
-                                            <span className={`text-[11px] truncate flex-1 ${isUnread ? "text-slate-200 font-semibold" : "text-slate-500"}`}>
-                                                {latestMsg?.user_message || latestMsg?.ai_response || "No messages"}
-                                            </span>
-                                            {isUnread && (
-                                                <div className="min-w-[18px] h-[18px] bg-emerald-500 rounded-full flex items-center justify-center px-1">
-                                                    <span className="text-[10px] text-white font-bold leading-none">
+
+                                        {/* Message Preview + Badge Row */}
+                                        <div className="flex justify-between items-center gap-2">
+                                            <p className={`text-xs truncate flex-1 ${isUnread ? "text-slate-300" : "text-slate-500"}`}>
+                                                {latestMsg?.ai_response ? (
+                                                    <span className="flex items-center gap-1">
+                                                        <CheckCheck className="h-3 w-3 text-[#53bdeb] shrink-0" />
+                                                        <span className="truncate">{latestMsg.ai_response}</span>
+                                                    </span>
+                                                ) : latestMsg?.user_message ? (
+                                                    <span className="truncate">{latestMsg.user_message}</span>
+                                                ) : (
+                                                    <span className="text-slate-600 italic">No messages</span>
+                                                )}
+                                            </p>
+                                            {isUnread && unreadCount > 0 && (
+                                                <div className="min-w-[20px] h-[20px] bg-emerald-500 rounded-full flex items-center justify-center px-1.5 shrink-0">
+                                                    <span className="text-[10px] text-white font-bold">
                                                         {unreadCount}
                                                     </span>
                                                 </div>
@@ -443,7 +490,7 @@ export default function FeedPage() {
                 <div
                     ref={scrollContainerRef}
                     onScroll={handleScroll}
-                    className="h-full overflow-y-auto custom-scrollbar p-3 md:p-4 pb-20"
+                    className="h-full overflow-y-auto custom-scrollbar p-3 md:p-4 pb-20 flex flex-col-reverse"
                 >
                     <div className="max-w-3xl mx-auto space-y-4 md:space-y-6">
                         {activeVisuals.length === 0 && !loading && (
@@ -621,30 +668,31 @@ export default function FeedPage() {
                     <ChatView />
                 </div>
 
-                {/* Mobile Layout - List only */}
+                {/* Mobile Layout - List OR Chat in same container */}
                 <div className="md:hidden w-full h-full bg-[#0F131E] border border-white/10 rounded-xl overflow-hidden flex flex-col">
-                    {/* Search */}
-                    <div className="px-3 py-2 border-b border-white/10 bg-[#111623]">
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-500" />
-                            <input
-                                className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-9 pr-3 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-violet-500/50"
-                                placeholder="Search chats..."
-                                value={sessionSearch}
-                                onChange={(e) => setSessionSearch(e.target.value)}
-                            />
-                        </div>
-                    </div>
-                    <SessionList onSessionClick={handleMobileSessionClick} />
+                    {isChatSheetOpen && selectedSession ? (
+                        // Show Chat View
+                        <ChatView inSheet={true} />
+                    ) : (
+                        // Show List View
+                        <>
+                            {/* Search */}
+                            <div className="px-3 py-2 border-b border-white/10 bg-[#111623]">
+                                <div className="relative">
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-500" />
+                                    <input
+                                        className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-9 pr-3 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-violet-500/50"
+                                        placeholder="Search chats..."
+                                        value={sessionSearch}
+                                        onChange={(e) => setSessionSearch(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                            <SessionList onSessionClick={handleMobileSessionClick} />
+                        </>
+                    )}
                 </div>
             </div>
-
-            {/* Mobile Chat Sheet */}
-            <Sheet open={isChatSheetOpen} onOpenChange={setIsChatSheetOpen}>
-                <SheetContent side="right" className="w-full sm:max-w-full p-0 bg-[#0F131E] border-l border-white/10 flex flex-col">
-                    <ChatView inSheet={true} />
-                </SheetContent>
-            </Sheet>
         </div>
     )
 }
