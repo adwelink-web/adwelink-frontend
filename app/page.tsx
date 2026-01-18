@@ -19,34 +19,13 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import Link from "next/link"
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import Image from "next/image"
 import { createClient } from "@/lib/supabase"
 
-export default function ComingSoonPage() {
-    const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, mins: 0, secs: 0 })
+export default function TeaserLandingPage() {
     const [waitlistStatus, setWaitlistStatus] = useState<"idle" | "submitting" | "success" | "error">("idle")
     const [formData, setFormData] = useState({ name: "", contact: "" })
-
-    // Countdown to Jan 15, 2026 at 1:15 PM
-    useEffect(() => {
-        const target = new Date("2026-01-15T13:15:00").getTime()
-        const timer = setInterval(() => {
-            const now = new Date().getTime()
-            const diff = target - now
-            if (diff < 0) {
-                clearInterval(timer)
-                return
-            }
-            setTimeLeft({
-                days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-                hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-                mins: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
-                secs: Math.floor((diff % (1000 * 60)) / 1000)
-            })
-        }, 1000)
-        return () => clearInterval(timer)
-    }, [])
 
     const handleWaitlistSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -61,7 +40,7 @@ export default function ComingSoonPage() {
                     {
                         full_name: formData.name,
                         contact: formData.contact,
-                        source: 'landing'
+                        source: 'teaser'
                     }
                 ])
 
@@ -78,7 +57,7 @@ export default function ComingSoonPage() {
     return (
         <div className="min-h-[100dvh] bg-[#030712] text-white font-sans flex flex-col items-center relative selection:bg-cyan-500/30 overflow-x-hidden">
 
-            {/* 🌌 Background: Premium Noise & Glows (Matching Landing Page) */}
+            {/* 🌌 Background: Premium Noise & Glows */}
             <div className="fixed inset-0 pointer-events-none z-0">
                 <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay" />
                 <div className="absolute top-[-10%] left-[20%] w-[600px] h-[600px] bg-indigo-900/20 blur-[150px] rounded-full animate-pulse duration-[8000ms]" />
@@ -107,10 +86,10 @@ export default function ComingSoonPage() {
             {/* 🚀 Main Hero: "The Event" */}
             <main className="flex-1 w-full max-w-7xl mx-auto px-6 flex flex-col items-center justify-center text-center relative z-10 pb-6 min-h-0">
 
-                {/* Release Tag */}
+                {/* Pilot Tag */}
                 <div className="mb-6 animate-fade-in-up delay-100">
-                    <span className="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-[10px] text-slate-400 backdrop-blur-md uppercase tracking-wider">
-                        Release v1.0 • Jan 15
+                    <span className="px-3 py-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 text-[10px] text-emerald-400 backdrop-blur-md uppercase tracking-wider font-bold">
+                        Pilot Phase Is Live
                     </span>
                 </div>
 
@@ -136,7 +115,7 @@ export default function ComingSoonPage() {
                             <DialogHeader>
                                 <DialogTitle className="text-3xl font-bold tracking-tighter">Priority Waitlist</DialogTitle>
                                 <DialogDescription className="text-slate-400 text-sm pt-2">
-                                    Secure your spot for the Jan 15 Launch. We&apos;ll reach out when we&apos;re ready for your institute.
+                                    Secure your spot for the Pilot Phase. We&apos;ll reach out when we&apos;re ready for your institute.
                                 </DialogDescription>
                             </DialogHeader>
 
@@ -194,21 +173,6 @@ export default function ComingSoonPage() {
                             )}
                         </DialogContent>
                     </Dialog>
-                </div>
-
-                {/* 🕒 Footer Countdown */}
-                <div className="mt-8 md:mt-12 flex gap-6 md:gap-10 text-center">
-                    {[
-                        { l: "DAYS", v: timeLeft.days },
-                        { l: "HRS", v: timeLeft.hours },
-                        { l: "MINS", v: timeLeft.mins },
-                        { l: "SECS", v: timeLeft.secs },
-                    ].map((t, i) => (
-                        <div key={i} className="flex flex-col items-center">
-                            <span className="text-4xl md:text-5xl font-bold text-white tabular-nums font-mono">{String(t.v).padStart(2, '0')}</span>
-                            <span className="text-[10px] text-slate-500 font-bold tracking-widest mt-1">{t.l}</span>
-                        </div>
-                    ))}
                 </div>
 
             </main>
