@@ -80,8 +80,8 @@ export default function FeedbackPage() {
             <div className="fixed top-[-10%] left-[-5%] h-[50%] w-[50%] bg-violet-600/10 blur-[150px] rounded-full pointer-events-none" />
             <div className="fixed bottom-[-10%] right-[-5%] h-[50%] w-[50%] bg-fuchsia-600/10 blur-[150px] rounded-full pointer-events-none" />
 
-            {/* Back Button - Sticky Top */}
-            <div className="sticky top-0 z-50 px-4 py-3 md:px-8 md:py-4 bg-[#07090D]/80 backdrop-blur-xl border-b border-white/5">
+            {/* Back Button - Sticky Top (Desktop Only) */}
+            <div className="hidden md:block sticky top-0 z-50 px-4 py-3 md:px-8 md:py-4 bg-[#07090D]/80 backdrop-blur-xl border-b border-white/5">
                 <button
                     onClick={() => router.back()}
                     className="group flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-slate-400 hover:text-white"
@@ -129,21 +129,12 @@ export default function FeedbackPage() {
 
                     {/* 2. Right Column: Compact Form Card */}
                     <div className="w-full max-w-md mx-auto lg:mx-0">
-                        {/* Mobile Header */}
-                        <div className="lg:hidden text-center mb-4 space-y-2">
-                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-[9px] text-violet-400 font-bold uppercase tracking-wider">
-                                <Sparkles className="h-3 w-3" /> Feedback
-                            </div>
-                            <h1 className="text-xl font-bold tracking-tight text-white">
-                                Shape the <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">AI Workforce</span>
-                            </h1>
-                            <p className="text-slate-500 text-xs">Your insights help us evolve</p>
-                        </div>
+
 
                         <Card className="bg-gradient-to-br from-violet-500/10 to-transparent border border-white/10 backdrop-blur-xl shadow-xl rounded-xl md:rounded-2xl overflow-hidden">
                             <CardContent className="p-4 md:p-6 space-y-4 md:space-y-6">
                                 <div className="space-y-1 text-center lg:text-left">
-                                    <h2 className="text-base md:text-xl font-bold text-white tracking-tight">How was your experience?</h2>
+                                    <h2 className="text-xl md:text-xl font-bold text-white tracking-tight">How was your experience?</h2>
                                     <p className="text-slate-500 text-[9px] md:text-[10px] font-medium uppercase tracking-wider">Share your thoughts</p>
                                 </div>
 
@@ -161,7 +152,7 @@ export default function FeedbackPage() {
                                                     onClick={() => setRating(s)}
                                                     className={`transition-all duration-300 transform hover:scale-110 active:scale-90 ${(hoveredRating || rating) >= s ? 'text-violet-400' : 'text-slate-700'}`}
                                                 >
-                                                    <Star className={`h-6 w-6 md:h-7 md:w-7 ${((hoveredRating || rating) >= s) ? 'fill-current drop-shadow-[0_0_8px_rgba(139,92,246,0.4)]' : 'hover:text-slate-600'}`} />
+                                                    <Star className={`h-9 w-9 md:h-8 md:w-8 ${((hoveredRating || rating) >= s) ? 'fill-current drop-shadow-[0_0_8px_rgba(139,92,246,0.4)]' : 'hover:text-slate-600'}`} />
                                                 </button>
                                             ))}
                                         </div>
@@ -173,9 +164,9 @@ export default function FeedbackPage() {
                                             <Input
                                                 required
                                                 placeholder="Your Full Name"
-                                                className="bg-white/[0.03] border-white/10 text-white placeholder:text-slate-600 h-10 md:h-11 rounded-lg md:rounded-xl focus:ring-1 focus:ring-violet-500/30 text-xs md:text-sm pl-9 md:pl-10 transition-all"
+                                                className="bg-white/[0.03] border-white/10 text-white placeholder:text-slate-600 h-12 md:h-11 rounded-xl focus:ring-1 focus:ring-violet-500/30 text-base md:text-sm pl-11 md:pl-10 transition-all shadow-inner"
                                             />
-                                            <UserCircle2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-600 group-focus-within:text-violet-400 transition-colors" />
+                                            <UserCircle2 className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-600 group-focus-within:text-violet-400 transition-colors" />
                                         </div>
 
                                         <div className="relative group">
@@ -183,22 +174,22 @@ export default function FeedbackPage() {
                                                 required
                                                 type="email"
                                                 placeholder="Email Address"
-                                                className="bg-white/[0.03] border-white/10 text-white placeholder:text-slate-600 h-10 md:h-11 rounded-lg md:rounded-xl focus:ring-1 focus:ring-violet-500/30 text-xs md:text-sm pl-9 md:pl-10 transition-all"
+                                                className="bg-white/[0.03] border-white/10 text-white placeholder:text-slate-600 h-12 md:h-11 rounded-xl focus:ring-1 focus:ring-violet-500/30 text-base md:text-sm pl-11 md:pl-10 transition-all shadow-inner"
                                             />
-                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-600 group-focus-within:text-violet-400 transition-colors" />
+                                            <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-600 group-focus-within:text-violet-400 transition-colors" />
                                         </div>
 
                                         <Textarea
                                             required
                                             placeholder="Tell us, how can we improve?"
-                                            className="bg-white/[0.03] border-white/10 text-white placeholder:text-slate-600 min-h-[80px] md:min-h-[100px] p-3 rounded-lg md:rounded-xl focus:ring-1 focus:ring-violet-500/30 text-xs md:text-sm leading-relaxed resize-none"
+                                            className="bg-white/[0.03] border-white/10 text-white placeholder:text-slate-600 min-h-[120px] md:min-h-[100px] p-4 rounded-xl focus:ring-1 focus:ring-violet-500/30 text-base md:text-sm leading-relaxed resize-none shadow-inner"
                                         />
                                     </div>
 
                                     <Button
                                         type="submit"
                                         disabled={loading}
-                                        className="w-full h-10 md:h-11 bg-white text-black hover:bg-slate-100 font-bold rounded-lg md:rounded-xl shadow-lg transition-all active:scale-[0.98] text-xs md:text-sm group"
+                                        className="w-full h-12 md:h-11 bg-white text-black hover:bg-slate-100 font-bold rounded-xl shadow-lg transition-all active:scale-[0.98] text-base md:text-sm group mt-2"
                                     >
                                         {loading ? (
                                             <span className="flex items-center gap-2">

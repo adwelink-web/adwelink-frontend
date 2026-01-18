@@ -106,22 +106,22 @@ export function HomeClientContainer({ stats, initialDate }: HomeClientContainerP
             <div className="relative z-10 flex-1 flex flex-col p-4 lg:p-6 h-full max-w-[1600px] mx-auto w-full min-h-0">
 
                 {/* Signature Header */}
-                <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 shrink-0">
+                <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-3 shrink-0">
                     <div>
-                        <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white flex flex-wrap items-center gap-3">
-                            <Activity className="h-8 w-8 text-emerald-500" />
+                        <h2 className="text-xl md:text-2xl font-bold tracking-tight text-white flex flex-wrap items-center gap-2">
+                            <Activity className="h-6 w-6 text-emerald-500" />
                             AMS Command Center
-                            <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-normal whitespace-nowrap">
-                                <span className="relative flex h-2 w-2">
+                            <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] font-normal whitespace-nowrap">
+                                <span className="relative flex h-1.5 w-1.5">
                                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
-                                    <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
+                                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500"></span>
                                 </span>
                                 <span className="text-emerald-400">System Online</span>
                             </span>
                         </h2>
-                        <p className="text-muted-foreground mt-1 text-sm md:text-base">Your AI Workforce is ready. Select an agent to begin.</p>
+                        <p className="text-muted-foreground mt-0.5 text-xs md:text-sm">Your AI Workforce is ready. Select an agent to begin.</p>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                         {/* Kill Switch */}
                         <button
                             onClick={() => {
@@ -129,15 +129,15 @@ export function HomeClientContainer({ stats, initialDate }: HomeClientContainerP
                                     alert('Agent stopped. (Feature coming soon)')
                                 }
                             }}
-                            className="p-2 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 transition-all group"
+                            className="p-1.5 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 transition-all group"
                             title="Kill Switch - Stop Agent"
                         >
-                            <Power className="h-5 w-5 group-hover:animate-pulse" />
+                            <Power className="h-4 w-4 group-hover:animate-pulse" />
                         </button>
 
                         <div className="text-right hidden sm:block">
-                            <div className="text-lg font-bold text-white tabular-nums tracking-tight leading-none">{currentTime}</div>
-                            <div className="text-[10px] font-medium text-slate-500 uppercase tracking-widest">{dateString}</div>
+                            <div className="text-base font-bold text-white tabular-nums tracking-tight leading-none">{currentTime}</div>
+                            <div className="text-[9px] font-medium text-slate-500 uppercase tracking-widest">{dateString}</div>
                         </div>
                     </div>
                 </header>
@@ -197,15 +197,15 @@ export function HomeClientContainer({ stats, initialDate }: HomeClientContainerP
                                 {/* Header */}
                                 <div className="flex justify-between items-start z-10 shrink-0">
                                     <div>
-                                        <h2 className="text-xl font-bold text-white leading-none">{currentAgent.name}</h2>
-                                        <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-1">{currentAgent.role}</p>
+                                        <h2 className="text-lg font-bold text-white leading-none">{currentAgent.name}</h2>
+                                        <p className="text-[9px] text-slate-500 uppercase tracking-wider mt-1">{currentAgent.role}</p>
                                     </div>
                                     {currentAgent.status === "active" ? (
-                                        <div className="px-2 py-0.5 rounded border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-[9px] font-bold uppercase tracking-wider flex items-center gap-1.5">
-                                            <Zap className="h-2.5 w-2.5 fill-current" /> Active
+                                        <div className="px-1.5 py-0.5 rounded border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-[8px] font-bold uppercase tracking-wider flex items-center gap-1">
+                                            <Zap className="h-2 w-2 fill-current" /> Active
                                         </div>
                                     ) : (
-                                        <div className="px-2 py-0.5 rounded border border-slate-500/30 bg-slate-500/10 text-slate-400 text-[9px] font-bold uppercase tracking-wider">
+                                        <div className="px-1.5 py-0.5 rounded border border-slate-500/30 bg-slate-500/10 text-slate-400 text-[8px] font-bold uppercase tracking-wider">
                                             Soon
                                         </div>
                                     )}
@@ -246,14 +246,14 @@ export function HomeClientContainer({ stats, initialDate }: HomeClientContainerP
                                 <div className="w-full z-10 shrink-0 space-y-3">
                                     {currentAgent.status === "active" ? (
                                         <>
-                                            <div className="grid grid-cols-2 gap-3">
-                                                <div className="bg-white/5 rounded-lg p-3 border border-white/5 hover:border-violet-500/30 transition-colors">
-                                                    <div className="text-[9px] text-slate-400 uppercase tracking-wider mb-0.5">Efficiency</div>
-                                                    <div className="text-lg font-bold text-white leading-none">{currentAgent.efficiency}</div>
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <div className="bg-white/5 rounded-lg p-2.5 border border-white/5 hover:border-violet-500/30 transition-colors">
+                                                    <div className="text-[8px] text-slate-400 uppercase tracking-wider mb-0.5">Efficiency</div>
+                                                    <div className="text-base font-bold text-white leading-none">{currentAgent.efficiency}</div>
                                                 </div>
-                                                <div className="bg-white/5 rounded-lg p-3 border border-white/5 hover:border-violet-500/30 transition-colors">
-                                                    <div className="text-[9px] text-slate-400 uppercase tracking-wider mb-0.5">Latency</div>
-                                                    <div className="text-lg font-bold text-emerald-400 leading-none">{currentAgent.latency}</div>
+                                                <div className="bg-white/5 rounded-lg p-2.5 border border-white/5 hover:border-violet-500/30 transition-colors">
+                                                    <div className="text-[8px] text-slate-400 uppercase tracking-wider mb-0.5">Latency</div>
+                                                    <div className="text-base font-bold text-emerald-400 leading-none">{currentAgent.latency}</div>
                                                 </div>
                                             </div>
                                             <Button
@@ -283,12 +283,12 @@ export function HomeClientContainer({ stats, initialDate }: HomeClientContainerP
                     </div>
 
                     {/* COL 2: Metrics & Feed - 8 Cols - AGENT SPECIFIC */}
-                    <div className="lg:col-span-8 flex flex-col gap-4 h-full min-h-0">
+                    <div className="hidden lg:flex lg:col-span-8 flex-col gap-4 h-full min-h-0">
 
                         {currentAgent.status === "active" ? (
                             <>
                                 {/* 1. Compact HUD Strip - ADITI */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 h-[120px] shrink-0">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 h-auto md:h-[120px] shrink-0">
                                     {/* Card 1: Leads */}
                                     <div
                                         onClick={() => router.push('/workspace/leads')}
@@ -302,30 +302,30 @@ export function HomeClientContainer({ stats, initialDate }: HomeClientContainerP
                                             <TrendingUp className="h-3 w-3 text-emerald-500" />
                                         </div>
                                         <div className="z-10">
-                                            <div className="text-3xl font-black text-white tracking-tighter">{stats?.leads?.value || 0}</div>
-                                            <div className="text-[10px] font-medium text-slate-400 uppercase tracking-wide">Total Leads</div>
+                                            <div className="text-2xl font-black text-white tracking-tighter">{stats?.leads?.value || 0}</div>
+                                            <div className="text-[9px] font-medium text-slate-400 uppercase tracking-wide">Total Leads</div>
                                         </div>
                                     </div>
 
                                     {/* Card 2: Chats Handled by Aditi */}
                                     <div
                                         onClick={() => router.push('/workspace')}
-                                        className="bg-[#0B0F19]/50 backdrop-blur-md border border-white/10 rounded-xl p-4 flex flex-col justify-between hover:bg-[#0B0F19]/80 transition-colors cursor-pointer group relative overflow-hidden"
+                                        className="bg-[#0B0F19]/50 backdrop-blur-md border border-white/10 rounded-xl p-3 md:p-4 flex flex-col justify-between hover:bg-[#0B0F19]/80 transition-colors cursor-pointer group relative overflow-hidden"
                                     >
-                                        <div className="absolute right-0 top-0 p-16 bg-violet-600/10 blur-[60px] rounded-full pointer-events-none group-hover:bg-violet-600/20 transition-all"></div>
+                                        <div className="absolute right-0 top-0 p-12 bg-violet-600/10 blur-[50px] rounded-full pointer-events-none group-hover:bg-violet-600/20 transition-all"></div>
                                         <div className="flex justify-between items-start z-10">
-                                            <div className="p-2 bg-violet-500/10 rounded-md border border-violet-500/20 text-violet-400">
-                                                <BrainCircuit className="h-4 w-4" />
+                                            <div className="p-1.5 bg-violet-500/10 rounded-md border border-violet-500/20 text-violet-400">
+                                                <BrainCircuit className="h-3.5 w-3.5" />
                                             </div>
-                                            <Zap className="h-3 w-3 text-amber-400 animate-pulse" />
+                                            <Zap className="h-2.5 w-2.5 text-amber-400 animate-pulse" />
                                         </div>
                                         <div className="z-10">
-                                            <div className="text-3xl font-black text-white tracking-tighter">
+                                            <div className="text-2xl font-black text-white tracking-tighter">
                                                 {stats?.chatsHandled?.value || "0"}
                                             </div>
-                                            <div className="text-[10px] font-medium text-violet-400 uppercase tracking-wide flex items-center gap-1.5">
+                                            <div className="text-[9px] font-medium text-violet-400 uppercase tracking-wide flex items-center gap-1">
                                                 Chats Handled
-                                                <span className="bg-violet-500/20 text-violet-300 px-1 rounded text-[8px] border border-violet-500/20">ADITI</span>
+                                                <span className="bg-violet-500/20 text-violet-300 px-1 rounded text-[7px] border border-violet-500/20">ADITI</span>
                                             </div>
                                         </div>
                                     </div>
