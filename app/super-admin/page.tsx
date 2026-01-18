@@ -2,6 +2,7 @@ import { createAdminClient } from "@/lib/supabase-server"
 import { Building2, Users, MessageSquare, IndianRupee, ArrowUpRight, Clock, Zap, Crown } from "lucide-react"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { WorkspaceHeader } from "@/components/workspace-header"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
@@ -149,37 +150,33 @@ export default async function SuperAdminDashboard() {
             <div className="flex-1 w-full h-full overflow-y-auto custom-scrollbar relative z-10">
 
                 {/* Sticky Blurred Header Section */}
-                <div className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/5 px-4 md:px-8 py-6 mb-2">
-                    <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 max-w-7xl mx-auto">
-                        <div>
-                            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white flex flex-wrap items-center gap-3">
-                                <div className="h-10 w-10 rounded-xl bg-violet-500/20 flex items-center justify-center ring-1 ring-violet-500/30">
-                                    <Crown className="h-5 w-5 text-violet-500" />
-                                </div>
-                                Command Center
-                                <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-normal whitespace-nowrap">
-                                    <span className="relative flex h-2 w-2">
-                                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
-                                        <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
-                                    </span>
-                                    <span className="text-emerald-400">Live</span>
+                <div className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/5 bg-[#0B0F19]/80 px-4 md:px-8 py-4 mb-2">
+                    <WorkspaceHeader
+                        title="Command Center"
+                        subtitle="Adwelink Business Overview & Real-time Metrics"
+                        icon={Crown}
+                        iconColor="text-violet-500"
+                        className="max-w-7xl mx-auto"
+                        badge={
+                            <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-normal whitespace-nowrap">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
+                                    <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
                                 </span>
-                            </h2>
-                            <p className="text-muted-foreground mt-1 text-sm md:text-base">Adwelink Business Overview & Real-time Metrics</p>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                            <Badge variant="outline" className="font-mono gap-2 hidden sm:flex">
-                                <Clock className="h-3 w-3" />
-                                Updated: Just now
-                            </Badge>
-                            <Link href="/super-admin/onboard">
-                                <Button className="bg-violet-500 text-white hover:bg-violet-600 shadow-lg shadow-violet-500/25 font-bold">
-                                    <Building2 className="mr-2 h-4 w-4" /> Onboard Client
-                                </Button>
-                            </Link>
-                        </div>
-                    </div>
+                                <span className="text-emerald-400">Live</span>
+                            </span>
+                        }
+                    >
+                        <Badge variant="outline" className="font-mono gap-2 hidden sm:flex">
+                            <Clock className="h-3 w-3" />
+                            Updated: Just now
+                        </Badge>
+                        <Link href="/super-admin/onboard">
+                            <Button className="bg-violet-500 text-white hover:bg-violet-600 shadow-lg shadow-violet-500/25 font-bold">
+                                <Building2 className="mr-2 h-4 w-4" /> Onboard Client
+                            </Button>
+                        </Link>
+                    </WorkspaceHeader>
                 </div>
 
                 {/* Content Section */}

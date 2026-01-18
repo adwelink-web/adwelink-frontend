@@ -3,6 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { BarChart3, LineChart, PieChart, TrendingUp, Users, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { WorkspaceHeader } from "@/components/workspace-header"
 
 export default function ReportsPage() {
     return (
@@ -13,32 +14,30 @@ export default function ReportsPage() {
                 <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-emerald-600/5 blur-[100px] rounded-full" />
             </div>
 
+            {/* Header - Fixed at top */}
+            <WorkspaceHeader
+                title="Analytics & Reports"
+                subtitle="Deep dive into your institute's performance and AI efficiency."
+                icon={BarChart3}
+                iconColor="text-blue-500"
+                className="px-4 md:px-8 py-6 z-20 shrink-0 max-w-7xl mx-auto w-full"
+                badge={
+                    <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-normal whitespace-nowrap">
+                        <span className="relative flex h-2 w-2">
+                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
+                            <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
+                        </span>
+                        <span className="text-emerald-400">Live Data</span>
+                    </span>
+                }
+            >
+                <Button className="w-full md:w-auto bg-blue-500 text-white hover:bg-blue-600 shadow-lg shadow-blue-500/25 font-bold">
+                    <Download className="mr-2 h-4 w-4" /> Export PDF Report
+                </Button>
+            </WorkspaceHeader>
+
             {/* Main Scrollable Container */}
             <div className="flex-1 w-full h-full overflow-y-auto custom-scrollbar relative z-10">
-
-                {/* Sticky Blurred Header Section */}
-                <div className="sticky top-0 z-50 backdrop-blur-xl px-4 md:px-8 py-6 mb-2">
-                    <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 max-w-7xl mx-auto">
-                        <div>
-                            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white flex flex-wrap items-center gap-3">
-                                <BarChart3 className="h-8 w-8 text-blue-500" />
-                                Analytics & Reports
-                                <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-normal whitespace-nowrap">
-                                    <span className="relative flex h-2 w-2">
-                                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
-                                        <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
-                                    </span>
-                                    <span className="text-emerald-400">Live Data</span>
-                                </span>
-                            </h2>
-                            <p className="text-muted-foreground mt-1 text-sm md:text-base">Deep dive into your institute&apos;s performance and AI efficiency.</p>
-                        </div>
-                        <Button className="w-full md:w-auto bg-blue-500 text-white hover:bg-blue-600 shadow-lg shadow-blue-500/25 font-bold">
-                            <Download className="mr-2 h-4 w-4" /> Export PDF Report
-                        </Button>
-                    </div>
-                </div>
-
                 {/* Scrollable Content Section */}
                 <div className="pb-20 px-4 md:px-8 max-w-7xl mx-auto space-y-8">
                     {/* KPI Grid */}

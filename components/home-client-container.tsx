@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Activity, BrainCircuit, Users, Sparkles, TrendingUp, Zap, ShieldCheck, ChevronLeft, ChevronRight, GraduationCap, Wallet, MessageSquare, Power } from "lucide-react"
+import { WorkspaceHeader } from "@/components/workspace-header"
 
 interface ActivityItem {
     type: string
@@ -106,21 +107,22 @@ export function HomeClientContainer({ stats, initialDate }: HomeClientContainerP
             <div className="relative z-10 flex-1 flex flex-col p-4 lg:p-6 h-full max-w-[1600px] mx-auto w-full min-h-0">
 
                 {/* Signature Header */}
-                <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-3 shrink-0">
-                    <div>
-                        <h2 className="text-xl md:text-2xl font-bold tracking-tight text-white flex flex-wrap items-center gap-2">
-                            <Activity className="h-6 w-6 text-emerald-500" />
-                            AMS Command Center
-                            <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] font-normal whitespace-nowrap">
-                                <span className="relative flex h-1.5 w-1.5">
-                                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
-                                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500"></span>
-                                </span>
-                                <span className="text-emerald-400">System Online</span>
+                <WorkspaceHeader
+                    title="AMS Command Center"
+                    subtitle="Your AI Workforce is ready. Select an agent to begin."
+                    icon={Activity}
+                    iconColor="text-emerald-500"
+                    className="mb-3 shrink-0"
+                    badge={
+                        <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] font-normal whitespace-nowrap">
+                            <span className="relative flex h-1.5 w-1.5">
+                                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
+                                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500"></span>
                             </span>
-                        </h2>
-                        <p className="text-muted-foreground mt-0.5 text-xs md:text-sm">Your AI Workforce is ready. Select an agent to begin.</p>
-                    </div>
+                            <span className="text-emerald-400">System Online</span>
+                        </span>
+                    }
+                >
                     <div className="flex items-center gap-3">
                         {/* Kill Switch */}
                         <button
@@ -140,7 +142,7 @@ export function HomeClientContainer({ stats, initialDate }: HomeClientContainerP
                             <div className="text-[9px] font-medium text-slate-500 uppercase tracking-widest">{dateString}</div>
                         </div>
                     </div>
-                </header>
+                </WorkspaceHeader>
 
                 {/* MAIN CONTENT GRID - FLEX 1 TO FILL SPACE */}
                 <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 min-h-0 overflow-hidden">
@@ -150,7 +152,7 @@ export function HomeClientContainer({ stats, initialDate }: HomeClientContainerP
                         {/* Agent Card */}
                         <div
                             onClick={() => handleSelect()}
-                            className={`flex-1 bg-gradient-to-b from-white/[0.03] to-transparent border rounded-2xl p-1 relative overflow-hidden group flex flex-col min-h-0 transition-all ${currentAgent.status === "active"
+                            className={`w-full max-h-[520px] h-full bg-gradient-to-b from-white/[0.03] to-transparent border rounded-2xl p-1 relative overflow-hidden group flex flex-col min-h-0 transition-all ${currentAgent.status === "active"
                                 ? "border-white/10 cursor-pointer hover:border-violet-500/30"
                                 : "border-white/5"
                                 }`}
@@ -246,7 +248,8 @@ export function HomeClientContainer({ stats, initialDate }: HomeClientContainerP
                                 <div className="w-full z-10 shrink-0 space-y-3">
                                     {currentAgent.status === "active" ? (
                                         <>
-                                            <div className="grid grid-cols-2 gap-2">
+                                            {/* Metrics Hidden as per request */}
+                                            {/* <div className="grid grid-cols-2 gap-2">
                                                 <div className="bg-white/5 rounded-lg p-2.5 border border-white/5 hover:border-violet-500/30 transition-colors">
                                                     <div className="text-[8px] text-slate-400 uppercase tracking-wider mb-0.5">Efficiency</div>
                                                     <div className="text-base font-bold text-white leading-none">{currentAgent.efficiency}</div>
@@ -255,7 +258,7 @@ export function HomeClientContainer({ stats, initialDate }: HomeClientContainerP
                                                     <div className="text-[8px] text-slate-400 uppercase tracking-wider mb-0.5">Latency</div>
                                                     <div className="text-base font-bold text-emerald-400 leading-none">{currentAgent.latency}</div>
                                                 </div>
-                                            </div>
+                                            </div> */}
                                             <Button
                                                 onClick={(e) => handleSelect(e)}
                                                 onMouseEnter={() => router.prefetch("/workspace")}

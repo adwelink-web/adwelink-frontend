@@ -60,11 +60,7 @@ export default function ClientLandingPage() {
 
             {/* 🧭 Navbar (Animated Glass) */}
             <header
-                className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 border-b ${isScrolled ? "bg-black/30 border-white/10 py-3 shadow-2xl" : "bg-transparent border-transparent py-5"}`}
-                style={{
-                    backdropFilter: isScrolled ? "blur(12px)" : "none",
-                    WebkitBackdropFilter: isScrolled ? "blur(12px)" : "none"
-                }}
+                className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 border-b ${isScrolled ? "bg-black/30 border-white/10 py-3 shadow-2xl backdrop-blur-md" : "bg-transparent border-transparent py-5"}`}
             >
                 <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
                     {/* Left Side: Logo */}

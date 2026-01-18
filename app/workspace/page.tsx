@@ -8,6 +8,7 @@ import { getDashboardData } from "./actions"
 import { Button } from "@/components/ui/button"
 import { cookies } from "next/headers"
 import { Database } from "@/lib/database.types"
+import { WorkspaceHeader } from "@/components/workspace-header"
 
 type Lead = Database["public"]["Tables"]["leads"]["Row"]
 
@@ -30,28 +31,30 @@ export default async function AMSWorkspacePage() {
         <div className="h-full w-full overflow-hidden flex flex-col relative p-4 md:p-8">
 
             {/* Header - Fixed, Outside Scroll */}
-            <div className="flex-none flex items-center justify-between z-10 mb-4 max-w-7xl mx-auto w-full">
-                <div>
-                    <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-                        <LayoutDashboard className="h-5 w-5 text-violet-500" />
-                        Workspace Active: Admin
-                        <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-normal whitespace-nowrap">
-                            <span className="relative flex h-2 w-2">
-                                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
-                                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
-                            </span>
-                            <span className="text-emerald-400">Aditi Online</span>
+            {/* Header - Fixed, Outside Scroll */}
+            <WorkspaceHeader
+                title="Workspace Active: Admin"
+                subtitle="Here is your business summary for today."
+                icon={LayoutDashboard}
+                iconColor="text-violet-500"
+                className="mb-4 max-w-7xl mx-auto w-full"
+                badge={
+                    <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-normal whitespace-nowrap">
+                        <span className="relative flex h-2 w-2">
+                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
+                            <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
                         </span>
-                    </h2>
-                    <p className="text-muted-foreground text-xs mt-1 hidden md:block">Here is your business summary for today.</p>
-                </div>
+                        <span className="text-emerald-400">Aditi Online</span>
+                    </span>
+                }
+            >
                 <Link href="/workspace/leads">
                     <Button size="sm" className="h-8 text-xs bg-violet-600 hover:bg-violet-700 text-white gap-2">
                         <UserPlus className="h-3.5 w-3.5" />
                         <span className="hidden md:inline">View All Leads</span>
                     </Button>
                 </Link>
-            </div>
+            </WorkspaceHeader>
 
             {/* KPI Cards - Fixed */}
             <div className="flex-none w-full mb-4">
@@ -147,7 +150,7 @@ export default async function AMSWorkspacePage() {
                                                     {lead.name ? lead.name.charAt(0).toUpperCase() : '?'}
                                                 </div>
                                                 {lead.lead_score && lead.lead_score > 0 && (
-                                                    <div className={`absolute -bottom-1 -right-1 h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full flex items-center justify-center text-[7px] sm:text-[9px] font-bold ring-1 ring-[#0B0F19] ${lead.lead_score >= 70 ? 'bg-green-500 text-black' : lead.lead_score >= 40 ? 'bg-amber-500 text-black' : 'bg-slate-500 text-white'}`}>
+                                                    <div className={`absolute -bottom-1 -right-1 h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full flex items-center justify-center text-[7px] sm:text-[9px] font-bold ring-1 ring-background ${lead.lead_score >= 70 ? 'bg-green-500 text-black' : lead.lead_score >= 40 ? 'bg-amber-500 text-black' : 'bg-slate-500 text-white'}`}>
                                                         {lead.lead_score}
                                                     </div>
                                                 )}

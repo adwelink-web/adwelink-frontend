@@ -20,6 +20,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import { getStudents, deleteStudent, updateStudent } from "./actions"
+import { WorkspaceHeader } from "@/components/workspace-header"
 
 import { Database } from "@/lib/database.types"
 
@@ -99,20 +100,18 @@ export default function StudentsPage() {
             </div>
 
             {/* Header - Compact */}
-            <div className="flex-none flex items-center justify-between z-10 mb-4 max-w-7xl mx-auto w-full">
-                <div>
-                    <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-                        <div className="h-8 w-8 rounded-lg bg-emerald-500/20 flex items-center justify-center ring-1 ring-emerald-500/30">
-                            <GraduationCap className="h-4 w-4 text-emerald-500" />
-                        </div>
-                        Active Students
-                        <Badge className="h-5 px-1.5 text-[10px] bg-emerald-500/20 text-emerald-400">
-                            {filteredStudents.length}
-                        </Badge>
-                    </h2>
-                    <p className="text-muted-foreground text-xs mt-1 hidden md:block">Manage your enrolled student database</p>
-                </div>
-            </div>
+            <WorkspaceHeader
+                title="Active Students"
+                subtitle="Manage your enrolled student database"
+                icon={GraduationCap}
+                iconColor="text-emerald-500"
+                className="mb-4 max-w-7xl mx-auto w-full"
+                badge={
+                    <Badge className="h-5 px-1.5 text-[10px] bg-emerald-500/20 text-emerald-400">
+                        {filteredStudents.length}
+                    </Badge>
+                }
+            />
 
             <div className="flex-1 min-h-0 flex flex-col z-10 max-w-7xl mx-auto w-full space-y-4">
 

@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Users, Download, Filter } from "lucide-react"
+import { WorkspaceHeader } from "@/components/workspace-header"
 
 async function getAllLeads() {
     const supabase = createAdminClient()
@@ -30,31 +31,27 @@ export default async function AllLeadsPage() {
             </div>
 
             {/* Header - Compact */}
-            <div className="flex-none flex items-center justify-between z-10 mb-4 max-w-7xl mx-auto w-full">
-                <div>
-                    <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-                        <div className="h-8 w-8 rounded-lg bg-emerald-500/20 flex items-center justify-center ring-1 ring-emerald-500/30">
-                            <Users className="h-4 w-4 text-emerald-500" />
-                        </div>
-                        All Leads
-                        <Badge className="h-5 px-1.5 text-[10px] bg-emerald-500/20 text-emerald-400">
-                            {leads.length}
-                        </Badge>
-                    </h2>
-                    {/* Hide on small screens */}
-                    <p className="text-muted-foreground text-xs mt-1 hidden md:block">View all leads across all institutes</p>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" className="h-8 text-xs hover:bg-white/5 border-white/10 gap-2">
-                        <Filter className="h-3.5 w-3.5" />
-                        <span className="hidden md:inline">Filter</span>
-                    </Button>
-                    <Button variant="outline" size="sm" className="h-8 text-xs hover:bg-emerald-500/10 hover:text-emerald-400 hover:border-emerald-500/30 border-white/10 gap-2">
-                        <Download className="h-3.5 w-3.5" />
-                        <span className="hidden md:inline">Export</span>
-                    </Button>
-                </div>
-            </div>
+            <WorkspaceHeader
+                title="All Leads"
+                subtitle="View all leads across all institutes"
+                icon={Users}
+                iconColor="text-emerald-500"
+                className="mb-4 max-w-7xl mx-auto w-full"
+                badge={
+                    <Badge className="h-5 px-1.5 text-[10px] bg-emerald-500/20 text-emerald-400">
+                        {leads.length}
+                    </Badge>
+                }
+            >
+                <Button variant="outline" size="sm" className="h-8 text-xs hover:bg-white/5 border-white/10 gap-2">
+                    <Filter className="h-3.5 w-3.5" />
+                    <span className="hidden md:inline">Filter</span>
+                </Button>
+                <Button variant="outline" size="sm" className="h-8 text-xs hover:bg-emerald-500/10 hover:text-emerald-400 hover:border-emerald-500/30 border-white/10 gap-2">
+                    <Download className="h-3.5 w-3.5" />
+                    <span className="hidden md:inline">Export</span>
+                </Button>
+            </WorkspaceHeader>
 
             {/* Main Card - Fills remaining height, inner scroll only */}
             <Card className="flex-1 min-h-0 bg-gradient-to-br from-emerald-500/5 to-transparent border-white/10 backdrop-blur-md shadow-lg flex flex-col z-10 max-w-7xl mx-auto w-full overflow-hidden">

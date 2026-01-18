@@ -16,6 +16,7 @@ import {
     Database,
     Server
 } from "lucide-react"
+import { WorkspaceHeader } from "@/components/workspace-header"
 
 // Plan configuration
 const PLAN_CONFIG = {
@@ -89,18 +90,14 @@ export default async function SettingsPage() {
         <div className="h-full w-full overflow-hidden flex flex-col relative">
             <div className="flex-1 w-full h-full overflow-y-auto custom-scrollbar relative z-10">
                 {/* Header */}
-                <div className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/5 px-4 md:px-8 py-6 mb-2">
-                    <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 max-w-7xl mx-auto">
-                        <div>
-                            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white flex flex-wrap items-center gap-3">
-                                <div className="h-10 w-10 rounded-xl bg-slate-500/20 flex items-center justify-center ring-1 ring-slate-500/30">
-                                    <Settings className="h-5 w-5 text-slate-400" />
-                                </div>
-                                System Settings
-                            </h2>
-                            <p className="text-muted-foreground mt-1 text-sm md:text-base">Platform configuration & system health</p>
-                        </div>
-                    </div>
+                <div className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/5 bg-[#0B0F19]/80 px-4 md:px-8 py-4 mb-2">
+                    <WorkspaceHeader
+                        title="System Settings"
+                        subtitle="Platform configuration & system health"
+                        icon={Settings}
+                        iconColor="text-slate-400"
+                        className="max-w-7xl mx-auto"
+                    />
                 </div>
 
                 {/* Content */}

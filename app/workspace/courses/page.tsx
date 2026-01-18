@@ -37,6 +37,7 @@ import {
     Layers
 } from "lucide-react"
 import { getCourses, createCourse, updateCourse, deleteCourse } from "./actions"
+import { WorkspaceHeader } from "@/components/workspace-header"
 
 type Course = Database["public"]["Tables"]["courses"]["Row"]
 
@@ -153,30 +154,27 @@ export default function CoursesPage() {
             </div>
 
             {/* Header - Compact */}
-            <div className="flex-none flex items-center justify-between z-10 mb-4 max-w-7xl mx-auto w-full">
-                <div>
-                    <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-                        <div className="h-8 w-8 rounded-lg bg-emerald-500/20 flex items-center justify-center ring-1 ring-emerald-500/30">
-                            <BookOpen className="h-4 w-4 text-emerald-500" />
-                        </div>
-                        Courses & Fees
-                        <Badge className="h-5 px-1.5 text-[10px] bg-emerald-500/20 text-emerald-400">
-                            {courses.length}
-                        </Badge>
-                    </h2>
-                    <p className="text-muted-foreground text-xs mt-1 hidden md:block">Manage your batch details, student categories, and fee structures</p>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Button
-                        onClick={handleNewCourse}
-                        size="sm"
-                        className="h-8 text-xs bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
-                    >
-                        <Plus className="h-3.5 w-3.5" />
-                        <span className="hidden md:inline">Add Course</span>
-                    </Button>
-                </div>
-            </div>
+            <WorkspaceHeader
+                title="Courses & Fees"
+                subtitle="Manage your batch details, student categories, and fee structures"
+                icon={BookOpen}
+                iconColor="text-emerald-500"
+                className="mb-4 max-w-7xl mx-auto w-full"
+                badge={
+                    <Badge className="h-5 px-1.5 text-[10px] bg-emerald-500/20 text-emerald-400">
+                        {courses.length}
+                    </Badge>
+                }
+            >
+                <Button
+                    onClick={handleNewCourse}
+                    size="sm"
+                    className="h-8 text-xs bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
+                >
+                    <Plus className="h-3.5 w-3.5" />
+                    <span className="hidden md:inline">Add Course</span>
+                </Button>
+            </WorkspaceHeader>
 
             {/* Search Bar */}
             <div className="flex-none z-10 mb-4 max-w-7xl mx-auto w-full">

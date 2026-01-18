@@ -17,6 +17,7 @@ import {
     RefreshCcw,
     Info
 } from "lucide-react"
+import { WorkspaceHeader } from "@/components/workspace-header"
 import { updateInstituteSettings } from "./actions"
 
 interface InstituteSettings {
@@ -75,22 +76,22 @@ export default function SettingsClient({ initialSettings }: SettingsClientProps)
 
                     {/* Sticky Blurred Header Section (with Tabs) */}
                     <div className="sticky top-0 z-50 backdrop-blur-xl px-4 md:px-8 py-6 mb-2">
-                        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                            <div>
-                                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white flex flex-wrap items-center gap-3">
-                                    <Building className="h-8 w-8 text-violet-500" />
-                                    Institute Settings
-                                    <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-normal whitespace-nowrap">
-                                        <span className="relative flex h-2 w-2">
-                                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
-                                            <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
-                                        </span>
-                                        <span className="text-emerald-400">Configured</span>
+                        <WorkspaceHeader
+                            title="Institute Settings"
+                            subtitle="Mission Control for your Organization. Manage everything from Branding to Security."
+                            icon={Building}
+                            iconColor="text-violet-500"
+                            className="p-0 mb-0"
+                            badge={
+                                <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-normal whitespace-nowrap">
+                                    <span className="relative flex h-2 w-2">
+                                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
+                                        <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
                                     </span>
-                                </h2>
-                                <p className="text-muted-foreground mt-1 text-sm md:text-base">Mission Control for your Organization. Manage everything from Branding to Security.</p>
-                            </div>
-                        </div>
+                                    <span className="text-emerald-400">Configured</span>
+                                </span>
+                            }
+                        />
                         <TabsList className="bg-white/5 border border-white/10 p-1 mt-6 w-full justify-start h-12 rounded-xl backdrop-blur-md">
                             <TabsTrigger value="general" className="data-[state=active]:bg-white data-[state=active]:text-black rounded-lg py-2 px-6 font-bold transition-all">
                                 <Building className="h-4 w-4 mr-2" /> General

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Building2, Phone, Key, CheckCircle, ArrowRight, Loader2, UserPlus, ArrowLeft } from "lucide-react"
+import { WorkspaceHeader } from "@/components/workspace-header"
 import { createClient } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
@@ -75,22 +76,20 @@ export default function OnboardPage() {
             <div className="flex-1 w-full h-full overflow-y-auto custom-scrollbar relative z-10">
 
                 {/* Sticky Blurred Header Section */}
-                <div className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/5 px-4 md:px-8 py-6 mb-2">
+                <div className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/5 bg-[#0B0F19]/80 px-4 md:px-8 py-4 mb-2">
                     <div className="relative z-10 max-w-2xl mx-auto">
                         {/* Back Button */}
                         <Link href="/super-admin/institutes" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-white mb-4 transition-colors">
                             <ArrowLeft className="h-4 w-4" /> Back to Institutes
                         </Link>
 
-                        <div>
-                            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white flex flex-wrap items-center gap-3">
-                                <div className="h-10 w-10 rounded-xl bg-amber-500/20 flex items-center justify-center ring-1 ring-amber-500/30">
-                                    <UserPlus className="h-5 w-5 text-amber-500" />
-                                </div>
-                                Onboard New Client
-                            </h2>
-                            <p className="text-muted-foreground mt-1 text-sm md:text-base">Setup a new institute in Adwelink</p>
-                        </div>
+                        <WorkspaceHeader
+                            title="Onboard New Client"
+                            subtitle="Setup a new institute in Adwelink"
+                            icon={UserPlus}
+                            iconColor="text-amber-500"
+                            className="p-0" // Remove padding since container has padding
+                        />
                     </div>
                 </div>
 

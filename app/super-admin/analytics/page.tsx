@@ -13,6 +13,7 @@ import {
     Target,
     ArrowUpRight
 } from "lucide-react"
+import { WorkspaceHeader } from "@/components/workspace-header"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 // Plan prices for revenue calculation
@@ -215,25 +216,23 @@ export default async function AnalyticsPage() {
         <div className="h-full w-full overflow-hidden flex flex-col relative">
             <div className="flex-1 w-full h-full overflow-y-auto custom-scrollbar relative z-10">
                 {/* Header */}
-                <div className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/5 px-4 md:px-8 py-6 mb-2">
-                    <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 max-w-7xl mx-auto">
-                        <div>
-                            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white flex flex-wrap items-center gap-3">
-                                <div className="h-10 w-10 rounded-xl bg-cyan-500/20 flex items-center justify-center ring-1 ring-cyan-500/30">
-                                    <BarChart3 className="h-5 w-5 text-cyan-500" />
-                                </div>
-                                Analytics Dashboard
-                                <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-normal whitespace-nowrap">
-                                    <span className="relative flex h-2 w-2">
-                                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
-                                        <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
-                                    </span>
-                                    <span className="text-emerald-400">Live</span>
+                <div className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/5 bg-[#0B0F19]/80 px-4 md:px-8 py-4 mb-2">
+                    <WorkspaceHeader
+                        title="Analytics Dashboard"
+                        subtitle="Business performance metrics & insights"
+                        icon={BarChart3}
+                        iconColor="text-cyan-500"
+                        className="max-w-7xl mx-auto"
+                        badge={
+                            <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-normal whitespace-nowrap">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
+                                    <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
                                 </span>
-                            </h2>
-                            <p className="text-muted-foreground mt-1 text-sm md:text-base">Business performance metrics & insights</p>
-                        </div>
-                    </div>
+                                <span className="text-emerald-400">Live</span>
+                            </span>
+                        }
+                    />
                 </div>
 
                 {/* Content */}

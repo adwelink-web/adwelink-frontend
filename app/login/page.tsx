@@ -57,7 +57,7 @@ function LoginForm() {
 
     if (success) {
         return (
-            <div className="h-[calc(100vh-40px)] w-full overflow-hidden flex items-center justify-center bg-[#0B0F19] p-4 text-white">
+            <div className="h-[calc(100vh-40px)] w-full overflow-hidden flex items-center justify-center bg-background p-4 text-white">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[500px] bg-emerald-600/20 blur-[120px] rounded-full pointer-events-none" />
 
                 <Card className="w-full max-w-md bg-white/5 border-white/10 backdrop-blur-md relative z-10">
@@ -90,7 +90,7 @@ function LoginForm() {
     }
 
     return (
-        <div className="h-[calc(100vh-40px)] w-full overflow-hidden flex items-center justify-center bg-[#0B0F19] p-4 text-white">
+        <div className="h-[calc(100vh-40px)] w-full overflow-hidden flex items-center justify-center bg-background p-4 text-white">
             {/* Background Glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[500px] bg-purple-600/20 blur-[120px] rounded-full pointer-events-none" />
 

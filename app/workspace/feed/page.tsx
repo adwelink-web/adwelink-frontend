@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { MessageSquare, Hand, Send, Check, CheckCheck, Users, Sparkles, Search, Smile, ThumbsDown, ChevronDown, Plus, Image as ImageIcon, ArrowLeft } from "lucide-react"
 import { createClient } from "@/lib/supabase"
 import { Badge } from "@/components/ui/badge"
+import { WorkspaceHeader } from "@/components/workspace-header"
 
 // Define the shape of our "Flat" DB row
 type ChatRow = {
@@ -618,24 +619,19 @@ export default function FeedPage() {
     return (
         <div className="h-full w-full flex flex-col overflow-hidden bg-transparent">
             {/* Header */}
-            <div className="flex-none px-4 md:px-8 pt-4 md:pt-6 pb-3 md:pb-4 bg-transparent z-20">
-                <div className="flex items-center justify-between max-w-7xl mx-auto">
-                    <div>
-                        <h2 className="text-lg md:text-xl font-bold tracking-tight text-white flex items-center gap-2">
-                            <div className="h-8 w-8 rounded-lg bg-violet-500/20 flex items-center justify-center ring-1 ring-violet-500/30">
-                                <MessageSquare className="h-4 w-4 text-violet-500" />
-                            </div>
-                            Live Chat
-                            {totalUnread > 0 && (
-                                <Badge className="h-5 px-1.5 text-[10px] bg-emerald-500 text-white">
-                                    {totalUnread}
-                                </Badge>
-                            )}
-                        </h2>
-                        <p className="text-muted-foreground mt-0.5 text-xs hidden md:block">Monitor and manage Aditi&apos;s conversations</p>
-                    </div>
-                </div>
-            </div>
+            {/* Header */}
+            <WorkspaceHeader
+                title="Live Chat"
+                subtitle="Monitor and manage Aditi's conversations"
+                icon={MessageSquare}
+                iconColor="text-violet-500"
+                className="px-4 md:px-8 pt-4 md:pt-6 pb-3 md:pb-4 max-w-7xl mx-auto w-full z-20"
+                badge={totalUnread > 0 ? (
+                    <Badge className="h-5 px-1.5 text-[10px] bg-emerald-500 text-white">
+                        {totalUnread}
+                    </Badge>
+                ) : null}
+            />
 
             {/* Main Content */}
             <div className="flex-1 min-h-0 w-full px-4 md:px-8 pb-4">

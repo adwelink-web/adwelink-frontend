@@ -15,6 +15,7 @@ import {
     XCircle,
     RefreshCw
 } from "lucide-react"
+import { WorkspaceHeader } from "@/components/workspace-header"
 import {
     Select,
     SelectContent,
@@ -143,33 +144,30 @@ export default function SupportPage() {
     return (
         <div className="h-[calc(100vh-40px)] w-full overflow-hidden flex flex-col">
             {/* Header - Fixed at top */}
-            <div className="flex-shrink-0 px-4 md:px-8 py-4 border-b border-white/5">
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 max-w-7xl mx-auto">
-                    <div>
-                        <h2 className="text-xl md:text-2xl font-bold tracking-tight text-white flex flex-wrap items-center gap-3">
-                            <div className="h-9 w-9 rounded-xl bg-orange-500/20 flex items-center justify-center ring-1 ring-orange-500/30">
-                                <HelpCircle className="h-4 w-4 text-orange-500" />
-                            </div>
-                            Support Tickets
-                            <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-normal whitespace-nowrap">
-                                <span className="text-slate-400">{tickets.length} tickets</span>
-                            </span>
-                        </h2>
-                        <p className="text-muted-foreground mt-1 text-sm">Manage client support requests and issues</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={fetchTickets}
-                            disabled={loading}
-                            className="border-white/10 hover:bg-white/5"
-                        >
-                            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                            Refresh
-                        </Button>
-                    </div>
-                </div>
+            <div className="flex-shrink-0 bg-[#0B0F19]/80 border-b border-white/5 px-4 md:px-8 py-4">
+                <WorkspaceHeader
+                    title="Support Tickets"
+                    subtitle="Manage client support requests and issues"
+                    icon={HelpCircle}
+                    iconColor="text-orange-500"
+                    className="max-w-7xl mx-auto"
+                    badge={
+                        <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-normal whitespace-nowrap">
+                            <span className="text-slate-400">{tickets.length} tickets</span>
+                        </span>
+                    }
+                >
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={fetchTickets}
+                        disabled={loading}
+                        className="border-white/10 hover:bg-white/5"
+                    >
+                        <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                        Refresh
+                    </Button>
+                </WorkspaceHeader>
             </div>
 
             {/* Filter Tabs - Fixed below header */}
@@ -238,8 +236,8 @@ export default function SupportPage() {
                                                     <Badge
                                                         variant="outline"
                                                         className={`uppercase text-[10px] ${ticket.priority === 'urgent' ? 'border-red-500 text-red-500' :
-                                                                ticket.priority === 'high' ? 'border-orange-500 text-orange-500' :
-                                                                    'border-slate-500 text-slate-500'
+                                                            ticket.priority === 'high' ? 'border-orange-500 text-orange-500' :
+                                                                'border-slate-500 text-slate-500'
                                                             }`}
                                                     >
                                                         {ticket.priority || 'normal'}

@@ -2,6 +2,7 @@ import { createAdminClient } from "@/lib/supabase-server"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { CreditCard, Wallet, Download } from "lucide-react"
+import { WorkspaceHeader } from "@/components/workspace-header"
 
 async function getPayments() {
     const supabase = createAdminClient()
@@ -18,18 +19,14 @@ export default async function BillingPage() {
     return (
         <div className="h-full w-full overflow-hidden flex flex-col relative">
             <div className="flex-1 w-full h-full overflow-y-auto custom-scrollbar relative z-10">
-                <div className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/5 px-4 md:px-8 py-6 mb-2">
-                    <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 max-w-7xl mx-auto">
-                        <div>
-                            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white flex flex-wrap items-center gap-3">
-                                <div className="h-10 w-10 rounded-xl bg-amber-500/20 flex items-center justify-center ring-1 ring-amber-500/30">
-                                    <CreditCard className="h-5 w-5 text-amber-500" />
-                                </div>
-                                Billing & Revenue
-                            </h2>
-                            <p className="text-muted-foreground mt-1 text-sm md:text-base">Track subscriptions and payment history</p>
-                        </div>
-                    </div>
+                <div className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/5 bg-[#0B0F19]/80 px-4 md:px-8 py-4 mb-2">
+                    <WorkspaceHeader
+                        title="Billing & Revenue"
+                        subtitle="Track subscriptions and payment history"
+                        icon={CreditCard}
+                        iconColor="text-amber-500"
+                        className="max-w-7xl mx-auto"
+                    />
                 </div>
 
                 <div className="pb-20 px-4 md:px-8 max-w-7xl mx-auto">

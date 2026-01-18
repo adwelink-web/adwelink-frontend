@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Building2, MapPin, Phone, MessageSquare, Store, UserPlus } from "lucide-react"
 import Link from "next/link"
+import { WorkspaceHeader } from "@/components/workspace-header"
 
 async function getInstitutes() {
     const supabase = createAdminClient()
@@ -25,27 +26,25 @@ export default async function InstitutesPage() {
             <div className="flex-1 w-full h-full overflow-y-auto custom-scrollbar relative z-10">
 
                 {/* Sticky Blurred Header Section */}
-                <div className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/5 px-4 md:px-8 py-6 mb-2">
-                    <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 max-w-7xl mx-auto">
-                        <div>
-                            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white flex flex-wrap items-center gap-3">
-                                <div className="h-10 w-10 rounded-xl bg-blue-500/20 flex items-center justify-center ring-1 ring-blue-500/30">
-                                    <Store className="h-5 w-5 text-blue-500" />
-                                </div>
-                                Institutes
-                                <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-normal whitespace-nowrap">
-                                    <span className="text-slate-400">{institutes.length} clients</span>
-                                </span>
-                            </h2>
-                            <p className="text-muted-foreground mt-1 text-sm md:text-base">Manage all your onboarded coaching institutes</p>
-                        </div>
-
+                <div className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/5 bg-[#0B0F19]/80 px-4 md:px-8 py-4 mb-2">
+                    <WorkspaceHeader
+                        title="Institutes"
+                        subtitle="Manage all your onboarded coaching institutes"
+                        icon={Store}
+                        iconColor="text-blue-500"
+                        className="max-w-7xl mx-auto"
+                        badge={
+                            <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-normal whitespace-nowrap">
+                                <span className="text-slate-400">{institutes.length} clients</span>
+                            </span>
+                        }
+                    >
                         <Link href="/super-admin/onboard">
                             <Button className="bg-violet-500 text-white hover:bg-violet-600 shadow-lg shadow-violet-500/25 font-bold">
                                 <UserPlus className="mr-2 h-4 w-4" /> Onboard New Client
                             </Button>
                         </Link>
-                    </div>
+                    </WorkspaceHeader>
                 </div>
 
                 {/* Content Section */}
