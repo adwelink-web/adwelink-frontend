@@ -368,7 +368,13 @@ export default function FeedPage() {
                                             {displayName.charAt(0).toUpperCase()}
                                         </div>
                                         {/* Online/Sentiment indicator */}
-                                        {/* Online/Sentiment indicator - REMOVED */}
+                                        {/* Online/Sentiment indicator - RESTORED */}
+                                        <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-[#0F131E] 
+                                            ${(sentiment === 'excited' || sentiment === 'happy') ? 'bg-emerald-500' :
+                                                (sentiment === 'sad' || sentiment === 'frustrated') ? 'bg-rose-500' :
+                                                    (sentiment === 'skeptical' || sentiment === 'confused') ? 'bg-amber-500' :
+                                                        'bg-slate-500'
+                                            }`} />
                                     </div>
 
                                     {/* Content */}

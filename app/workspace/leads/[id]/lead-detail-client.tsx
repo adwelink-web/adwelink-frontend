@@ -33,6 +33,8 @@ interface Lead {
     budget_range: string | null
     preferred_mode: string | null
     target_year: string | null
+    admission_chances: number | null
+    tags: string[] | null
 }
 
 interface ChatMessage {
@@ -249,6 +251,32 @@ export default function LeadDetailClient({ lead, chatHistory }: Props) {
                                 </div>
                                 <span className="text-[10px] text-muted-foreground mt-1 font-medium">Score</span>
                             </div>
+
+                            {/* Right Side: Admission Chances Gauge */}
+                            <div className="flex flex-col items-center justify-center bg-white/5 p-4 md:p-5 rounded-xl border border-white/10 shrink-0">
+                                <div className="relative h-16 w-16 md:h-20 md:w-20 flex items-center justify-center">
+                                    <svg className="h-full w-full -rotate-90" viewBox="0 0 36 36">
+                                        <path
+                                            className="text-slate-700"
+                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="3"
+                                        />
+                                        <path
+                                            className={`${(lead.admission_chances || 0) > 80 ? "text-emerald-500" : (lead.admission_chances || 0) > 50 ? "text-amber-500" : "text-rose-500"}`}
+                                            strokeDasharray={`${(lead.admission_chances || 0)}, 100`}
+                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="3"
+                                            strokeLinecap="round"
+                                        />
+                                    </svg>
+                                    <span className="absolute text-sm md:text-lg font-bold text-white">{lead.admission_chances || 0}%</span>
+                                </div>
+                                <span className="text-[10px] text-muted-foreground mt-1 font-medium">Chance</span>
+                            </div>
                         </div>
 
                         {/* Details Grid - All Fields */}
@@ -340,6 +368,15 @@ export default function LeadDetailClient({ lead, chatHistory }: Props) {
                                 <p className="text-xs text-slate-300 leading-snug line-clamp-3">
                                     {lead.ai_notes}
                                 </p>
+                                {lead.tags && lead.tags.length > 0 && (
+                                    <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-violet-500/20">
+                                        {lead.tags.map(tag => (
+                                            <Badge key={tag} className="h-4 text-[9px] px-1.5 bg-violet-400/20 text-violet-300 border-0 hover:bg-violet-400/30">
+                                                {tag}
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         )}
                     </CardContent>

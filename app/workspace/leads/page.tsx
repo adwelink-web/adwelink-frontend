@@ -21,7 +21,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { updateLead, createLead, deleteLead, LeadCreateData } from "./actions"
 import { getCourses } from "../courses/actions"
 
-type Lead = Database["public"]["Tables"]["leads"]["Row"]
+type Lead = Database["public"]["Tables"]["leads"]["Row"] & {
+    admission_chances?: number | null
+    tags?: string[] | null
+}
 
 export default function LeadsPage() {
     const [leads, setLeads] = React.useState<Lead[]>([])
@@ -244,6 +247,7 @@ export default function LeadsPage() {
                                 <div className="col-span-3 pl-2">Candidate</div>
                                 <div className="col-span-2">Phone</div>
                                 <div className="col-span-2">Interest</div>
+                                <div className="col-span-1">Chance</div>
                                 <div className="col-span-1">Score</div>
                                 <div className="col-span-2">Status</div>
                                 <div className="col-span-1">Source</div>
@@ -303,6 +307,18 @@ export default function LeadsPage() {
                                             {/* Interest */}
                                             <div className="col-span-2">
                                                 <p className="text-slate-400 truncate max-w-[100px]">{lead.interested_course || "-"}</p>
+                                            </div>
+
+                                            {/* Admission Chances */}
+                                            <div className="col-span-1">
+                                                {lead.admission_chances ? (
+                                                    <div className="flex items-center gap-1">
+                                                        <div className={`h-1.5 w-1.5 rounded-full ${(lead.admission_chances || 0) > 80 ? "bg-emerald-500" : (lead.admission_chances || 0) > 50 ? "bg-amber-500" : "bg-slate-600"}`} />
+                                                        <span className={`text-[10px] font-bold ${(lead.admission_chances || 0) > 80 ? "text-emerald-400" : "text-slate-400"}`}>
+                                                            {lead.admission_chances}%
+                                                        </span>
+                                                    </div>
+                                                ) : <span className="text-slate-600 text-[10px]">-</span>}
                                             </div>
 
                                             {/* Score */}
@@ -523,7 +539,26 @@ export default function LeadsPage() {
                                                         {selectedLead?.lead_score ?? '-'}
                                                     </span>
                                                 </div>
+
+                                                {/* Chances Gauge (New) */}
+                                                <div className="flex flex-col items-center justify-center min-w-[80px] h-20 rounded-xl bg-black/30 border border-white/10">
+                                                    <span className="text-[9px] text-slate-500 uppercase font-semibold mb-1">Chance</span>
+                                                    <span className={`text-2xl font-black ${(selectedLead?.admission_chances ?? 0) >= 80 ? 'text-emerald-400' : (selectedLead?.admission_chances ?? 0) >= 50 ? 'text-amber-400' : 'text-slate-500'}`}>
+                                                        {selectedLead?.admission_chances ?? '-'}%
+                                                    </span>
+                                                </div>
                                             </div>
+
+                                            {/* Tags (New) */}
+                                            {selectedLead?.tags && selectedLead.tags.length > 0 && (
+                                                <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-white/5">
+                                                    {selectedLead.tags.map(tag => (
+                                                        <Badge key={tag} variant="outline" className="text-[9px] h-5 border-violet-500/30 text-violet-300 bg-violet-500/10">
+                                                            {tag}
+                                                        </Badge>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
                                     </section>
 
