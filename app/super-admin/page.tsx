@@ -82,13 +82,14 @@ export default async function SuperAdminDashboard() {
         return sum + (planPrices[plan] || 0)
     }, 0)
 
+    // Using semantic mapped colors where appropriate, but keeping distinct colors for distinct metrics
     const stats = [
         {
             label: "Total Institutes",
             value: metrics.institutesCount,
             subtext: "Active clients",
             icon: Building2,
-            color: "violet",
+            color: "primary", // Was violet
             trend: "+2 this week",
             href: "/super-admin/institutes"
         },
@@ -122,10 +123,10 @@ export default async function SuperAdminDashboard() {
     ]
 
     const colorClasses: Record<string, { gradient: string; icon: string; border: string }> = {
-        violet: {
-            gradient: "from-violet-500/10 to-transparent",
-            icon: "text-violet-500",
-            border: "border-violet-500/20"
+        primary: {
+            gradient: "from-primary/10 to-transparent",
+            icon: "text-primary",
+            border: "border-primary/20"
         },
         emerald: {
             gradient: "from-emerald-500/10 to-transparent",
@@ -150,18 +151,18 @@ export default async function SuperAdminDashboard() {
             <div className="flex-1 w-full h-full overflow-y-auto custom-scrollbar relative z-10">
 
                 {/* Sticky Blurred Header Section */}
-                <div className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/5 bg-[#0B0F19]/80 px-4 md:px-8 py-4 mb-2">
+                <div className="sticky top-0 z-50 backdrop-blur-xl px-4 md:px-8 py-4 mb-2">
                     <WorkspaceHeader
                         title="Command Center"
                         subtitle="Adwelink Business Overview & Real-time Metrics"
                         icon={Crown}
-                        iconColor="text-violet-500"
+                        iconColor="text-primary"
                         className="max-w-7xl mx-auto"
                         badge={
                             <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-normal whitespace-nowrap">
                                 <span className="relative flex h-2 w-2">
-                                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
-                                    <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
+                                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75"></span>
+                                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
                                 </span>
                                 <span className="text-emerald-400">Live</span>
                             </span>
@@ -172,7 +173,8 @@ export default async function SuperAdminDashboard() {
                             Updated: Just now
                         </Badge>
                         <Link href="/super-admin/onboard">
-                            <Button className="bg-violet-500 text-white hover:bg-violet-600 shadow-lg shadow-violet-500/25 font-bold">
+                            {/* Uses semantic primary classes directly */}
+                            <Button className="font-bold shadow-lg shadow-primary/25">
                                 <Building2 className="mr-2 h-4 w-4" /> Onboard Client
                             </Button>
                         </Link>
@@ -186,16 +188,16 @@ export default async function SuperAdminDashboard() {
                         {stats.map((stat, i) => (
                             <Link href={stat.href} key={i}>
                                 <Card
-                                    className={`bg-gradient-to-br ${colorClasses[stat.color].gradient} border-white/10 backdrop-blur-md shadow-lg ${colorClasses[stat.color].border} hover:scale-[1.02] transition-all h-full cursor-pointer`}
+                                    className={`bg-gradient-to-br ${colorClasses[stat.color].gradient} border-white/10 backdrop-blur-md shadow-lg ${colorClasses[stat.color].border} hover:scale-[1.02] transition-all h-full cursor-pointer bg-card/50`}
                                 >
                                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                        <CardTitle className="text-sm font-medium text-slate-200">
+                                        <CardTitle className="text-sm font-medium text-foreground/80">
                                             {stat.label}
                                         </CardTitle>
                                         <stat.icon className={`h-4 w-4 ${colorClasses[stat.color].icon}`} />
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold text-white">{stat.value}</div>
+                                        <div className="text-2xl font-bold text-foreground">{stat.value}</div>
                                         <div className="flex items-center gap-2 mt-1">
                                             <Badge variant="secondary" className="text-[10px] uppercase px-1.5 h-5">
                                                 {stat.trend}
@@ -214,17 +216,17 @@ export default async function SuperAdminDashboard() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
                         {/* Institutes List */}
-                        <Card className="bg-gradient-to-br from-violet-500/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-violet-500/20 flex flex-col">
+                        <Card className="bg-gradient-to-br from-primary/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-primary/20 flex flex-col bg-card/50">
                             <CardHeader className="flex flex-row items-center justify-between">
                                 <div className="space-y-1">
-                                    <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
-                                        <Building2 className="h-4 w-4 text-violet-500" />
+                                    <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
+                                        <Building2 className="h-4 w-4 text-primary" />
                                         Active Institutes
                                     </CardTitle>
                                     <CardDescription>Top active clients by message usage</CardDescription>
                                 </div>
                                 <Link href="/super-admin/institutes">
-                                    <Badge variant="outline" className="hover:bg-violet-500/10 hover:text-violet-400 cursor-pointer transition-colors">
+                                    <Badge variant="outline" className="hover:bg-primary/10 hover:text-primary cursor-pointer transition-colors">
                                         View All <ArrowUpRight className="h-3 w-3 ml-1" />
                                     </Badge>
                                 </Link>
@@ -232,7 +234,7 @@ export default async function SuperAdminDashboard() {
                             <CardContent className="p-0 flex flex-col flex-1 min-h-0 relative">
                                 {/* Fixed Header */}
                                 <div className="flex-none -mt-4 z-20 mx-6 mb-2">
-                                    <div className="grid grid-cols-12 px-2 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                    <div className="grid grid-cols-12 px-2 py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider">
                                         <div className="col-span-5">Name</div>
                                         <div className="col-span-4">Usage</div>
                                         <div className="col-span-3 text-right">Status</div>
@@ -243,15 +245,15 @@ export default async function SuperAdminDashboard() {
                                 <div className="flex-1 overflow-y-auto custom-scrollbar px-6 py-2 space-y-1 max-h-[350px]">
                                     {metrics.institutes.slice(0, 8).map((inst) => (
                                         <Link href={`/super-admin/institutes/${inst.id}`} key={inst.id} className="block group">
-                                            <div className="grid grid-cols-12 items-center p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer">
+                                            <div className="grid grid-cols-12 items-center p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
                                                 <div className="col-span-5 pl-2">
-                                                    <div className="font-medium text-white text-sm line-clamp-1">{inst.name}</div>
+                                                    <div className="font-medium text-foreground text-sm line-clamp-1">{inst.name}</div>
                                                     <div className="text-[10px] text-muted-foreground">{inst.city || "No city"}</div>
                                                 </div>
                                                 <div className="col-span-4">
-                                                    <div className="text-sm font-mono font-medium text-white">{inst.messages_used || 0}</div>
-                                                    <div className="w-16 h-1 bg-white/10 rounded-full mt-1 overflow-hidden">
-                                                        <div className="h-full bg-violet-500 rounded-full" style={{ width: `${Math.min(((inst.messages_used || 0) / (inst.message_limit || 50)) * 100, 100)}%` }}></div>
+                                                    <div className="text-sm font-mono font-medium text-foreground">{inst.messages_used || 0}</div>
+                                                    <div className="w-16 h-1 bg-muted rounded-full mt-1 overflow-hidden">
+                                                        <div className="h-full bg-primary rounded-full" style={{ width: `${Math.min(((inst.messages_used || 0) / (inst.message_limit || 50)) * 100, 100)}%` }}></div>
                                                     </div>
                                                 </div>
                                                 <div className="col-span-3 text-right">
@@ -272,10 +274,10 @@ export default async function SuperAdminDashboard() {
                         </Card>
 
                         {/* Recent Leads */}
-                        <Card className="bg-gradient-to-br from-emerald-500/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-emerald-500/20 flex flex-col">
+                        <Card className="bg-gradient-to-br from-emerald-500/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-emerald-500/20 flex flex-col bg-card/50">
                             <CardHeader className="flex flex-row items-center justify-between">
                                 <div className="space-y-1">
-                                    <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
+                                    <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
                                         <Users className="h-4 w-4 text-emerald-500" />
                                         Recent Leads
                                     </CardTitle>
@@ -290,7 +292,7 @@ export default async function SuperAdminDashboard() {
                             <CardContent className="p-0 flex flex-col flex-1 min-h-0 relative">
                                 {/* Fixed Header */}
                                 <div className="flex-none -mt-4 z-20 mx-6 mb-2">
-                                    <div className="grid grid-cols-12 px-2 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                    <div className="grid grid-cols-12 px-2 py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider">
                                         <div className="col-span-5">Lead Name</div>
                                         <div className="col-span-4">Institute</div>
                                         <div className="col-span-3 text-right">Status</div>
@@ -300,9 +302,9 @@ export default async function SuperAdminDashboard() {
                                 {/* Scrollable Content */}
                                 <div className="flex-1 overflow-y-auto custom-scrollbar px-6 py-2 space-y-1 max-h-[350px]">
                                     {metrics.recentLeads.map((lead: any) => (
-                                        <div key={lead.id} className="grid grid-cols-12 items-center p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer border border-transparent hover:border-white/5">
+                                        <div key={lead.id} className="grid grid-cols-12 items-center p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer border border-transparent hover:border-white/5">
                                             <div className="col-span-5 pl-2">
-                                                <div className="font-medium text-white text-sm line-clamp-1">{lead.name || "Unknown"}</div>
+                                                <div className="font-medium text-foreground text-sm line-clamp-1">{lead.name || "Unknown"}</div>
                                                 <div className="text-[10px] text-muted-foreground">{new Date(lead.created_at).toLocaleDateString()}</div>
                                             </div>
                                             <div className="col-span-4">

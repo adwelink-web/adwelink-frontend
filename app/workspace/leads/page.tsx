@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Plus, Phone, MapPin, Sparkles, ArrowUpRight, Trash2, Users, Download } from "lucide-react"
+import { toast } from "sonner"
 import Link from "next/link"
 import {
     Dialog,
@@ -51,13 +52,14 @@ export default function LeadsPage() {
 
             if (isCreating) {
                 if (!updateData.phone) {
-                    alert("Phone number is required")
+                    toast.error("Phone number is required", { description: "We need a contact number to create a lead." })
                     return
                 }
                 const response = await createLead(updateData as LeadCreateData)
                 if (response.success && response.data) {
                     setLeads([response.data, ...leads])
                     setDialogOpen(false)
+                    toast.success("New Student Added", { description: `${response.data.name || 'Student'} has been added to your leads.` })
                 }
             } else if (selectedLead) {
                 await updateLead(selectedLead.id, updateData)
@@ -66,23 +68,28 @@ export default function LeadsPage() {
                 setSelectedLead(updatedLead)
                 setLeads(leads.map(l => l.id === updatedLead.id ? updatedLead : l))
                 setIsEditing(false)
+                toast.success("Profile Updated", { description: "Student details have been saved successfully." })
             }
         } catch (error) {
             console.error("Failed to save lead:", error)
+            toast.error("Action Failed", { description: "Could not save student details. Please try again." })
         }
     }
 
     const handleDelete = async () => {
         if (!selectedLead) return
+
+        // Keeping confirm for safety, but could use a nice Dialog later
         if (!confirm("Are you sure you want to delete this lead? This action cannot be undone.")) return
 
         try {
             await deleteLead(selectedLead.id)
             setLeads(leads.filter(l => l.id !== selectedLead.id))
             setDialogOpen(false)
+            toast.success("Lead Deleted", { description: "Student record has been permanently removed." })
         } catch (error) {
             console.error("Failed to delete lead:", error)
-            alert("Failed to delete lead. Please try again.")
+            toast.error("Delete Failed", { description: "Could not delete this lead. Please try again." })
         }
     }
 
@@ -98,7 +105,7 @@ export default function LeadsPage() {
 
     const exportToCSV = () => {
         if (leads.length === 0) {
-            alert("No leads to export")
+            toast.warning("Nothing to Export", { description: "You don't have any leads yet." })
             return
         }
 
@@ -133,6 +140,8 @@ export default function LeadsPage() {
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
+
+        toast.success("Export Complete", { description: "Your leads have been downloaded as a CSV file." })
     }
 
     const getSafeDateValue = (dateStr: string | null | undefined, includeTime = false) => {

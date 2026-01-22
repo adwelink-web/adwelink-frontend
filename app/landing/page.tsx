@@ -13,6 +13,7 @@ import {
     ArrowRight,
     Hand
 } from "lucide-react"
+import { toast } from "sonner"
 import Link from "next/link"
 import {
     Dialog,
@@ -634,9 +635,10 @@ function WaitlistForm() {
             }])
             if (error) throw error
             setSubmitted(true)
+            toast.success("Request Sent", { description: "We'll reach out to you shortly." })
         } catch (err) {
             console.error(err)
-            alert("Something went wrong. Please try again.")
+            toast.error("Submission Failed", { description: "Something went wrong. Please try again." })
         } finally {
             setLoading(false)
         }

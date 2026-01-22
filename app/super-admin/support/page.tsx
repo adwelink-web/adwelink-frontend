@@ -144,16 +144,16 @@ export default function SupportPage() {
     return (
         <div className="h-[calc(100vh-40px)] w-full overflow-hidden flex flex-col">
             {/* Header - Fixed at top */}
-            <div className="flex-shrink-0 bg-[#0B0F19]/80 border-b border-white/5 px-4 md:px-8 py-4">
+            <div className="flex-shrink-0 px-4 md:px-8 py-4">
                 <WorkspaceHeader
                     title="Support Tickets"
                     subtitle="Manage client support requests and issues"
                     icon={HelpCircle}
-                    iconColor="text-orange-500"
+                    iconColor="text-primary"
                     className="max-w-7xl mx-auto"
                     badge={
-                        <span className="flex items-center space-x-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-normal whitespace-nowrap">
-                            <span className="text-slate-400">{tickets.length} tickets</span>
+                        <span className="flex items-center space-x-1.5 rounded-full border border-border bg-muted/50 px-3 py-1 text-xs font-normal whitespace-nowrap">
+                            <span className="text-muted-foreground">{tickets.length} tickets</span>
                         </span>
                     }
                 >
@@ -162,7 +162,7 @@ export default function SupportPage() {
                         size="sm"
                         onClick={fetchTickets}
                         disabled={loading}
-                        className="border-white/10 hover:bg-white/5"
+                        className="border-border hover:bg-muted/50"
                     >
                         <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
                         Refresh
@@ -171,7 +171,7 @@ export default function SupportPage() {
             </div>
 
             {/* Filter Tabs - Fixed below header */}
-            <div className="flex-shrink-0 px-4 md:px-8 py-3 border-b border-white/5">
+            <div className="flex-shrink-0 px-4 md:px-8 py-3 border-b border-border">
                 <div className="flex flex-wrap gap-2 max-w-7xl mx-auto">
                     {[
                         { value: "all", label: "All" },
@@ -186,12 +186,12 @@ export default function SupportPage() {
                             size="sm"
                             onClick={() => setFilter(tab.value)}
                             className={filter === tab.value
-                                ? "bg-orange-500 hover:bg-orange-600"
-                                : "border-white/10 hover:bg-white/5"
+                                ? ""
+                                : "border-border hover:bg-muted/50"
                             }
                         >
                             {tab.label}
-                            <Badge variant="secondary" className="ml-2 text-[10px] h-5 px-1.5">
+                            <Badge variant={filter === tab.value ? "secondary" : "outline"} className="ml-2 text-[10px] h-5 px-1.5 border-transparent bg-primary/20 text-primary-foreground">
                                 {ticketCounts[tab.value as keyof typeof ticketCounts]}
                             </Badge>
                         </Button>
@@ -204,12 +204,12 @@ export default function SupportPage() {
                 <div className="max-w-7xl mx-auto space-y-4">
                     {loading ? (
                         <div className="flex items-center justify-center py-20">
-                            <Loader2 className="h-8 w-8 animate-spin text-slate-600" />
+                            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                         </div>
                     ) : filteredTickets.length === 0 ? (
-                        <div className="text-center py-20 bg-gradient-to-br from-orange-500/5 to-transparent rounded-3xl border border-white/10 border-dashed">
+                        <div className="text-center py-20 bg-gradient-to-br from-primary/5 to-transparent rounded-3xl border border-border border-dashed">
                             <MessageSquare className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
-                            <h3 className="text-lg font-medium text-white">No tickets found</h3>
+                            <h3 className="text-lg font-medium text-foreground">No tickets found</h3>
                             <p className="text-muted-foreground text-sm">
                                 {filter === "all" ? "Great! No open issues to resolve." : `No ${filter.replace('_', ' ')} tickets.`}
                             </p>
@@ -223,7 +223,7 @@ export default function SupportPage() {
                                 return (
                                     <Card
                                         key={ticket.id}
-                                        className="bg-gradient-to-br from-white/5 to-transparent border-white/10 backdrop-blur-md shadow-lg hover:bg-white/10 transition-colors cursor-pointer"
+                                        className="bg-card/50 border-border backdrop-blur-md shadow-lg hover:bg-muted/50 transition-colors cursor-pointer"
                                         onClick={() => { setSelectedTicket(ticket); setDialogOpen(true) }}
                                     >
                                         <CardHeader className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-2">
@@ -237,16 +237,16 @@ export default function SupportPage() {
                                                         variant="outline"
                                                         className={`uppercase text-[10px] ${ticket.priority === 'urgent' ? 'border-red-500 text-red-500' :
                                                             ticket.priority === 'high' ? 'border-orange-500 text-orange-500' :
-                                                                'border-slate-500 text-slate-500'
+                                                                'border-slate-500 text-muted-foreground'
                                                             }`}
                                                     >
                                                         {ticket.priority || 'normal'}
                                                     </Badge>
                                                 </div>
-                                                <CardTitle className="text-base font-bold text-white">{ticket.subject}</CardTitle>
+                                                <CardTitle className="text-base font-bold text-foreground">{ticket.subject}</CardTitle>
                                                 {ticket.institutes && (
                                                     <CardDescription className="text-xs text-muted-foreground">
-                                                        Client: <span className="text-white/70">{ticket.institutes.name}</span>
+                                                        Client: <span className="text-foreground/70">{ticket.institutes.name}</span>
                                                     </CardDescription>
                                                 )}
                                             </div>
@@ -258,7 +258,7 @@ export default function SupportPage() {
                                                     onValueChange={(value) => updateTicketStatus(ticket.id, value)}
                                                     disabled={updating === ticket.id}
                                                 >
-                                                    <SelectTrigger className="w-[140px] h-8 text-xs bg-white/5 border-white/10">
+                                                    <SelectTrigger className="w-[140px] h-8 text-xs bg-muted/50 border-border">
                                                         {updating === ticket.id ? (
                                                             <Loader2 className="h-3 w-3 animate-spin" />
                                                         ) : (
@@ -281,7 +281,7 @@ export default function SupportPage() {
                                                 </span>
                                             </div>
                                         </CardHeader>
-                                        <CardContent className="text-sm text-slate-300 line-clamp-2">
+                                        <CardContent className="text-sm text-muted-foreground line-clamp-2">
                                             {ticket.description}
                                         </CardContent>
                                     </Card>
@@ -294,7 +294,7 @@ export default function SupportPage() {
 
             {/* Ticket Detail Dialog */}
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogContent className="max-w-2xl bg-[#0F131E] border-white/10 text-white">
+                <DialogContent className="max-w-2xl bg-popover border-border text-popover-foreground">
                     {selectedTicket && (
                         <>
                             <DialogHeader>
@@ -315,15 +315,15 @@ export default function SupportPage() {
                             <div className="space-y-4 mt-4">
                                 {/* Description */}
                                 <div>
-                                    <label className="text-xs text-slate-500 uppercase font-semibold">Description</label>
-                                    <div className="mt-1 p-3 bg-white/5 rounded-lg text-sm text-slate-300">
+                                    <label className="text-xs text-muted-foreground uppercase font-semibold">Description</label>
+                                    <div className="mt-1 p-3 bg-muted/50 rounded-lg text-sm text-foreground">
                                         {selectedTicket.description}
                                     </div>
                                 </div>
 
                                 {/* Status Update */}
                                 <div>
-                                    <label className="text-xs text-slate-500 uppercase font-semibold">Update Status</label>
+                                    <label className="text-xs text-muted-foreground uppercase font-semibold">Update Status</label>
                                     <div className="mt-2 flex flex-wrap gap-2">
                                         {STATUS_OPTIONS.map(status => (
                                             <Button
@@ -333,8 +333,8 @@ export default function SupportPage() {
                                                 onClick={() => updateTicketStatus(selectedTicket.id, status.value)}
                                                 disabled={updating === selectedTicket.id || selectedTicket.status === status.value}
                                                 className={selectedTicket.status === status.value
-                                                    ? status.color.replace('bg-', 'bg-').replace('/10', '')
-                                                    : "border-white/10 hover:bg-white/5"
+                                                    ? ""
+                                                    : "border-border hover:bg-muted/50"
                                                 }
                                             >
                                                 {updating === selectedTicket.id ? (
@@ -351,7 +351,7 @@ export default function SupportPage() {
                                 {/* Resolution Info */}
                                 {selectedTicket.resolved_at && (
                                     <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
-                                        <p className="text-xs text-emerald-400">
+                                        <p className="text-xs text-emerald-500">
                                             <CheckCircle className="h-3 w-3 inline mr-1" />
                                             Resolved on {new Date(selectedTicket.resolved_at).toLocaleString()}
                                         </p>
@@ -360,9 +360,9 @@ export default function SupportPage() {
 
                                 {/* Admin Note (Future: can be saved to DB) */}
                                 <div>
-                                    <label className="text-xs text-slate-500 uppercase font-semibold">Admin Note (internal)</label>
+                                    <label className="text-xs text-muted-foreground uppercase font-semibold">Admin Note (internal)</label>
                                     <Textarea
-                                        className="mt-1 bg-white/5 border-white/10 text-sm"
+                                        className="mt-1 bg-background border-border text-sm"
                                         placeholder="Add internal notes about this ticket..."
                                         value={adminNote}
                                         onChange={(e) => setAdminNote(e.target.value)}

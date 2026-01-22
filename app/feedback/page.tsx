@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation"
 import React, { useState } from "react"
 import { createClient } from "@/lib/supabase"
 import { Card, CardContent } from "@/components/ui/card"
+import { toast } from "sonner"
 
 export default function FeedbackPage() {
     const router = useRouter()
@@ -16,13 +17,18 @@ export default function FeedbackPage() {
     const [submitted, setSubmitted] = useState(false)
     const [loading, setLoading] = useState(false)
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (rating === 0) {
-            alert("Please select a rating before submitting.")
+            toast.warning("Rating Required", { description: "Please select a star rating before submitting." })
             return
         }
         setLoading(true)
+
+        const formData = new FormData(e.currentTarget)
+        const name = formData.get("name") as string
+        const email = formData.get("email") as string
+        const message = formData.get("message") as string
 
         try {
             const supabase = createClient()
@@ -30,17 +36,18 @@ export default function FeedbackPage() {
                 .from('feedback')
                 .insert([{
                     rating,
-                    name: (e.target as any)[0].value,
-                    email: (e.target as any)[1].value,
-                    message: (e.target as any)[2].value
+                    name,
+                    email,
+                    message
                 }])
 
             if (error) throw error
 
             setSubmitted(true)
+            toast.success("Feedback Sent", { description: "Thank you for helping us improve!" })
         } catch (err) {
             console.error(err)
-            alert("Failed to submit feedback. Please try again.")
+            toast.error("Submission Failed", { description: "Could not send feedback. Please try again." })
         } finally {
             setLoading(false)
         }
@@ -163,6 +170,7 @@ export default function FeedbackPage() {
                                         <div className="relative group">
                                             <Input
                                                 required
+                                                name="name"
                                                 placeholder="Your Full Name"
                                                 className="bg-white/[0.03] border-white/10 text-white placeholder:text-slate-600 h-12 md:h-11 rounded-xl focus:ring-1 focus:ring-violet-500/30 text-base md:text-sm pl-11 md:pl-10 transition-all shadow-inner"
                                             />
@@ -172,6 +180,7 @@ export default function FeedbackPage() {
                                         <div className="relative group">
                                             <Input
                                                 required
+                                                name="email"
                                                 type="email"
                                                 placeholder="Email Address"
                                                 className="bg-white/[0.03] border-white/10 text-white placeholder:text-slate-600 h-12 md:h-11 rounded-xl focus:ring-1 focus:ring-violet-500/30 text-base md:text-sm pl-11 md:pl-10 transition-all shadow-inner"
@@ -181,6 +190,7 @@ export default function FeedbackPage() {
 
                                         <Textarea
                                             required
+                                            name="message"
                                             placeholder="Tell us, how can we improve?"
                                             className="bg-white/[0.03] border-white/10 text-white placeholder:text-slate-600 min-h-[120px] md:min-h-[100px] p-4 rounded-xl focus:ring-1 focus:ring-violet-500/30 text-base md:text-sm leading-relaxed resize-none shadow-inner"
                                         />

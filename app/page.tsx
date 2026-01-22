@@ -10,6 +10,7 @@ import {
     User,
     CheckCircle
 } from "lucide-react"
+import { toast } from "sonner"
 import {
     Dialog,
     DialogContent,
@@ -48,9 +49,11 @@ export default function TeaserLandingPage() {
 
             setWaitlistStatus("success")
             setFormData({ name: "", contact: "" })
+            toast.success("Spot Reserved!", { description: "We'll reach out to you shortly." })
         } catch (error) {
             console.error("Waitlist error:", error)
             setWaitlistStatus("error")
+            toast.error("Registration Failed", { description: "Could not join waitlist. Please try again." })
         }
     }
 

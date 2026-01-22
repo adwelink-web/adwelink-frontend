@@ -90,12 +90,12 @@ export default async function SettingsPage() {
         <div className="h-full w-full overflow-hidden flex flex-col relative">
             <div className="flex-1 w-full h-full overflow-y-auto custom-scrollbar relative z-10">
                 {/* Header */}
-                <div className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/5 bg-[#0B0F19]/80 px-4 md:px-8 py-4 mb-2">
+                <div className="sticky top-0 z-50 backdrop-blur-xl px-4 md:px-8 py-4 mb-2">
                     <WorkspaceHeader
                         title="System Settings"
                         subtitle="Platform configuration & system health"
                         icon={Settings}
-                        iconColor="text-slate-400"
+                        iconColor="text-primary"
                         className="max-w-7xl mx-auto"
                     />
                 </div>
@@ -104,10 +104,10 @@ export default async function SettingsPage() {
                 <div className="pb-20 px-4 md:px-8 max-w-7xl mx-auto space-y-6">
 
                     {/* System Health */}
-                    <Card className="bg-gradient-to-br from-emerald-500/5 to-transparent border-white/10 backdrop-blur-md shadow-lg border-emerald-500/20">
+                    <Card className="bg-gradient-to-br from-violet-500/5 to-transparent border-violet-500/20 backdrop-blur-md shadow-lg bg-card/50">
                         <CardHeader>
-                            <CardTitle className="text-white flex items-center gap-2">
-                                <Shield className="h-4 w-4 text-emerald-500" />
+                            <CardTitle className="text-foreground flex items-center gap-2">
+                                <Shield className="h-4 w-4 text-violet-500" />
                                 System Health
                             </CardTitle>
                             <CardDescription>Current status of all integrated services</CardDescription>
@@ -115,15 +115,15 @@ export default async function SettingsPage() {
                         <CardContent>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 {systemHealth.map((service) => (
-                                    <div key={service.label} className="p-4 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition-all">
+                                    <div key={service.label} className="p-4 bg-muted/50 rounded-xl border border-border hover:bg-muted transition-all">
                                         <div className="flex items-center justify-between mb-3">
-                                            <service.icon className="h-5 w-5 text-slate-400" />
-                                            <Badge variant="secondary" className="bg-emerald-500/20 text-emerald-400 text-[10px] uppercase">
+                                            <service.icon className="h-5 w-5 text-muted-foreground" />
+                                            <Badge variant="secondary" className="bg-emerald-500/20 text-emerald-400 text-[10px] uppercase border border-emerald-500/20">
                                                 <CheckCircle className="h-3 w-3 mr-1" />
                                                 {service.status}
                                             </Badge>
                                         </div>
-                                        <p className="text-white font-medium">{service.label}</p>
+                                        <p className="text-foreground font-medium">{service.label}</p>
                                         <p className="text-xs text-muted-foreground">{service.description}</p>
                                     </div>
                                 ))}
@@ -135,30 +135,30 @@ export default async function SettingsPage() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
                         {/* Subscription Plans */}
-                        <Card className="bg-gradient-to-br from-violet-500/5 to-transparent border-white/10 backdrop-blur-md shadow-lg">
+                        <Card className="bg-gradient-to-br from-amber-500/5 to-transparent border-amber-500/20 backdrop-blur-md shadow-lg bg-card/50">
                             <CardHeader>
-                                <CardTitle className="text-white flex items-center gap-2">
-                                    <Crown className="h-4 w-4 text-violet-500" />
+                                <CardTitle className="text-foreground flex items-center gap-2">
+                                    <Crown className="h-4 w-4 text-amber-500" />
                                     Subscription Plans
                                 </CardTitle>
                                 <CardDescription>Message limits and pricing tiers</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-3">
                                 {Object.entries(PLAN_CONFIG).map(([key, plan]) => (
-                                    <div key={key} className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5">
+                                    <div key={key} className="flex items-center justify-between p-4 bg-muted/50 rounded-xl border border-border">
                                         <div className="flex items-center gap-3">
-                                            <div className={`h-10 w-10 rounded-lg bg-${plan.color}-500/20 flex items-center justify-center`}>
-                                                <span className="text-lg font-bold text-white">{plan.name.charAt(0)}</span>
+                                            <div className={`h-10 w-10 rounded-lg bg-${plan.color}-500/10 flex items-center justify-center`}>
+                                                <span className={`text-lg font-bold text-${plan.color}-500`}>{plan.name.charAt(0)}</span>
                                             </div>
                                             <div>
-                                                <p className="text-white font-medium">{plan.name}</p>
+                                                <p className="text-foreground font-medium">{plan.name}</p>
                                                 <p className="text-xs text-muted-foreground">
                                                     {plan.price === 0 ? "Free" : `₹${plan.price.toLocaleString()}/mo`}
                                                 </p>
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <p className="text-lg font-bold text-white">{plan.messageLimit.toLocaleString()}</p>
+                                            <p className="text-lg font-bold text-foreground">{plan.messageLimit.toLocaleString()}</p>
                                             <p className="text-xs text-muted-foreground">messages</p>
                                         </div>
                                     </div>
@@ -167,9 +167,9 @@ export default async function SettingsPage() {
                         </Card>
 
                         {/* Active Agents */}
-                        <Card className="bg-gradient-to-br from-cyan-500/5 to-transparent border-white/10 backdrop-blur-md shadow-lg">
+                        <Card className="bg-gradient-to-br from-cyan-500/5 to-transparent border-cyan-500/20 backdrop-blur-md shadow-lg bg-card/50">
                             <CardHeader>
-                                <CardTitle className="text-white flex items-center gap-2">
+                                <CardTitle className="text-foreground flex items-center gap-2">
                                     <Zap className="h-4 w-4 text-cyan-500" />
                                     AI Agents
                                 </CardTitle>
@@ -183,13 +183,13 @@ export default async function SettingsPage() {
                                     </div>
                                 ) : (
                                     stats.agents.map((agent: any) => (
-                                        <div key={agent.id} className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5">
+                                        <div key={agent.id} className="flex items-center justify-between p-4 bg-muted/50 rounded-xl border border-border">
                                             <div className="flex items-center gap-3">
-                                                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-white font-bold ring-2 ring-white/20">
+                                                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-primary/50 flex items-center justify-center text-primary-foreground font-bold ring-2 ring-primary/20">
                                                     {agent.slug?.charAt(0).toUpperCase() || "A"}
                                                 </div>
                                                 <div>
-                                                    <p className="text-white font-medium capitalize">{agent.slug}</p>
+                                                    <p className="text-foreground font-medium capitalize">{agent.slug}</p>
                                                     <p className="text-xs text-muted-foreground">
                                                         {agent.is_active ? "Active" : "Inactive"}
                                                     </p>
@@ -210,34 +210,34 @@ export default async function SettingsPage() {
                     </div>
 
                     {/* Platform Stats */}
-                    <Card className="bg-gradient-to-br from-amber-500/5 to-transparent border-white/10 backdrop-blur-md shadow-lg">
+                    <Card className="bg-gradient-to-br from-emerald-500/5 to-transparent border-emerald-500/20 backdrop-blur-md shadow-lg bg-card/50">
                         <CardHeader>
-                            <CardTitle className="text-white flex items-center gap-2">
-                                <Database className="h-4 w-4 text-amber-500" />
+                            <CardTitle className="text-foreground flex items-center gap-2">
+                                <Database className="h-4 w-4 text-emerald-500" />
                                 Platform Statistics
                             </CardTitle>
                             <CardDescription>Overall system usage metrics</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                                <div className="p-4 bg-white/5 rounded-xl border border-white/5 text-center">
-                                    <Building2 className="h-6 w-6 text-violet-500 mx-auto mb-2" />
-                                    <p className="text-2xl font-bold text-white">{stats.totalInstitutes}</p>
+                                <div className="p-4 bg-muted/50 rounded-xl border border-border text-center">
+                                    <Building2 className="h-6 w-6 text-primary mx-auto mb-2" />
+                                    <p className="text-2xl font-bold text-foreground">{stats.totalInstitutes}</p>
                                     <p className="text-xs text-muted-foreground">Total Clients</p>
                                 </div>
-                                <div className="p-4 bg-white/5 rounded-xl border border-white/5 text-center">
-                                    <MessageSquare className="h-6 w-6 text-cyan-500 mx-auto mb-2" />
-                                    <p className="text-2xl font-bold text-white">{stats.totalMessagesUsed.toLocaleString()}</p>
+                                <div className="p-4 bg-muted/50 rounded-xl border border-border text-center">
+                                    <MessageSquare className="h-6 w-6 text-primary mx-auto mb-2" />
+                                    <p className="text-2xl font-bold text-foreground">{stats.totalMessagesUsed.toLocaleString()}</p>
                                     <p className="text-xs text-muted-foreground">Messages Sent</p>
                                 </div>
-                                <div className="p-4 bg-white/5 rounded-xl border border-white/5 text-center">
-                                    <Zap className="h-6 w-6 text-emerald-500 mx-auto mb-2" />
-                                    <p className="text-2xl font-bold text-white">{stats.totalConversations.toLocaleString()}</p>
+                                <div className="p-4 bg-muted/50 rounded-xl border border-border text-center">
+                                    <Zap className="h-6 w-6 text-primary mx-auto mb-2" />
+                                    <p className="text-2xl font-bold text-foreground">{stats.totalConversations.toLocaleString()}</p>
                                     <p className="text-xs text-muted-foreground">AI Conversations</p>
                                 </div>
-                                <div className="p-4 bg-white/5 rounded-xl border border-white/5 text-center">
-                                    <Key className="h-6 w-6 text-amber-500 mx-auto mb-2" />
-                                    <p className="text-2xl font-bold text-white">{stats.agents.length}</p>
+                                <div className="p-4 bg-muted/50 rounded-xl border border-border text-center">
+                                    <Key className="h-6 w-6 text-primary mx-auto mb-2" />
+                                    <p className="text-2xl font-bold text-foreground">{stats.agents.length}</p>
                                     <p className="text-xs text-muted-foreground">Agent Types</p>
                                 </div>
                             </div>
@@ -245,9 +245,9 @@ export default async function SettingsPage() {
                     </Card>
 
                     {/* API Keys Section (Masked) */}
-                    <Card className="bg-gradient-to-br from-red-500/5 to-transparent border-white/10 backdrop-blur-md shadow-lg border-red-500/10">
+                    <Card className="bg-gradient-to-br from-red-500/5 to-transparent border-red-500/20 backdrop-blur-md shadow-lg bg-card/50">
                         <CardHeader>
-                            <CardTitle className="text-white flex items-center gap-2">
+                            <CardTitle className="text-foreground flex items-center gap-2">
                                 <Key className="h-4 w-4 text-red-500" />
                                 API Configuration
                                 <Badge variant="outline" className="border-red-500/50 text-red-400 text-[10px]">SENSITIVE</Badge>
@@ -256,31 +256,31 @@ export default async function SettingsPage() {
                         </CardHeader>
                         <CardContent>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="p-4 bg-white/5 rounded-xl border border-white/5">
+                                <div className="p-4 bg-muted/50 rounded-xl border border-border">
                                     <div className="flex items-center justify-between mb-2">
-                                        <p className="text-white font-medium">Supabase</p>
-                                        <Badge variant="secondary" className="bg-emerald-500/20 text-emerald-400 text-[10px]">Connected</Badge>
+                                        <p className="text-foreground font-medium">Supabase</p>
+                                        <Badge variant="secondary" className="bg-emerald-500/20 text-emerald-400 text-[10px] border border-emerald-500/20">Connected</Badge>
                                     </div>
                                     <p className="text-xs text-muted-foreground font-mono">••••••••••••••••</p>
                                 </div>
-                                <div className="p-4 bg-white/5 rounded-xl border border-white/5">
+                                <div className="p-4 bg-muted/50 rounded-xl border border-border">
                                     <div className="flex items-center justify-between mb-2">
-                                        <p className="text-white font-medium">Meta WhatsApp API</p>
-                                        <Badge variant="secondary" className="bg-emerald-500/20 text-emerald-400 text-[10px]">Connected</Badge>
+                                        <p className="text-foreground font-medium">Meta WhatsApp API</p>
+                                        <Badge variant="secondary" className="bg-emerald-500/20 text-emerald-400 text-[10px] border border-emerald-500/20">Connected</Badge>
                                     </div>
                                     <p className="text-xs text-muted-foreground font-mono">••••••••••••••••</p>
                                 </div>
-                                <div className="p-4 bg-white/5 rounded-xl border border-white/5">
+                                <div className="p-4 bg-muted/50 rounded-xl border border-border">
                                     <div className="flex items-center justify-between mb-2">
-                                        <p className="text-white font-medium">Google Gemini</p>
-                                        <Badge variant="secondary" className="bg-emerald-500/20 text-emerald-400 text-[10px]">Connected</Badge>
+                                        <p className="text-foreground font-medium">Google Gemini</p>
+                                        <Badge variant="secondary" className="bg-emerald-500/20 text-emerald-400 text-[10px] border border-emerald-500/20">Connected</Badge>
                                     </div>
                                     <p className="text-xs text-muted-foreground font-mono">••••••••••••••••</p>
                                 </div>
-                                <div className="p-4 bg-white/5 rounded-xl border border-white/5">
+                                <div className="p-4 bg-muted/50 rounded-xl border border-border">
                                     <div className="flex items-center justify-between mb-2">
-                                        <p className="text-white font-medium">n8n Automation</p>
-                                        <Badge variant="secondary" className="bg-emerald-500/20 text-emerald-400 text-[10px]">Connected</Badge>
+                                        <p className="text-foreground font-medium">n8n Automation</p>
+                                        <Badge variant="secondary" className="bg-emerald-500/20 text-emerald-400 text-[10px] border border-emerald-500/20">Connected</Badge>
                                     </div>
                                     <p className="text-xs text-muted-foreground font-mono">••••••••••••••••</p>
                                 </div>

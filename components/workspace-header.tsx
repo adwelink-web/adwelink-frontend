@@ -15,7 +15,7 @@ export function WorkspaceHeader({
     title,
     subtitle,
     icon: Icon,
-    iconColor = "text-violet-500",
+    iconColor = "text-primary",
     badge,
     children,
     className = ""
@@ -23,7 +23,7 @@ export function WorkspaceHeader({
     return (
         <div className={`flex-none flex items-center justify-between z-10 ${className}`}>
             <div>
-                <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                <h2 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
                     {Icon && <Icon className={`h-5 w-5 ${iconColor}`} />}
                     {title}
                     {badge}

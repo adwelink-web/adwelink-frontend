@@ -13,6 +13,7 @@ import {
 import { GraduationCap, Phone, User, Search, Filter, Trash2, ArrowUpRight } from "lucide-react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
+import { toast } from "sonner"
 import {
     Dialog,
     DialogContent,
@@ -43,6 +44,7 @@ export default function StudentsPage() {
                 setStudents(data || [])
             } catch (error) {
                 console.error("Failed to fetch students:", error)
+                toast.error("Failed to load students", { description: "Please refresh the page." })
             } finally {
                 setLoading(false)
             }
@@ -57,8 +59,10 @@ export default function StudentsPage() {
             await deleteStudent(id)
             setStudents(students.filter(s => s.id !== id))
             if (selectedStudent?.id === id) setIsDialogOpen(false)
+            toast.success("Student Deleted")
         } catch (error) {
             console.error("Failed to delete student:", error)
+            toast.error("Delete Failed", { description: "Could not remove student record." })
         }
     }
 
@@ -79,8 +83,10 @@ export default function StudentsPage() {
             await updateStudent(selectedStudent.id, formData)
             setStudents(students.map(s => s.id === selectedStudent.id ? { ...s, ...formData } : s))
             setIsDialogOpen(false)
+            toast.success("Student Updated")
         } catch (error) {
             console.error("Failed to update student:", error)
+            toast.error("Update Failed")
         } finally {
             setIsSaving(false)
         }
