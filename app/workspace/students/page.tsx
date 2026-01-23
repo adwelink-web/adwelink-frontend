@@ -25,7 +25,9 @@ import { WorkspaceHeader } from "@/components/workspace-header"
 
 import { Database } from "@/lib/database.types"
 
-type Student = Database["public"]["Tables"]["students"]["Row"]
+type Student = Database["public"]["Tables"]["students"]["Row"] & {
+    batches?: { name: string } | null
+}
 
 export default function StudentsPage() {
     const [students, setStudents] = React.useState<Student[]>([])
@@ -144,10 +146,11 @@ export default function StudentsPage() {
                         <div className="flex-none z-20 px-6 mb-1">
                             <div className="grid grid-cols-12 gap-4 px-2 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
                                 <div className="col-span-3 pl-2">Student</div>
-                                <div className="col-span-3">Contact</div>
+                                <div className="col-span-2">Contact</div>
+                                <div className="col-span-2">Batch</div>
                                 <div className="col-span-2">Status</div>
-                                <div className="col-span-2">Joined Date</div>
-                                <div className="col-span-2 text-right pr-2">Actions</div>
+                                <div className="col-span-2">Joined</div>
+                                <div className="col-span-1 text-right pr-2">Actions</div>
                             </div>
                         </div>
 
@@ -187,8 +190,17 @@ export default function StudentsPage() {
                                                 <div className="font-semibold text-white truncate max-w-[120px]">{student.name}</div>
                                             </div>
                                         </div>
-                                        <div className="col-span-3">
+                                        <div className="col-span-2">
                                             <p className="text-slate-300 font-mono text-xs">{student.phone}</p>
+                                        </div>
+                                        <div className="col-span-2">
+                                            {student.batches?.name ? (
+                                                <Badge variant="outline" className="text-[9px] h-5 px-1.5 bg-violet-500/10 text-violet-400 border-violet-500/20">
+                                                    {student.batches.name}
+                                                </Badge>
+                                            ) : (
+                                                <span className="text-slate-600 text-[10px]">No Batch</span>
+                                            )}
                                         </div>
                                         <div className="col-span-2">
                                             <Badge variant="secondary" className="text-[9px] uppercase h-5 px-1.5 bg-emerald-500/10 text-emerald-400">
@@ -200,7 +212,7 @@ export default function StudentsPage() {
                                                 {student.created_at ? new Date(student.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : "-"}
                                             </p>
                                         </div>
-                                        <div className="col-span-2 text-right pr-2">
+                                        <div className="col-span-1 text-right pr-2">
                                             <div className="flex justify-end gap-1">
                                                 <Button size="icon" variant="ghost" className="h-7 w-7 text-slate-400 hover:text-white hover:bg-white/10">
                                                     <ArrowUpRight className="h-3.5 w-3.5" />

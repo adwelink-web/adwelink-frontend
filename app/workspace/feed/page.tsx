@@ -22,6 +22,11 @@ type ChatRow = {
     status?: 'sent' | 'delivered' | 'read' | 'failed' | null
     message_meta?: Record<string, unknown> | null
     is_read?: boolean
+    // Lead insights from Aditi
+    lead_score?: number | null
+    admission_chances?: number | null
+    ai_notes?: string | null
+    is_flagged?: boolean | null
 }
 
 // Define the shape of a "Visual" message Bubble
@@ -470,6 +475,39 @@ export default function FeedPage() {
                 </div>
 
                 <div className="flex items-center gap-2">
+                    {/* Lead Insights Badges */}
+                    {selectedSession && (() => {
+                        const sessionMsgs = messages.filter(m => m.phone_number === selectedSession || m.session_id === selectedSession);
+                        const latestWithScore = [...sessionMsgs].reverse().find(m => m.lead_score !== null && m.lead_score !== undefined);
+                        const latestWithChances = [...sessionMsgs].reverse().find(m => m.admission_chances !== null && m.admission_chances !== undefined);
+                        const isFlagged = sessionMsgs.some(m => m.is_flagged);
+
+                        return (
+                            <div className="hidden md:flex items-center gap-2">
+                                {isFlagged && (
+                                    <div className="h-6 px-2 rounded-md bg-red-500/10 border border-red-500/20 flex items-center gap-1" title="Flagged Conversation">
+                                        <ThumbsDown className="h-3 w-3 text-red-400" />
+                                    </div>
+                                )}
+                                {latestWithScore?.lead_score !== undefined && latestWithScore.lead_score !== null && (
+                                    <div className={`h-6 px-2 rounded-md flex items-center gap-1 text-[10px] font-bold ${latestWithScore.lead_score >= 7 ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400' :
+                                            latestWithScore.lead_score >= 4 ? 'bg-amber-500/10 border border-amber-500/20 text-amber-400' :
+                                                'bg-slate-500/10 border border-slate-500/20 text-slate-400'
+                                        }`} title="Lead Score">
+                                        <span>Score: {latestWithScore.lead_score}</span>
+                                    </div>
+                                )}
+                                {latestWithChances?.admission_chances !== undefined && latestWithChances.admission_chances !== null && (
+                                    <div className={`h-6 px-2 rounded-md flex items-center gap-1 text-[10px] font-bold ${latestWithChances.admission_chances >= 70 ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400' :
+                                            latestWithChances.admission_chances >= 40 ? 'bg-amber-500/10 border border-amber-500/20 text-amber-400' :
+                                                'bg-slate-500/10 border border-slate-500/20 text-slate-400'
+                                        }`} title="Admission Chances">
+                                        <span>{latestWithChances.admission_chances}%</span>
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })()}
                     {isAiPaused && (
                         <Button
                             size="sm"

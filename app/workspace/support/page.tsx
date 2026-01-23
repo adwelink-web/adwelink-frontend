@@ -37,6 +37,7 @@ interface Ticket {
     priority: string
     status: string
     created_at: string
+    resolved_at?: string | null
 }
 
 export default function SupportPage() {
@@ -376,6 +377,16 @@ export default function SupportPage() {
                     {ticket.status === 'resolved' && "This issue has been resolved. Contact us if you need more help."}
                     {ticket.status === 'closed' && "This ticket has been closed."}
                 </p>
+                {(ticket.status === 'resolved' || ticket.status === 'closed') && ticket.resolved_at && (
+                    <p className="mt-2 pt-2 border-t border-orange-500/10 text-[10px] text-emerald-400 flex items-center gap-1">
+                        <CheckCircle className="h-3 w-3" />
+                        Resolved on {new Date(ticket.resolved_at).toLocaleDateString('en-IN', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric'
+                        })}
+                    </p>
+                )}
             </div>
         </div>
     )
