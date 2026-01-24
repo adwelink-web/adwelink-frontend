@@ -19,6 +19,7 @@ import {
     BarChart3,
     Inbox,
     CalendarDays,
+    Ticket,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -128,6 +129,13 @@ export function AppSidebar({ className, user, institute }: SidebarProps) {
             color: "text-orange-500",
         },
         // Settings & Actions
+        {
+            label: "Invite Engine",
+            icon: Ticket,
+            href: "/super-admin/invites",
+            color: "text-indigo-400",
+            title: "Security"
+        },
         {
             label: "Settings",
             icon: Settings,
