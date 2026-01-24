@@ -249,7 +249,7 @@ export default function LeadsPage() {
                             <div className="grid grid-cols-12 gap-4 px-2 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
                                 <div className="col-span-3 pl-2">Candidate</div>
                                 <div className="col-span-2">Phone</div>
-                                <div className="col-span-2">Interest</div>
+                                <div className="col-span-1">Interest</div>
                                 <div className="col-span-1">Chance</div>
                                 <div className="col-span-1">Score</div>
                                 <div className="col-span-2">Status</div>
@@ -308,7 +308,7 @@ export default function LeadsPage() {
                                             </div>
 
                                             {/* Interest */}
-                                            <div className="col-span-2">
+                                            <div className="col-span-1">
                                                 <p className="text-slate-400 truncate max-w-[100px]">{lead.interested_course || "-"}</p>
                                             </div>
 
