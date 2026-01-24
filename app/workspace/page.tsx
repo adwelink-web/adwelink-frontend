@@ -142,57 +142,33 @@ export default async function AMSWorkspacePage() {
                         ) : (
                             recentLeads.map((lead) => (
                                 <Link key={lead.id} href={`/workspace/leads?phone=${lead.phone}`} className="block">
-                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-2 sm:p-3 bg-transparent border border-white/5 rounded-lg hover:bg-violet-500/10 transition-colors gap-0 sm:gap-4 group/item">
-                                        {/* Left: Identity */}
-                                        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto min-w-0">
-                                            <div className="relative shrink-0">
-                                                <div className="h-8 w-8 sm:h-10 sm:w-10 shrink-0 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs sm:text-sm shadow-inner ring-1 ring-white/20">
-                                                    {lead.name ? lead.name.charAt(0).toUpperCase() : '?'}
-                                                </div>
-                                                {lead.lead_score && lead.lead_score > 0 && (
-                                                    <div className={`absolute -bottom-1 -right-1 h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full flex items-center justify-center text-[7px] sm:text-[9px] font-bold ring-1 ring-background ${lead.lead_score >= 70 ? 'bg-green-500 text-black' : lead.lead_score >= 40 ? 'bg-amber-500 text-black' : 'bg-slate-500 text-white'}`}>
-                                                        {lead.lead_score}
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div className="min-w-0 flex-1">
-                                                <div className="flex items-center gap-2">
-                                                    <p className="text-xs sm:text-sm font-medium text-white truncate">
-                                                        {lead.name || "Unknown Caller"}
-                                                    </p>
-                                                    {lead.ai_notes && (
-                                                        <span className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[9px] bg-violet-500/10 text-violet-300 border border-violet-500/20 max-w-[100px] truncate">
-                                                            <Sparkles className="h-2 w-2 mr-1 shrink-0" />
-                                                            {lead.ai_notes}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                                <p className="text-[10px] sm:text-xs text-muted-foreground flex items-center gap-1.5 truncate">
-                                                    <Phone className="h-2.5 w-2.5 sm:h-3 sm:w-3 shrink-0" />
-                                                    <span className="truncate">{lead.phone}</span>
-                                                    {lead.source && (
-                                                        <span className="flex items-center gap-1 text-slate-500 border-l border-white/10 pl-1.5 ml-1.5 shrink-0">
-                                                            <span className="uppercase text-[8px] sm:text-[9px] tracking-wider font-semibold">VIA {lead.source}</span>
-                                                        </span>
-                                                    )}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        {/* Right: Status & Course */}
-                                        <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3 w-full sm:w-auto mt-2 pt-2 border-t border-white/5 sm:mt-0 sm:pt-0 sm:border-0">
-                                            <p className="text-[10px] sm:text-xs text-slate-300 bg-white/10 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded truncate max-w-[120px] sm:max-w-[200px]">
-                                                {lead.interested_course || "General Inquiry"}
-                                            </p>
-                                            <div className={`text-[9px] sm:text-[10px] px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border font-semibold uppercase tracking-wider whitespace-nowrap shrink-0 ${lead.status?.toLowerCase().includes('hot') ? 'bg-red-500/10 text-red-400 border-red-500/20' :
-                                                lead.status?.toLowerCase().includes('warm') ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
-                                                    lead.status?.toLowerCase().includes('converted') ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
-                                                        'bg-blue-500/10 text-blue-400 border-blue-500/20'
-                                                }`}>
-                                                {lead.status?.replace(/_/g, ' ') || "NEW"}
-                                            </div>
-                                        </div>
+                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-transparent border border-white/5 rounded-lg hover:bg-violet-500/10 transition-colors gap-2 group/item">
+                                {/* Left: Identity */}
+                                <div className="flex items-center gap-3 w-full sm:w-auto min-w-0">
+                                    <div className="h-10 w-10 shrink-0 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm shadow-inner ring-1 ring-white/20">
+                                        {lead.name ? lead.name.charAt(0).toUpperCase() : '?'}
                                     </div>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-sm font-medium text-white truncate">
+                                            {lead.name || "Unknown Caller"}
+                                        </p>
+                                        <p className="text-xs text-muted-foreground flex items-center gap-1.5 truncate">
+                                            <Phone className="h-3 w-3 shrink-0" />
+                                            <span className="truncate">{lead.phone}</span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Right: Status */}
+                                <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto mt-2 sm:mt-0 pt-2 border-t border-white/5 sm:border-0 sm:pt-0">
+                                    <div className={`text-[10px] px-2.5 py-1 rounded-full border font-semibold uppercase tracking-wider whitespace-nowrap shrink-0 ${lead.status?.toLowerCase().includes('hot') ? 'bg-red-500/10 text-red-400 border-red-500/20' :
+                                        lead.status?.toLowerCase().includes('warm') ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
+                                            lead.status?.toLowerCase().includes('converted') ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
+                                                'bg-blue-500/10 text-blue-400 border-blue-500/20'}`}>
+                                        {lead.status?.replace(/_/g, ' ') || "NEW"}
+                                    </div>
+                                </div>
+                            </div>
                                 </Link>
                             ))
                         )}
