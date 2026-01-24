@@ -114,16 +114,30 @@ export default function ClientLandingPage() {
                         <strong>Hire Aditi</strong>, your new AI Admission Counselor. She works 24/7, engages leads instantly, and qualifies students like a human expert.
                     </p>
 
-                    {/* CTA Buttons */}
+                    {/* CTA Buttons - Premium Design */}
                     <div className="flex flex-col sm:flex-row gap-4 items-center animate-fade-in-up delay-300">
                         <Link href="/login">
-                            <Button className="h-14 px-8 bg-white text-black hover:bg-slate-200 font-bold rounded-full text-base transition-all shadow-[0_0_30px_-5px_rgba(255,255,255,0.3)]">
-                                Enter My Workspace <ArrowRight className="h-4 w-4 ml-2" />
-                            </Button>
+                            <div className="relative group cursor-pointer">
+                                {/* Button Container */}
+                                <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full blur opacity-20 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
+                                <Button className="relative h-14 px-8 bg-[#0B0F19] hover:bg-[#0f1422] text-white border border-white/10 rounded-full overflow-hidden transition-all duration-300 group-hover:scale-[1.02] shadow-2xl">
+
+                                    {/* Shimmer Effect */}
+                                    <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent z-10" />
+
+                                    {/* Tech Grid Background inside button */}
+                                    <div className="absolute inset-0 opacity-20 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:10px_10px]"></div>
+
+                                    {/* Content */}
+                                    <div className="relative flex items-center gap-3 z-20">
+                                        <span className="text-base font-semibold tracking-wide">Enter Workspace</span>
+                                        <div className="h-6 w-6 rounded-full bg-white/10 flex items-center justify-center border border-white/10 group-hover:bg-white group-hover:text-black transition-colors">
+                                            <ArrowRight className="h-3 w-3" />
+                                        </div>
+                                    </div>
+                                </Button>
+                            </div>
                         </Link>
-                        <a href="#offer" className="text-sm text-slate-400 hover:text-white transition-colors underline underline-offset-4">
-                            See 20-Lead Free Offer
-                        </a>
                     </div>
                 </section>
 
@@ -387,10 +401,12 @@ export default function ClientLandingPage() {
                 <section id="pricing" className="py-24 px-6 bg-[#0B0F19]">
                     <div className="max-w-6xl mx-auto">
                         <div className="text-center mb-16 animate-fade-in-up">
-                            <span className="text-emerald-400 text-xs font-bold tracking-widest uppercase mb-2 block">Simple Pricing</span>
+                            <span className="text-emerald-400 text-xs font-bold tracking-widest uppercase mb-2 block">Pilot Pricing</span>
                             <h2 className="text-3xl md:text-5xl font-bold mb-6">Invest in Growth, Not Software.</h2>
-                            <p className="text-slate-400 max-w-xl mx-auto">
-                                One-time Setup: <span className="text-white font-bold text-lg">₹15,000</span> <span className="text-sm">(Implementation & Training included)</span>
+                            <p className="text-slate-400 max-w-xl mx-auto mb-4">
+                                One-time Setup: <span className="text-slate-500 line-through text-lg decoration-red-500 mr-2">₹15,000</span>
+                                <span className="text-white font-bold text-xl">₹10,000</span>
+                                <span className="block text-xs text-emerald-400 mt-1 font-bold uppercase tracking-wider">Early Adopter Discount (First 2 Clients Only)</span>
                             </p>
                         </div>
 
@@ -399,11 +415,11 @@ export default function ClientLandingPage() {
                             <div className="p-8 rounded-[32px] bg-white/5 border border-white/10 hover:border-indigo-500/30 transition-colors group">
                                 <h3 className="text-xl font-bold text-white mb-2">Starter</h3>
                                 <div className="flex items-baseline gap-1 mb-6">
-                                    <span className="text-3xl font-bold">₹7,999</span>
+                                    <span className="text-3xl font-bold">₹9,999</span>
                                     <span className="text-slate-500 text-sm">/mo</span>
                                 </div>
                                 <ul className="space-y-4 mb-8 text-sm text-slate-400">
-                                    <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" /> 300 Lead Processing</li>
+                                    <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" /> <span className="text-white font-bold">500</span> Lead Processing</li>
                                     <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" /> Aditi AI Agent</li>
                                     <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" /> WhatsApp Integration</li>
                                 </ul>
@@ -426,7 +442,7 @@ export default function ClientLandingPage() {
                             {/* Growth */}
                             <div className="p-8 rounded-[32px] bg-gradient-to-b from-indigo-900/20 to-transparent border border-indigo-500/50 relative transform hover:-translate-y-2 transition-transform duration-300 shadow-2xl">
                                 <div className="absolute top-0 right-0 bg-indigo-500 text-white text-[10px] font-bold px-4 py-1.5 rounded-bl-xl shadow-lg">MOST POPULAR</div>
-                                <h3 className="text-xl font-bold text-white mb-2">Type-A</h3>
+                                <h3 className="text-xl font-bold text-white mb-2">Growth</h3>
                                 <div className="flex items-baseline gap-1 mb-6">
                                     <span className="text-4xl font-bold text-indigo-400">₹14,999</span>
                                     <span className="text-slate-500 text-sm">/mo</span>
@@ -444,7 +460,7 @@ export default function ClientLandingPage() {
                                         <DialogHeader>
                                             <DialogTitle className="text-2xl font-bold">Join Adwelink Alpha</DialogTitle>
                                             <DialogDescription className="text-slate-400">
-                                                Secure your spot for the Type-A plan. Founder-led onboarding included.
+                                                Secure your spot for the Growth plan. Founder-led onboarding included.
                                             </DialogDescription>
                                         </DialogHeader>
                                         <WaitlistForm />
@@ -454,13 +470,13 @@ export default function ClientLandingPage() {
 
                             {/* Enterprise */}
                             <div className="p-8 rounded-[32px] bg-white/5 border border-white/10 hover:border-purple-500/30 transition-colors group">
-                                <h3 className="text-xl font-bold text-white mb-2">Enterprise</h3>
+                                <h3 className="text-xl font-bold text-white mb-2">Pro</h3>
                                 <div className="flex items-baseline gap-1 mb-6">
                                     <span className="text-3xl font-bold">₹29,999</span>
                                     <span className="text-slate-500 text-sm">/mo</span>
                                 </div>
                                 <ul className="space-y-4 mb-8 text-sm text-slate-400">
-                                    <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-purple-400 shrink-0" /> <strong>Unlimited</strong> Processing*</li>
+                                    <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-purple-400 shrink-0" /> <span className="font-bold text-white">Unlimited</span> Processing*</li>
                                     <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-purple-400 shrink-0" /> Dedicated Account Manager</li>
                                     <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-purple-400 shrink-0" /> Custom Integrations</li>
                                 </ul>
@@ -478,14 +494,47 @@ export default function ClientLandingPage() {
                                         <WaitlistForm />
                                     </DialogContent>
                                 </Dialog>
-                                <p className="text-[10px] text-slate-600 mt-4 text-center italic">*Subject to fair usage policy. Changeable in future.</p>
+                                <p className="text-[10px] text-slate-600 mt-4 text-center italic">*Fair usage policy applies. Introductory pricing.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* 🤝 Referral Program (New!) */}
+                <section className="py-20 px-6 bg-gradient-to-b from-[#0B0F19] to-indigo-950/20 border-t border-white/5">
+                    <div className="max-w-4xl mx-auto text-center">
+                        <span className="px-4 py-1.5 rounded-full border border-amber-500/20 bg-amber-500/10 text-[11px] font-bold text-amber-400 uppercase tracking-widest mb-6 inline-block">
+                            Partner Program
+                        </span>
+                        <h2 className="text-3xl md:text-5xl font-bold mb-6">Refer & Earn Free Service</h2>
+                        <p className="text-slate-400 mb-12 max-w-2xl mx-auto">
+                            Help us digitize Indore&apos;s education ecosystem. Bring your network to Adwelink and enjoy our premium services at zero cost.
+                        </p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto text-left">
+                            {/* Tier 1 */}
+                            <div className="p-8 rounded-2xl bg-white/5 border border-white/10 relative overflow-hidden group hover:bg-white/10 transition-colors">
+                                <div className="absolute top-0 right-0 bg-slate-700 text-white text-[10px] font-bold px-4 py-1.5 rounded-bl-xl">LEVEL 1</div>
+                                <div className="text-4xl font-bold text-white mb-2">3 Referrals</div>
+                                <p className="text-lg text-indigo-300 font-bold mb-2">Get 1 Month FREE</p>
+                                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Starter Plan (₹10k Value)</p>
+                            </div>
+                            {/* Tier 2 */}
+                            <div className="p-8 rounded-2xl bg-gradient-to-br from-indigo-600/20 to-purple-600/20 border border-indigo-500/30 relative overflow-hidden ring-1 ring-indigo-500/50 hover:scale-[1.02] transition-transform shadow-2xl">
+                                <div className="absolute top-0 right-0 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-[10px] font-bold px-4 py-1.5 rounded-bl-xl shadow-lg">LEVEL 2</div>
+                                <div className="text-4xl font-bold text-white mb-2">5 Referrals</div>
+                                <p className="text-lg text-emerald-400 font-bold mb-2">Get 1 Month FREE</p>
+                                <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">Growth Plan (₹15k Value)</p>
+                                <div className="mt-4 inline-block px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/20 text-[10px] text-emerald-400 font-bold">
+                                    BEST VALUE
+                                </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
                 {/* 🎁 The "Godfather" Offer */}
-                <section id="offer" className="py-24 px-6">
+                <section id="offer" className="py-24 px-6 bg-[#0B0F19]">
                     <div className="max-w-3xl mx-auto relative group">
                         {/* Glow */}
                         <div className="absolute -inset-4 bg-gradient-to-r from-indigo-500 via-purple-500 to-amber-500 opacity-20 blur-xl rounded-[40px] group-hover:opacity-30 transition-opacity duration-1000" />
@@ -494,13 +543,12 @@ export default function ClientLandingPage() {
 
                             {/* Ribbon */}
                             <div className="absolute top-0 right-0 bg-amber-500 text-black text-[10px] font-bold px-6 py-1 translate-x-[30%] translate-y-[50%] rotate-45 shadow-lg">
-                                PILOT PROGRAM
+                                FIRST 2 CLIENTS
                             </div>
 
-                            <h2 className="text-3xl md:text-4xl font-bold mb-4">Join the Alpha Program.</h2>
-                            <p className="text-slate-400 mb-8">
-                                We&apos;re onboarding select institutes with founder-led, personalized setup. <br />
-                                Limited seats available.
+                            <h2 className="text-3xl md:text-4xl font-bold mb-4">Start Pilot Today.</h2>
+                            <p className="text-slate-400 mb-8 max-w-lg mx-auto">
+                                Be one of the first 2 institutes to deploy Aditi in Indore and unlock the <span className="text-white font-bold">Early Adopter Setup (₹10k flat)</span>.
                             </p>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto mb-10 text-left text-sm text-slate-300">

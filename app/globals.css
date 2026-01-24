@@ -247,3 +247,13 @@
   animation-delay: 1s;
   opacity: 0;
 }
+
+/* Shimmer Animation for Premium Buttons */
+@keyframes shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}

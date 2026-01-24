@@ -111,7 +111,7 @@ export default function EarlyAccessPage() {
                     <div className="mt-8 pt-8 border-t border-white/5 text-center">
                         <Dialog>
                             <DialogTrigger asChild>
-                                <Button variant="ghost" className="text-slate-500 hover:text-white hover:bg-white/5 text-xs uppercase tracking-widest transition-all">
+                                <Button variant="ghost" className="text-slate-500 hover:text-white hover:bg-white/5 text-xs uppercase tracking-widest transition-all" suppressHydrationWarning>
                                     <AlertCircle className="h-3 w-3 mr-2" /> Don&apos;t have a Key?
                                 </Button>
                             </DialogTrigger>
