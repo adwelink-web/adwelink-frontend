@@ -19,10 +19,11 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { updateLead, createLead, deleteLead, LeadCreateData } from "./actions"
+import { updateLead, createLead, deleteLead, getLeadsWithAIStats, LeadCreateData } from "./actions"
 import { getCourses } from "../courses/actions"
 
 type Lead = Database["public"]["Tables"]["leads"]["Row"] & {
+    lead_score?: number | null
     admission_chances?: number | null
     tags?: string[] | null
 }
@@ -166,26 +167,19 @@ export default function LeadsPage() {
     React.useEffect(() => {
         const fetchInitialData = async () => {
             setLoading(true)
-            const supabase = createClient()
 
             try {
-                // Fetch Leads and Courses in parallel
-                const [leadsResponse, coursesData] = await Promise.all([
-                    supabase.from("leads").select("*").order("updated_at", { ascending: false }).limit(50),
+                // Fetch Leads with AI stats and Courses in parallel
+                const [leadsData, coursesData] = await Promise.all([
+                    getLeadsWithAIStats(),
                     getCourses()
                 ])
 
-                if (leadsResponse.error) {
-                    console.error("Supabase Error:", leadsResponse.error)
-                } else {
-                    // PRODUCTION: Only show actual leads from the database. No mock data.
-                    const actualLeads = leadsResponse.data || []
-                    setLeads(actualLeads)
-                }
-
+                setLeads(leadsData || [])
                 setCourses(coursesData || [])
             } catch (error) {
                 console.error("Failed to fetch initial data:", error)
+                toast.error("Failed to load leads", { description: "Please refresh the page." })
             } finally {
                 setLoading(false)
             }
