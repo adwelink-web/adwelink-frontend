@@ -100,6 +100,12 @@ export type Database = {
           model_used: string | null
           output_tokens: number | null
           raw_response: Json | null
+          sentiment: string | null
+          intent: string | null
+          lead_score: number | null
+          admission_chances: number | null
+          is_flagged: boolean | null
+          ai_notes: string | null
         }
         Insert: {
           conversation_id?: string | null
