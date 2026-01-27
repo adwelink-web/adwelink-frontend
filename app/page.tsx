@@ -799,10 +799,7 @@ export default function ClientLandingPage() {
                             <p className="text-slate-400 mb-8 max-w-lg mx-auto">
                                 Adwelink is currently operating in an <span className="text-white font-bold">Invite-Only Mode</span>. I personally visit your campus to set up Aditi exactly according to your needs.
                             </p>
-                            <p className="text-sm font-handwriting text-indigo-300 mb-8 bg-indigo-500/10 inline-block px-4 py-2 rounded-lg border border-indigo-500/20">
-                                "My goal isn't to sell you software. It's to ensure your classrooms are full." <br />
-                                <span className="font-bold text-white block mt-1 text-right">- Founder, Adwelink</span>
-                            </p>
+
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto mb-10 text-left text-sm text-slate-300">
                                 <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg border border-white/5">
