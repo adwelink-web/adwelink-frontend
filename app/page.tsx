@@ -12,7 +12,14 @@ import {
     Users,
     ArrowRight,
     Hand,
-    Menu
+    Menu,
+    MapPin,
+    Calendar,
+    Briefcase,
+    TrendingUp,
+    Instagram,
+    Linkedin,
+    Mail
 } from "lucide-react"
 import { toast } from "sonner"
 import Link from "next/link"
@@ -29,6 +36,8 @@ import {
     Sheet,
     SheetContent,
     SheetTrigger,
+    SheetClose,
+    SheetTitle,
 } from "@/components/ui/sheet"
 import { Input } from "@/components/ui/input"
 import { createClient } from "@/lib/supabase"
@@ -68,6 +77,7 @@ export default function ClientLandingPage() {
     const [isScrolled, setIsScrolled] = useState(false)
     const [showIntro, setShowIntro] = useState(true)
     const [mounted, setMounted] = useState(false)
+    const [isLoginOpen, setIsLoginOpen] = useState(false)
 
     useEffect(() => {
         setMounted(true)
@@ -151,7 +161,7 @@ export default function ClientLandingPage() {
                         <nav className="hidden md:flex items-center gap-6">
                             <a href="#problem" className="text-xs font-medium text-slate-400 hover:text-white transition-colors uppercase tracking-wider">Problem</a>
                             <a href="#solution" className="text-xs font-medium text-slate-400 hover:text-white transition-colors uppercase tracking-wider">Solution</a>
-                            <a href="#aems" className="text-xs font-medium text-slate-400 hover:text-white transition-colors uppercase tracking-wider">AEMS</a>
+                            <a href="#ams" className="text-xs font-medium text-slate-400 hover:text-white transition-colors uppercase tracking-wider">AMS</a>
                             <a href="#pricing" className="text-xs font-medium text-slate-400 hover:text-white transition-colors uppercase tracking-wider">Pricing</a>
                             <a href="#offer" className="text-xs font-medium text-slate-400 hover:text-white transition-colors uppercase tracking-wider">Offer</a>
                         </nav>
@@ -159,11 +169,9 @@ export default function ClientLandingPage() {
                         {/* CTA Button - Hydration Safe */}
                         <div className="hidden md:block">
                             {mounted && (
-                                <AccessCodeDialog>
-                                    <Button className={`rounded-full px-6 text-[10px] font-bold uppercase tracking-widest transition-all duration-500 ease-out hover:scale-105 active:scale-95 border border-white/10 hover:border-white/50 shadow-lg hover:shadow-white/20 ${isScrolled ? "bg-white/10 text-white hover:bg-white hover:text-black" : "bg-white/5 text-white hover:bg-white hover:text-black"}`}>
-                                        Client Login
-                                    </Button>
-                                </AccessCodeDialog>
+                                <Button onClick={() => setIsLoginOpen(true)} className={`rounded-full px-6 text-[10px] font-bold uppercase tracking-widest transition-all duration-500 ease-out hover:scale-105 active:scale-95 border border-white/10 hover:border-white/50 shadow-lg hover:shadow-white/20 ${isScrolled ? "bg-white/10 text-white hover:bg-white hover:text-black" : "bg-white/5 text-white hover:bg-white hover:text-black"}`}>
+                                    Client Login
+                                </Button>
                             )}
                         </div>
 
@@ -174,41 +182,60 @@ export default function ClientLandingPage() {
                                     <Menu className="h-6 w-6" />
                                 </Button>
                             </SheetTrigger>
-                            <SheetContent side="right" className="bg-[#0B0F19] border-l border-white/10 text-white w-[300px] p-6 pt-12">
-                                <div className="flex flex-col gap-10 h-full">
-                                    <div className="relative h-10 w-36">
-                                        <Image src="/branding/adwelink.svg" alt="Adwelink" fill className="object-contain object-left" priority />
+                            <SheetContent side="right" className="bg-black border-l border-zinc-800 text-white w-[300px] p-0 shadow-2xl z-[100]">
+                                <SheetTitle className="sr-only">Mobile Navigation Menu</SheetTitle>
+                                <div className="flex flex-col h-full bg-black">
+                                    <div className="p-8 border-b border-zinc-800">
+                                        <div className="relative h-10 w-36">
+                                            <Image src="/branding/adwelink.svg" alt="Adwelink" fill className="object-contain object-left" priority />
+                                        </div>
                                     </div>
-                                    <nav className="flex flex-col gap-6">
-                                        <a href="#problem" className="text-lg font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-3 group">
-                                            <span className="h-1.5 w-1.5 rounded-full bg-slate-600 group-hover:bg-indigo-500 transition-colors"></span>
-                                            Problem
-                                        </a>
-                                        <a href="#solution" className="text-lg font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-3 group">
-                                            <span className="h-1.5 w-1.5 rounded-full bg-slate-600 group-hover:bg-indigo-500 transition-colors"></span>
-                                            Solution
-                                        </a>
-                                        <a href="#aems" className="text-lg font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-3 group">
-                                            <span className="h-1.5 w-1.5 rounded-full bg-slate-600 group-hover:bg-indigo-500 transition-colors"></span>
-                                            AEMS System
-                                        </a>
-                                        <a href="#pricing" className="text-lg font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-3 group">
-                                            <span className="h-1.5 w-1.5 rounded-full bg-slate-600 group-hover:bg-indigo-500 transition-colors"></span>
-                                            Pricing
-                                        </a>
-                                        <a href="#offer" className="text-lg font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-3 group">
-                                            <span className="h-1.5 w-1.5 rounded-full bg-slate-600 group-hover:bg-indigo-500 transition-colors"></span>
-                                            Pilot Offer
-                                        </a>
+
+                                    <nav className="flex flex-col gap-2 p-6 flex-1">
+                                        {[
+                                            { href: "#problem", label: "The Problem" },
+                                            { href: "#solution", label: "The Solution" },
+                                            { href: "#ams", label: "AMS System" },
+                                            { href: "#pricing", label: "Investment" },
+                                            { href: "#offer", label: "Pilot Offer" }
+                                        ].map((link) => (
+                                            <SheetClose asChild key={link.href}>
+                                                <a
+                                                    href={link.href}
+                                                    className="relative flex items-center gap-4 py-4 px-4 rounded-xl text-lg font-medium text-slate-400 hover:text-white transition-all duration-300 group overflow-hidden border border-transparent hover:border-indigo-500/30 hover:bg-gradient-to-r hover:from-indigo-500/10 hover:to-transparent hover:shadow-[inset_0_0_20px_rgba(99,102,241,0.05)]"
+                                                >
+                                                    {/* Active Indicator Line (Hidden by default, appears on hover) */}
+                                                    <div className="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-1 bg-indigo-500 rounded-r-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_10px_rgba(99,102,241,0.8)]" />
+
+                                                    {/* Neon Dot */}
+                                                    <div className="h-2 w-2 rounded-full bg-zinc-700 group-hover:bg-indigo-400 group-hover:scale-125 group-hover:shadow-[0_0_8px_rgba(129,140,248,0.9)] transition-all duration-300 z-10" />
+
+                                                    <span className="tracking-wide z-10 group-hover:translate-x-1 transition-transform duration-300">{link.label}</span>
+                                                </a>
+                                            </SheetClose>
+                                        ))}
                                     </nav>
-                                    <div className="mt-auto mb-8">
+
+                                    <div className="p-6 border-t border-zinc-800 bg-zinc-950/50">
                                         {mounted && (
-                                            <AccessCodeDialog>
-                                                <div className="w-full bg-white text-black hover:bg-slate-200 font-bold h-14 text-base rounded-xl shadow-lg flex items-center justify-center cursor-pointer">
-                                                    Login to Dashboard
+                                            <SheetClose asChild>
+                                                <div onClick={() => setIsLoginOpen(true)} className="relative group cursor-pointer w-full">
+                                                    {/* Gradient Glow Effect */}
+                                                    <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-fuchsia-600 rounded-xl blur opacity-60 group-hover:opacity-100 transition duration-500"></div>
+
+                                                    {/* Main Button Content */}
+                                                    <div className="relative w-full h-14 bg-[#0B0F19] hover:bg-black rounded-xl flex items-center justify-center gap-3 text-white font-bold tracking-wider transition-all border border-white/10 group-hover:border-white/30">
+                                                        <Lock className="h-4 w-4 text-indigo-400 group-hover:text-fuchsia-400 transition-colors duration-500" />
+                                                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-200 to-fuchsia-200 group-hover:from-white group-hover:to-white transition-all duration-500">
+                                                            LOGIN TO DASHBOARD
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                            </AccessCodeDialog>
+                                            </SheetClose>
                                         )}
+                                        <p className="text-[10px] text-center text-zinc-600 mt-6 font-medium">
+                                            Adwelink Systems Pvt Ltd. © 2024
+                                        </p>
                                     </div>
                                 </div>
                             </SheetContent>
@@ -270,7 +297,7 @@ export default function ClientLandingPage() {
                         className="flex flex-col sm:flex-row gap-4 items-center"
                     >
                         {mounted && (
-                            <AccessCodeDialog>
+                            <PartnershipApplicationDialog>
                                 <div className="relative group cursor-pointer">
                                     {/* Button Container */}
                                     <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full blur opacity-20 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
@@ -284,14 +311,14 @@ export default function ClientLandingPage() {
 
                                         {/* Content */}
                                         <div className="relative flex items-center gap-3 z-20">
-                                            <span className="text-base font-semibold tracking-wide">Enter Workspace</span>
+                                            <span className="text-base font-semibold tracking-wide">Secure Founding Access</span>
                                             <div className="h-6 w-6 rounded-full bg-white/10 flex items-center justify-center border border-white/10 group-hover:bg-white group-hover:text-black transition-colors">
                                                 <ArrowRight className="h-3 w-3" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </AccessCodeDialog>
+                            </PartnershipApplicationDialog>
                         )}
                     </motion.div>
                 </motion.section>
@@ -301,13 +328,13 @@ export default function ClientLandingPage() {
                     {...fadeInUp}
                     viewport={viewportConfig}
                     id="problem"
-                    className="py-20 bg-black/40 border-y border-white/5 backdrop-blur-sm"
+                    className="py-20 bg-black/40 border-y border-white/5 backdrop-blur-sm scroll-mt-12"
                 >
                     <div className="max-w-6xl mx-auto px-6">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                             <div className="text-center md:text-left">
                                 <h3 className="text-2xl font-bold text-red-500 mb-2 flex items-center gap-2 justify-center md:justify-start">
-                                    <Siren className="h-6 w-6" /> The Challenge
+                                    <Siren className="h-6 w-6" /> Director&apos;s Nightmare
                                 </h3>
                                 <p className="text-3xl font-bold text-white mb-4">The &quot;Leaky Bucket&quot; Problem</p>
                                 <p className="text-slate-400 text-sm leading-relaxed">
@@ -412,7 +439,7 @@ export default function ClientLandingPage() {
                                 <ul className="space-y-4">
                                     <li className="flex items-start gap-3 text-indigo-200 text-sm">
                                         <CheckCircle className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
-                                        <span>&quot;Hi Rahul, interested in CS?&quot; (Human)</span>
+                                        <span>&quot;Hi Rahul, beta engineering karni hai kya?&quot; (Natural)</span>
                                     </li>
                                     <li className="flex items-start gap-3 text-indigo-200 text-sm">
                                         <CheckCircle className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
@@ -433,7 +460,7 @@ export default function ClientLandingPage() {
                 </section>
 
                 {/* ✨ The Solution: Aditi */}
-                <section id="solution" className="py-24 relative overflow-hidden">
+                <section id="solution" className="py-24 relative overflow-hidden scroll-mt-12">
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-500/10 blur-[200px] rounded-full pointer-events-none" />
 
                     <div className="max-w-6xl mx-auto px-6 relative z-10">
@@ -486,8 +513,8 @@ export default function ClientLandingPage() {
                     </div>
                 </section>
 
-                {/* 💻 The AEMS: Command Center */}
-                <section id="aems" className="py-24 bg-white/5 border-t border-white/5">
+                {/* 💻 The AMS: Command Center */}
+                <section id="ams" className="py-24 bg-white/5 border-t border-white/5 scroll-mt-12">
                     <div className="max-w-6xl mx-auto px-6">
                         <div className="flex flex-col md:flex-row gap-16 items-center">
 
@@ -541,7 +568,7 @@ export default function ClientLandingPage() {
                                 <span className="text-emerald-400 text-xs font-bold tracking-widest uppercase mb-2 block">The Command Center</span>
                                 <h2 className="text-3xl md:text-5xl font-bold mb-6">Complete Control.<br />Zero Chaos.</h2>
                                 <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-                                    Aditi does the work, but you stay in charge. Monitor every conversation, track performance, and verify results in real-time with our proprietary <strong>AI Employee Management System (AEMS)</strong>.
+                                    Aditi does the work, but you stay in charge. Monitor every conversation, track performance, and verify results in real-time with our proprietary <strong>Agent Management System (AMS)</strong>.
                                 </p>
 
                                 <div className="space-y-6">
@@ -598,15 +625,18 @@ export default function ClientLandingPage() {
                 </section>
 
                 {/* 💰 Pricing Section */}
-                <section id="pricing" className="py-24 px-6 bg-[#0B0F19]">
+                <section id="pricing" className="py-16 px-6 bg-[#0B0F19] scroll-mt-8">
                     <div className="max-w-6xl mx-auto">
                         <motion.div {...fadeInUp} viewport={viewportConfig} className="text-center mb-16">
                             <span className="text-emerald-400 text-xs font-bold tracking-widest uppercase mb-2 block">Exclusive Access</span>
-                            <h2 className="text-3xl md:text-5xl font-bold mb-6">Founding Partner Members.</h2>
+                            <h2 className="text-3xl md:text-5xl font-bold mb-6">Partnership Investment Plans.</h2>
+                            <p className="text-slate-400 max-w-xl mx-auto mb-4 italic">
+                                *Pilot Phase limited to 10 Select Institutes. Currently vetting for quality partners.*
+                            </p>
                             <p className="text-slate-400 max-w-xl mx-auto mb-4">
-                                One-time Custom Setup: <span className="text-slate-500 line-through text-lg decoration-red-500 mr-2">₹25,000</span>
+                                One-time Custom Setup: <span className="text-slate-500 line-through text-lg decoration-red-500 mr-2">₹15,000</span>
                                 <span className="text-white font-bold text-xl">₹10,000</span>
-                                <span className="block text-xs text-emerald-400 mt-1 font-bold uppercase tracking-wider">Includes Personal Visit By Founder</span>
+                                <span className="block text-xs text-emerald-400 mt-1 font-bold uppercase tracking-wider">Exclusive for First 2 Invited Founding Partners</span>
                             </p>
                         </motion.div>
 
@@ -625,14 +655,14 @@ export default function ClientLandingPage() {
                                     <span className="text-slate-500 text-sm">/mo</span>
                                 </div>
                                 <ul className="space-y-4 mb-8 text-sm text-slate-400">
-                                    <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" /> <span className="text-white font-bold">500</span> Lead Processing</li>
+                                    <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" /> <span className="text-white font-bold">500</span> Leads/mo</li>
                                     <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" /> Aditi AI Employee</li>
                                     <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" /> WhatsApp Integration</li>
                                 </ul>
                                 {mounted && (
-                                    <AccessCodeDialog>
-                                        <Button className="w-full h-12 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold" suppressHydrationWarning>Request Access</Button>
-                                    </AccessCodeDialog>
+                                    <PartnershipApplicationDialog>
+                                        <Button className="w-full h-12 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold" suppressHydrationWarning>Apply for Partnership</Button>
+                                    </PartnershipApplicationDialog>
                                 )}
                             </motion.div>
 
@@ -645,14 +675,14 @@ export default function ClientLandingPage() {
                                     <span className="text-slate-500 text-sm">/mo</span>
                                 </div>
                                 <ul className="space-y-4 mb-8 text-sm text-slate-300">
-                                    <li className="flex items-center gap-3"><CheckCircle className="h-5 w-5 text-indigo-400 shrink-0" /> <span className="font-bold text-white">1,000 Lead Processing</span></li>
+                                    <li className="flex items-center gap-3"><CheckCircle className="h-5 w-5 text-indigo-400 shrink-0" /> <span className="font-bold text-white">1,000 Leads/mo</span></li>
                                     <li className="flex items-center gap-3"><CheckCircle className="h-5 w-5 text-indigo-400 shrink-0" /> Aditi AI Employee (Pro)</li>
                                     <li className="flex items-center gap-3"><CheckCircle className="h-5 w-5 text-indigo-400 shrink-0" /> Priority Support</li>
                                 </ul>
                                 {mounted && (
-                                    <AccessCodeDialog>
-                                        <Button className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-lg shadow-indigo-500/25" suppressHydrationWarning>Request Invite</Button>
-                                    </AccessCodeDialog>
+                                    <PartnershipApplicationDialog>
+                                        <Button className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-lg shadow-indigo-500/25" suppressHydrationWarning>Request Priority Invite</Button>
+                                    </PartnershipApplicationDialog>
                                 )}
                             </motion.div>
 
@@ -664,14 +694,14 @@ export default function ClientLandingPage() {
                                     <span className="text-slate-500 text-sm">/mo</span>
                                 </div>
                                 <ul className="space-y-4 mb-8 text-sm text-slate-400">
-                                    <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-purple-400 shrink-0" /> <span className="font-bold text-white">5,000</span> Lead Processing</li>
+                                    <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-purple-400 shrink-0" /> <span className="font-bold text-white">5,000</span> Leads/mo</li>
                                     <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-purple-400 shrink-0" /> Aditi AI Employee (Enterprise)</li>
                                     <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-purple-400 shrink-0" /> Priority Support</li>
                                 </ul>
                                 {mounted && (
-                                    <AccessCodeDialog>
-                                        <Button className="w-full h-12 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold" suppressHydrationWarning>Contact Sales</Button>
-                                    </AccessCodeDialog>
+                                    <PartnershipApplicationDialog>
+                                        <Button className="w-full h-12 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold" suppressHydrationWarning>Apply for Pro Access</Button>
+                                    </PartnershipApplicationDialog>
                                 )}
                                 <p className="text-[10px] text-slate-600 mt-4 text-center italic">*Fair usage policy applies. Introductory pricing.</p>
                             </motion.div>
@@ -685,9 +715,9 @@ export default function ClientLandingPage() {
                         <span className="px-4 py-1.5 rounded-full border border-amber-500/20 bg-amber-500/10 text-[11px] font-bold text-amber-400 uppercase tracking-widest mb-6 inline-block">
                             Ecosystem Alliance
                         </span>
-                        <h2 className="text-3xl md:text-5xl font-bold mb-6">Strategic Partner Program</h2>
+                        <h2 className="text-3xl md:text-5xl font-bold mb-6">The Ambassador Circle</h2>
                         <p className="text-slate-400 mb-12 max-w-2xl mx-auto leading-relaxed">
-                            Join the movement to modernize Indore&apos;s education sector. Facilitate AI adoption among peer institutes and unlock exclusive operational privileges.
+                            Join the movement to modernize Indore&apos;s education sector. <strong>Nominate a peer institute</strong> and facilitate AI adoption to unlock exclusive operational privileges.
                         </p>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto text-left">
@@ -712,8 +742,48 @@ export default function ClientLandingPage() {
                     </div>
                 </section>
 
+                {/* 📱 Live Demo: Show Don't Tell (New Section) */}
+
+
+                {/* ⚡ Onboarding Timeline (New Section) */}
+                <section className="py-20 px-6 bg-[#0B0F19] border-t border-white/5 mx-auto max-w-6xl">
+                    <div className="text-center mb-16">
+                        <span className="text-purple-400 text-xs font-bold tracking-widest uppercase mb-2 block">Zero Headache Setup</span>
+                        <h2 className="text-3xl font-bold mb-4">48 Hours to Autopilot.</h2>
+                        <p className="text-slate-400">No technical team needed. We plug Aditi into your system, and she starts working.</p>
+                    </div>
+
+                    <div className="relative">
+                        {/* Connecting Line */}
+                        <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-emerald-500/20 -translate-y-1/2 hidden md:block" />
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+                            {/* Step 1 */}
+                            <div className="bg-[#0B0F19] p-6 rounded-2xl border border-white/10 flex flex-col items-center text-center group hover:border-indigo-500/50 transition-colors">
+                                <div className="h-12 w-12 rounded-full bg-indigo-500 text-white font-bold flex items-center justify-center text-xl mb-4 shadow-[0_0_20px_rgba(99,102,241,0.3)]">1</div>
+                                <h3 className="text-lg font-bold text-white mb-2">Sync Data</h3>
+                                <p className="text-sm text-slate-400">Share your brochure and faculty details. We configure Aditi to talk exactly like your best counselor.</p>
+                            </div>
+
+                            {/* Step 2 */}
+                            <div className="bg-[#0B0F19] p-6 rounded-2xl border border-white/10 flex flex-col items-center text-center group hover:border-purple-500/50 transition-colors">
+                                <div className="h-12 w-12 rounded-full bg-purple-500 text-white font-bold flex items-center justify-center text-xl mb-4 shadow-[0_0_20px_rgba(168,85,247,0.3)]">2</div>
+                                <h3 className="text-lg font-bold text-white mb-2">AI Training</h3>
+                                <p className="text-sm text-slate-400">Aditi learns your FAQs, batch timings, and fee structure. We test her rigorously for 24 hours.</p>
+                            </div>
+
+                            {/* Step 3 */}
+                            <div className="bg-[#0B0F19] p-6 rounded-2xl border border-white/10 flex flex-col items-center text-center group hover:border-emerald-500/50 transition-colors">
+                                <div className="h-12 w-12 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center text-xl mb-4 shadow-[0_0_20px_rgba(16,185,129,0.3)]">3</div>
+                                <h3 className="text-lg font-bold text-white mb-2">Go Live</h3>
+                                <p className="text-sm text-slate-400">Aditi starts handling all incoming WhatsApp queries. Watch your dashboard fill up with qualified leads.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 {/* 🎁 The "Godfather" Offer */}
-                <section id="offer" className="py-24 px-6 bg-[#0B0F19]">
+                <section id="offer" className="py-24 px-6 bg-[#0B0F19] scroll-mt-12">
                     <div className="max-w-3xl mx-auto relative group">
                         {/* Glow */}
                         <div className="absolute -inset-4 bg-gradient-to-r from-indigo-500 via-purple-500 to-amber-500 opacity-20 blur-xl rounded-[40px] group-hover:opacity-30 transition-opacity duration-1000" />
@@ -728,6 +798,10 @@ export default function ClientLandingPage() {
                             <h2 className="text-3xl md:text-4xl font-bold mb-4">Personal Onboarding.</h2>
                             <p className="text-slate-400 mb-8 max-w-lg mx-auto">
                                 Adwelink is currently operating in an <span className="text-white font-bold">Invite-Only Mode</span>. I personally visit your campus to set up Aditi exactly according to your needs.
+                            </p>
+                            <p className="text-sm font-handwriting text-indigo-300 mb-8 bg-indigo-500/10 inline-block px-4 py-2 rounded-lg border border-indigo-500/20">
+                                "My goal isn't to sell you software. It's to ensure your classrooms are full." <br />
+                                <span className="font-bold text-white block mt-1 text-right">- Founder, Adwelink</span>
                             </p>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto mb-10 text-left text-sm text-slate-300">
@@ -751,18 +825,18 @@ export default function ClientLandingPage() {
 
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 {mounted && (
-                                    <AccessCodeDialog>
+                                    <PartnershipApplicationDialog>
                                         <Button className="h-14 px-8 bg-white text-black hover:bg-slate-200 font-bold rounded-xl text-base transition-all shadow-xl">
-                                            Enter Workspace
+                                            Apply for Partnership
                                         </Button>
-                                    </AccessCodeDialog>
+                                    </PartnershipApplicationDialog>
                                 )}
                                 {mounted && (
-                                    <AccessCodeDialog>
+                                    <PartnershipApplicationDialog>
                                         <Button variant="outline" className="h-14 px-8 border-white/20 text-white hover:bg-white/10 font-bold rounded-xl text-base transition-all" suppressHydrationWarning>
                                             Schedule a Demo
                                         </Button>
-                                    </AccessCodeDialog>
+                                    </PartnershipApplicationDialog>
                                 )}
                             </div>
 
@@ -787,13 +861,13 @@ export default function ClientLandingPage() {
                                 </p>
                                 <div className="flex gap-4 justify-center md:justify-start">
                                     <a href="https://linkedin.com/in/adwelink-india-1700b2333" target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-slate-500 hover:bg-white/10 hover:text-white transition-colors">
-                                        <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" /></svg>
+                                        <Linkedin className="h-4 w-4" />
                                     </a>
                                     <a href="https://instagram.com/adwelink_india" target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-slate-500 hover:bg-white/10 hover:text-white transition-colors">
-                                        <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" /></svg>
+                                        <Instagram className="h-4 w-4" />
                                     </a>
                                     <a href="mailto:adwelink@gmail.com" className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-slate-500 hover:bg-white/10 hover:text-white transition-colors">
-                                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                                        <Mail className="h-4 w-4" />
                                     </a>
                                 </div>
                             </div>
@@ -804,7 +878,7 @@ export default function ClientLandingPage() {
                                 <ul className="space-y-3">
                                     <li><a href="#problem" className="text-slate-500 hover:text-white transition-colors text-sm">The Problem</a></li>
                                     <li><a href="#solution" className="text-slate-500 hover:text-white transition-colors text-sm">The Solution</a></li>
-                                    <li><a href="#aems" className="text-slate-500 hover:text-white transition-colors text-sm">AEMS Dashboard</a></li>
+                                    <li><a href="#ams" className="text-slate-500 hover:text-white transition-colors text-sm">AMS</a></li>
                                     <li><a href="#offer" className="text-slate-500 hover:text-white transition-colors text-sm">Pilot Program</a></li>
                                 </ul>
                             </div>
@@ -823,12 +897,13 @@ export default function ClientLandingPage() {
                     </div>
                 </footer>
 
+                <ClientLoginDialog open={isLoginOpen} onOpenChange={setIsLoginOpen} />
             </main>
         </div >
     )
 }
 
-function AccessCodeDialog({ children }: { children: React.ReactNode }) {
+function ClientLoginDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
     const [code, setCode] = useState("")
     const [error, setError] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -839,51 +914,338 @@ function AccessCodeDialog({ children }: { children: React.ReactNode }) {
         setLoading(true)
         setError(false)
 
-        // Mock Verification (Replace with real DB check later)
-        // Hardcoded Master Code: "ALPHA"
-        await new Promise(r => setTimeout(r, 1000)) // Fake delay for drama
+        // Mock Verification
+        await new Promise(r => setTimeout(r, 1500))
 
         if (code.toUpperCase() === "ALPHA") {
-            toast.success("Access Granted", { description: "Welcome to the future." })
-            router.push("/login") // Or wherever you want them to go
+            toast.success("Access Granted", { description: "Welcome back, Founding Partner." })
+            router.push("/home")
         } else {
             setError(true)
-            toast.error("Access Denied", { description: "Invalid Invite Code." })
+            toast.error("Access Denied", { description: "Invalid Client Key." })
         }
         setLoading(false)
     }
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogContent className="bg-[#0B0F19]/95 backdrop-blur-xl border border-white/10 text-white sm:max-w-md rounded-3xl p-8 shadow-2xl">
+                <DialogHeader>
+                    <div className="mx-auto bg-white/5 h-16 w-16 rounded-2xl flex items-center justify-center mb-6 border border-white/10 shadow-inner">
+                        <Lock className="h-8 w-8 text-indigo-400" />
+                    </div>
+                    <DialogTitle className="text-2xl font-bold text-center">Client Access</DialogTitle>
+                    <DialogDescription className="text-slate-400 text-center">
+                        Enter your unique 10-digit access key to enter your workspace.
+                    </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleVerify} className="space-y-6 py-4">
+                    <div className="space-y-2">
+                        <div className="relative">
+                            <Input
+                                value={code}
+                                onChange={(e) => {
+                                    setCode(e.target.value)
+                                    setError(false)
+                                }}
+                                placeholder="XXXX-XXXX"
+                                className={`bg-black/40 border-white/10 text-center font-mono tracking-[0.5em] text-lg uppercase h-16 rounded-xl focus:ring-2 ring-indigo-500/50 transition-all ${error ? "border-red-500/50 text-red-400" : "focus:border-indigo-500"}`}
+                                maxLength={10}
+                            />
+                            {loading && (
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                                    <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                </div>
+                            )}
+                        </div>
+                        {error && (
+                            <motion.p
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="text-xs text-red-400 text-center font-medium"
+                            >
+                                Invalid Access Key. Please contact support.
+                            </motion.p>
+                        )}
+                    </div>
+                    <Button
+                        type="submit"
+                        disabled={loading || !code}
+                        className="w-full bg-white text-black hover:bg-slate-200 font-bold rounded-xl h-14 shadow-lg shadow-white/5 transition-all text-base"
+                    >
+                        {loading ? "Verifying Credentials..." : "Enter Workspace"}
+                    </Button>
+                </form>
+                <div className="text-center pt-2 border-t border-white/5">
+                    <p className="text-[11px] text-slate-500">
+                        Lost your key? <a href="mailto:support@adwelink.com" className="text-indigo-400 hover:text-indigo-300 hover:underline transition-colors">Contact Priority Support</a>
+                    </p>
+                </div>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+function PartnershipApplicationDialog({ children }: { children: React.ReactNode }) {
+    const [open, setOpen] = useState(false)
+    const [step, setStep] = useState(1)
+    const [loading, setLoading] = useState(false)
+    const [formData, setFormData] = useState({
+        full_name: "",
+        email: "",
+        whatsapp_number: "",
+        institute_name: "",
+        annual_admissions_scale: "",
+        current_counseling_team_size: "",
+        primary_admission_challenge: "",
+        institute_address: "",
+        preferred_visit_time: "",
+        referral_source: ""
+    })
+
+    const totalSteps = 4
+
+    const handleNext = () => {
+        if (step < totalSteps) setStep(step + 1)
+    }
+
+    const handleBack = () => {
+        if (step > 1) setStep(step - 1)
+    }
+
+    const handleSubmit = async () => {
+        setLoading(true)
+        // Mock Submission - In real implementation, this goes to Supabase 'waitlist' table
+        await new Promise(r => setTimeout(r, 1500))
+
+        const supabase = createClient()
+        const { error } = await supabase.from('waitlist').insert([
+            {
+                full_name: formData.full_name,
+                contact: formData.whatsapp_number, // Mapping to existing 'contact' column for now
+                source: formData.referral_source || 'Direct Application',
+                // Note: Other fields will be added to metadata or new columns once DB migration is run
+            }
+        ])
+
+        if (error) {
+            toast.error("Application Failed", { description: "Please try again or contact support." })
+        } else {
+            toast.success("Application Received", { description: "Our Founder will contact you shortly." })
+            setOpen(false)
+            setStep(1)
+            setFormData({
+                full_name: "",
+                email: "",
+                whatsapp_number: "",
+                institute_name: "",
+                annual_admissions_scale: "",
+                current_counseling_team_size: "",
+                primary_admission_challenge: "",
+                institute_address: "",
+                preferred_visit_time: "",
+                referral_source: ""
+            })
+        }
+        setLoading(false)
+    }
+
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 {children}
             </DialogTrigger>
-            <DialogContent className="bg-[#0B0F19] border border-white/10 text-white sm:max-w-md rounded-3xl">
-                <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold flex items-center gap-2">
-                        <Lock className="h-5 w-5 text-indigo-400" /> Private Access
-                    </DialogTitle>
-                    <DialogDescription className="text-slate-400">
-                        Adwelink is strictly invite-only. Enter your Founder Invite Code to proceed.
-                    </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleVerify} className="space-y-4 py-4">
-                    <div className="space-y-2">
-                        <Input
-                            value={code}
-                            onChange={(e) => setCode(e.target.value)}
-                            placeholder="ENTER-CODE"
-                            className={`bg-white/5 border-white/10 text-center font-mono tracking-[0.5em] text-lg uppercase h-14 ${error ? "border-red-500/50 text-red-400" : "focus:border-indigo-500/50"}`}
-                            maxLength={10}
-                        />
-                        {error && <p className="text-xs text-red-400 text-center animate-pulse">Invalid Code. Ask for an invite.</p>}
+            <DialogContent className="bg-[#0B0F19] border border-white/10 text-white sm:max-w-xl rounded-[32px] p-0 overflow-hidden">
+                <div className="p-8">
+                    <DialogHeader className="mb-6">
+                        <DialogTitle className="text-2xl font-bold flex items-center gap-3">
+                            {step === 1 && <span className="text-indigo-400">Step 1: Identity</span>}
+                            {step === 2 && <span className="text-purple-400">Step 2: Scale</span>}
+                            {step === 3 && <span className="text-emerald-400">Step 3: Intent</span>}
+                            {step === 4 && <span className="text-amber-400">Step 4: Finalize</span>}
+                        </DialogTitle>
+                        <DialogDescription className="text-slate-400">
+                            Adwelink is an Invite-Only platform. Complete your profile for Founder verification.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="min-h-[300px]">
+                        <AnimatePresence mode="wait">
+                            {step === 1 && (
+                                <motion.div
+                                    key="step1"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    className="space-y-4"
+                                >
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Full Name</label>
+                                        <Input
+                                            value={formData.full_name}
+                                            onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                                            placeholder="e.g. Rahul Sharma"
+                                            className="bg-white/5 border-white/10 h-12 rounded-xl focus:border-indigo-500/50 text-white placeholder:text-slate-600"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Official Email</label>
+                                        <Input
+                                            value={formData.email}
+                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                            placeholder="director@institute.com"
+                                            className="bg-white/5 border-white/10 h-12 rounded-xl focus:border-indigo-500/50 text-white placeholder:text-slate-600"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">WhatsApp Number</label>
+                                        <Input
+                                            value={formData.whatsapp_number}
+                                            onChange={(e) => setFormData({ ...formData, whatsapp_number: e.target.value })}
+                                            placeholder="+91 98765 43210"
+                                            className="bg-white/5 border-white/10 h-12 rounded-xl focus:border-indigo-500/50 text-white placeholder:text-slate-600"
+                                        />
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {step === 2 && (
+                                <motion.div
+                                    key="step2"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    className="space-y-6"
+                                >
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Institute Name</label>
+                                        <Input
+                                            value={formData.institute_name}
+                                            onChange={(e) => setFormData({ ...formData, institute_name: e.target.value })}
+                                            placeholder="Global Institute of Management"
+                                            className="bg-white/5 border-white/10 h-12 rounded-xl focus:border-purple-500/50 text-white placeholder:text-slate-600"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Annual Admissions Scale</label>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            {["< 200", "200 - 500", "500 - 1000", "1000+"].map((scale) => (
+                                                <div
+                                                    key={scale}
+                                                    onClick={() => setFormData({ ...formData, annual_admissions_scale: scale })}
+                                                    className={`cursor-pointer h-12 flex items-center justify-center rounded-xl border transition-all font-medium text-sm ${formData.annual_admissions_scale === scale ? "bg-purple-500 text-white border-purple-500" : "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white"}`}
+                                                >
+                                                    {scale} Students
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {step === 3 && (
+                                <motion.div
+                                    key="step3"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    className="space-y-6"
+                                >
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Primary Admission Challenge</label>
+                                        <div className="space-y-3">
+                                            {[
+                                                "Lead Leakage (Missed calls/queries)",
+                                                "Counselor Inefficiency / Turnover",
+                                                "Low Lead-to-Admission Conversion",
+                                                "Inability to Scale Follow-ups"
+                                            ].map((challenge) => (
+                                                <div
+                                                    key={challenge}
+                                                    onClick={() => setFormData({ ...formData, primary_admission_challenge: challenge })}
+                                                    className={`cursor-pointer p-3 rounded-xl border transition-all text-sm flex items-center gap-3 ${formData.primary_admission_challenge === challenge ? "bg-emerald-500/20 border-emerald-500 text-emerald-400" : "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10"}`}
+                                                >
+                                                    <div className={`h-4 w-4 rounded-full border flex items-center justify-center ${formData.primary_admission_challenge === challenge ? "border-emerald-500 bg-emerald-500" : "border-slate-500"}`}>
+                                                        {formData.primary_admission_challenge === challenge && <div className="h-2 w-2 bg-white rounded-full" />}
+                                                    </div>
+                                                    {challenge}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {step === 4 && (
+                                <motion.div
+                                    key="step4"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    className="space-y-6"
+                                >
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Institute Address (For Visit)</label>
+                                        <Input
+                                            value={formData.institute_address}
+                                            onChange={(e) => setFormData({ ...formData, institute_address: e.target.value })}
+                                            placeholder="Vijay Nagar, Indore..."
+                                            className="bg-white/5 border-white/10 h-12 rounded-xl focus:border-amber-500/50 text-white placeholder:text-slate-600"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Who nominated you? (Optional)</label>
+                                        <Input
+                                            value={formData.referral_source}
+                                            onChange={(e) => setFormData({ ...formData, referral_source: e.target.value })}
+                                            placeholder="Enter Ambassador Institute Name"
+                                            className="bg-white/5 border-white/10 h-12 rounded-xl focus:border-amber-500/50 text-white placeholder:text-slate-600"
+                                        />
+                                        <p className="text-[10px] text-slate-500">Nominations fast-track the vetting process.</p>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
-                    <Button type="submit" disabled={loading || !code} className="w-full bg-white text-black hover:bg-slate-200 font-bold rounded-xl h-12">
-                        {loading ? "Verifying..." : "Unlock Workspace"}
-                    </Button>
-                </form>
-                <div className="text-center">
-                    <p className="text-[10px] text-slate-500">Don't have a code? <a href="mailto:adwelink@gmail.com" className="text-indigo-400 hover:underline">Request via Email</a></p>
+
+                    <div className="flex justify-between mt-8 pt-6 border-t border-white/5">
+                        <Button
+                            variant="ghost"
+                            onClick={handleBack}
+                            disabled={step === 1 || loading}
+                            className={`text-slate-400 hover:text-white ${step === 1 ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+                        >
+                            Back
+                        </Button>
+
+                        {step < totalSteps ? (
+                            <Button
+                                onClick={handleNext}
+                                className="bg-white text-black hover:bg-slate-200 font-bold px-8 rounded-xl"
+                            >
+                                Next Step
+                            </Button>
+                        ) : (
+                            <Button
+                                onClick={handleSubmit}
+                                disabled={loading || !formData.full_name || !formData.whatsapp_number}
+                                className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold px-8 rounded-xl hover:opacity-90 transition-opacity"
+                            >
+                                {loading ? "Securely Submitting..." : "Submit Application"}
+                            </Button>
+                        )}
+                    </div>
+                </div>
+
+                {/* Progress Bar */}
+                <div className="h-1 bg-white/5 w-full">
+                    <motion.div
+                        className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500"
+                        initial={{ width: "0%" }}
+                        animate={{ width: `${(step / totalSteps) * 100}%` }}
+                        transition={{ duration: 0.3 }}
+                    />
                 </div>
             </DialogContent>
         </Dialog>
