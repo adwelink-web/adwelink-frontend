@@ -49,7 +49,7 @@ export default function LeadsPage() {
     const handleSave = async () => {
         try {
             // Filter out system fields that shouldn't be updated
-            const { id, created_at, updated_at, institute_id, ...updateData } = formData
+            const { id, created_at, institute_id, ...updateData } = formData
 
             if (isCreating) {
                 if (!updateData.phone) {

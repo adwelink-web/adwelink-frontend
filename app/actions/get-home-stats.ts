@@ -30,13 +30,14 @@ export async function getHomeStats() {
 
         // Process Activity Feed
         const activityFeed = activityRes.data?.map(item => {
-            const msgText = item.message_text?.toLowerCase() || '';
+            const role = item.role || 'system';
+            const msgText = (role === 'user' ? item.user_message : item.ai_response)?.toLowerCase() || '';
             const isPositive = ['enrollment', 'confirmed', 'interested'].some(i => msgText.includes(i));
             const isNegative = ['spam', 'stop', 'unsubscribe'].some(i => msgText.includes(i));
 
             return {
                 type: isPositive ? 'success' : isNegative ? 'error' : 'info',
-                text: `${item.is_from_user ? 'Message' : 'Reply'} ${item.lead_phone ? 'from ' + item.lead_phone.slice(-4) : ''}`,
+                text: `${role === 'user' ? 'Message' : 'Reply'} ${item.phone_number ? 'from ' + item.phone_number.slice(-4) : ''}`,
                 time: new Date(item.created_at!).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
                 created_at: item.created_at || undefined
             }

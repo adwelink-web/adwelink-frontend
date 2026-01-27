@@ -47,7 +47,7 @@ export default async function BillingPage() {
                                         </div>
                                         <div className="text-right">
                                             <div className="text-lg font-bold text-foreground">
-                                                {payment.currency} {payment.amount}
+                                                ₹ {payment.amount}
                                             </div>
                                             <Badge variant={payment.status === 'completed' ? 'default' : 'secondary'} className="uppercase text-[10px]">
                                                 {payment.status}

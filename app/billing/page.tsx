@@ -264,7 +264,7 @@ export default async function BillingPage() {
                                                 <div className="text-[10px] text-slate-500 uppercase">{payment.payment_method || "UPI"}</div>
                                             </div>
                                             <div className="col-span-3 text-white font-medium">
-                                                {formatCurrency(payment.amount)}
+                                                {formatCurrency(payment.amount ?? 0)}
                                             </div>
                                             <div className="col-span-3">
                                                 <Badge variant={

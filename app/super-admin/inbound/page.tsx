@@ -90,7 +90,7 @@ export default async function InboundPage() {
                                                                 {(item.institute_name || item.full_name || "?").charAt(0).toUpperCase()}
                                                             </div>
                                                             <div className="min-w-0">
-                                                                <div className="font-bold text-foreground truncate" title={item.institute_name}>{item.institute_name || "Unknown Institute"}</div>
+                                                                <div className="font-bold text-foreground truncate" title={item.institute_name || undefined}>{item.institute_name || "Unknown Institute"}</div>
                                                                 <div className="text-xs text-muted-foreground truncate">{item.full_name}</div>
                                                                 <div className="flex items-center gap-1 text-[10px] text-primary mt-0.5">
                                                                     <Mail className="h-3 w-3" /> {item.contact}
@@ -98,7 +98,7 @@ export default async function InboundPage() {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <div className="col-span-2">
                                                         <Badge variant="outline" className="text-[10px] border-indigo-500/30 text-indigo-400 bg-indigo-500/5 whitespace-nowrap">
                                                             {item.annual_admissions_scale || "N/A"} Students
@@ -111,7 +111,7 @@ export default async function InboundPage() {
                                                     </div>
 
                                                     <div className="col-span-3">
-                                                        <div className="text-xs text-muted-foreground bg-muted/30 p-1.5 rounded border border-border/50 line-clamp-2" title={item.primary_admission_challenge}>
+                                                        <div className="text-xs text-muted-foreground bg-muted/30 p-1.5 rounded border border-border/50 line-clamp-2" title={item.primary_admission_challenge || undefined}>
                                                             {item.primary_admission_challenge || "No challenge specified"}
                                                         </div>
                                                     </div>
@@ -120,7 +120,7 @@ export default async function InboundPage() {
                                                         <div className="text-xs font-medium text-foreground flex items-center gap-1">
                                                             {item.preferred_visit_time || "Anytime"}
                                                         </div>
-                                                        <div className="text-[10px] text-muted-foreground truncate" title={item.institute_full_address}>
+                                                        <div className="text-[10px] text-muted-foreground truncate" title={item.institute_full_address || undefined}>
                                                             {item.institute_full_address || "No address"}
                                                         </div>
                                                     </div>

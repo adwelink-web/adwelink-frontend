@@ -17,7 +17,7 @@ export default async function LeadDetailPage({ params }: PageProps) {
         notFound()
     }
 
-    const chatHistory = await getLeadChatHistory(lead.phone)
+    const chatHistory = await getLeadChatHistory(lead.phone || "")
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return <LeadDetailClient lead={lead as any} chatHistory={chatHistory as any} />
