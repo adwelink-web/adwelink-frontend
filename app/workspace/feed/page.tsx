@@ -69,6 +69,7 @@ export default function FeedPage() {
     const [sessionSearch, setSessionSearch] = React.useState("")
     const scrollBottomRef = React.useRef<HTMLDivElement>(null)
     const scrollContainerRef = React.useRef<HTMLDivElement>(null)
+    const sessionListRef = React.useRef<HTMLDivElement>(null) // Session list scroll container
     const [showScrollButton, setShowScrollButton] = React.useState(false)
     const [isChatSheetOpen, setIsChatSheetOpen] = React.useState(false)
 
@@ -76,6 +77,9 @@ export default function FeedPage() {
 
     // Fetch Chat History & Status
     const fetchHistory = React.useCallback(async () => {
+        // 🔒 PRESERVE SCROLL POSITION (WhatsApp-like behavior)
+        const savedScrollTop = sessionListRef.current?.scrollTop ?? 0
+
         const supabase = createClient()
 
         // 1. Get Messages
@@ -137,6 +141,13 @@ export default function FeedPage() {
         }
 
         setLoading(false)
+
+        // 🔒 RESTORE SCROLL POSITION after React re-render
+        requestAnimationFrame(() => {
+            if (sessionListRef.current) {
+                sessionListRef.current.scrollTop = savedScrollTop
+            }
+        })
     }, [selectedSession])
 
     const handleResume = async () => {
@@ -312,7 +323,7 @@ export default function FeedPage() {
 
     // Session List Component
     const SessionList = ({ onSessionClick }: { onSessionClick: (sid: string) => void }) => (
-        <div className="flex-1 min-h-0 w-full overflow-y-auto custom-scrollbar">
+        <div ref={sessionListRef} className="flex-1 min-h-0 w-full overflow-y-auto custom-scrollbar">
             <div className="p-2 space-y-1">
                 {loading ? (
                     <div className="py-12 text-center">
@@ -491,16 +502,16 @@ export default function FeedPage() {
                                 )}
                                 {latestWithScore?.lead_score !== undefined && latestWithScore.lead_score !== null && (
                                     <div className={`h-6 px-2 rounded-md flex items-center gap-1 text-[10px] font-bold ${latestWithScore.lead_score >= 7 ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400' :
-                                            latestWithScore.lead_score >= 4 ? 'bg-amber-500/10 border border-amber-500/20 text-amber-400' :
-                                                'bg-slate-500/10 border border-slate-500/20 text-slate-400'
+                                        latestWithScore.lead_score >= 4 ? 'bg-amber-500/10 border border-amber-500/20 text-amber-400' :
+                                            'bg-slate-500/10 border border-slate-500/20 text-slate-400'
                                         }`} title="Lead Score">
                                         <span>Score: {latestWithScore.lead_score}</span>
                                     </div>
                                 )}
                                 {latestWithChances?.admission_chances !== undefined && latestWithChances.admission_chances !== null && (
                                     <div className={`h-6 px-2 rounded-md flex items-center gap-1 text-[10px] font-bold ${latestWithChances.admission_chances >= 70 ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400' :
-                                            latestWithChances.admission_chances >= 40 ? 'bg-amber-500/10 border border-amber-500/20 text-amber-400' :
-                                                'bg-slate-500/10 border border-slate-500/20 text-slate-400'
+                                        latestWithChances.admission_chances >= 40 ? 'bg-amber-500/10 border border-amber-500/20 text-amber-400' :
+                                            'bg-slate-500/10 border border-slate-500/20 text-slate-400'
                                         }`} title="Admission Chances">
                                         <span>{latestWithChances.admission_chances}%</span>
                                     </div>
