@@ -9,7 +9,7 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-  RETURN (SELECT auth.jwt() ->> 'email') IN ('thekashidasmongre@gmail.com');
+  RETURN (SELECT auth.jwt() ->> 'email') IN ('thekashidasmongre@gmail.com', 'sumitvishwakarma0807@gmail.com', 'dprateek17@gmail.com');
 END;
 $$;
 
