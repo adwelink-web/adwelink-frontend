@@ -79,6 +79,7 @@ export default function CoursesPage() {
             duration_months: 12,
             mode: "Offline",
             target_class: "",
+            topics: "",
         })
         setIsEditing(false)
         setDialogOpen(true)
@@ -285,6 +286,25 @@ export default function CoursesPage() {
                                                     </p>
                                                 </div>
                                             </div>
+
+                                            {/* Topics/Syllabus Preview */}
+                                            {course.topics && (
+                                                <div className="pt-2 border-t border-white/5">
+                                                    <p className="text-[9px] text-slate-500 uppercase font-bold tracking-wider mb-1.5">Syllabus Highlights</p>
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {course.topics.split(',').slice(0, 4).map((topic, idx) => (
+                                                            <span key={idx} className="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-slate-300 border border-white/5 truncate max-w-[100%]">
+                                                                {topic.trim()}
+                                                            </span>
+                                                        ))}
+                                                        {course.topics.split(',').length > 4 && (
+                                                            <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-slate-500 border border-white/5">
+                                                                +{course.topics.split(',').length - 4} more
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </CardContent>
                                 </Card>
@@ -347,6 +367,16 @@ export default function CoursesPage() {
                                 </div>
                             </div>
 
+                            <div className="space-y-1">
+                                <label className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Syllabus Topics (Comma Separated)</label>
+                                <Input
+                                    placeholder="e.g. Accounting, GST, Payroll, Banking"
+                                    value={formData.topics || ""}
+                                    onChange={(e) => setFormData({ ...formData, topics: e.target.value })}
+                                    className="bg-white/[0.03] border-white/10 text-white h-9 text-sm rounded-lg"
+                                />
+                            </div>
+
                             {/* Financials & Duration */}
                             <div className="pt-3 border-t border-white/5">
                                 <h4 className="text-[9px] font-bold text-emerald-400 uppercase tracking-wider mb-3">Fees & Duration</h4>
@@ -405,7 +435,7 @@ export default function CoursesPage() {
                         </div>
                     </DialogContent>
                 </Dialog>
-            </div>
-        </div>
+            </div >
+        </div >
     )
 }

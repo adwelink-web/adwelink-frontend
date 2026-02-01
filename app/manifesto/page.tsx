@@ -188,13 +188,32 @@ export default function ManifestoPage() {
                     </p>
                     <div className="flex items-center gap-4">
                         <div className="h-12 w-12 bg-white rounded-full overflow-hidden relative">
-                            {/* Placeholder for Founder Image if available, else logo */}
                             <Image src="/branding/adwelink_icon_square.svg" alt="Founder" fill className="object-cover" />
                         </div>
                         <div>
                             <div className="text-white font-bold">Kashi Das Mongre</div>
-                            <div className="text-slate-500 text-sm">Founder, Adwelink</div>
+                            <div className="text-slate-500 text-sm">Founder & CEO, Adwelink</div>
                         </div>
+                    </div>
+                </div>
+
+                {/* 👥 Core Team Section */}
+                <div className="mt-32 pt-16 border-t border-white/10">
+                    <h2 className="text-2xl md:text-4xl font-bold mb-12 text-center lg:text-left">The Core Team</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {[
+                            { name: "Prateek Dwiwedi", role: "Co-Founder & CFO", icon: Lock },
+                            { name: "Sumit Visvkarma", role: "Co-Founder & CMO", icon: MessageSquare },
+                            { name: "Nitin Dubey", role: "Co-Founder & CTO", icon: Zap },
+                        ].map((member, i) => (
+                            <div key={i} className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-cyan-500/50 transition-colors group">
+                                <div className="h-10 w-10 rounded-lg bg-cyan-500/10 flex items-center justify-center mb-4 group-hover:bg-cyan-500/20 transition-colors">
+                                    <member.icon className="h-5 w-5 text-cyan-400" />
+                                </div>
+                                <h3 className="text-lg font-bold text-white">{member.name}</h3>
+                                <p className="text-slate-500 text-sm">{member.role}</p>
+                            </div>
+                        ))}
                     </div>
                 </div>
 
