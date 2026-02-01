@@ -20,7 +20,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { updateLead, createLead, deleteLead, getLeadsWithAIStats, LeadCreateData } from "./actions"
-import { getCourses } from "../courses/actions"
+// Courses removed
 
 type Lead = Database["public"]["Tables"]["leads"]["Row"] & {
     lead_score?: number | null
@@ -35,8 +35,7 @@ export default function LeadsPage() {
     const [dialogOpen, setDialogOpen] = React.useState(false)
     const [isEditing, setIsEditing] = React.useState(false)
     const [isCreating, setIsCreating] = React.useState(false)
-    type Course = Database["public"]["Tables"]["courses"]["Row"]
-    const [courses, setCourses] = React.useState<Course[]>([])
+    const [courses, setCourses] = React.useState<any[]>([])
     const [formData, setFormData] = React.useState<Partial<Lead>>({})
 
     const handleEditToggle = () => {
@@ -170,13 +169,11 @@ export default function LeadsPage() {
 
             try {
                 // Fetch Leads with AI stats and Courses in parallel
-                const [leadsData, coursesData] = await Promise.all([
-                    getLeadsWithAIStats(),
-                    getCourses()
-                ])
+                // Fetch Leads
+                const leadsData = await getLeadsWithAIStats()
 
                 setLeads(leadsData || [])
-                setCourses(coursesData || [])
+                setCourses([]) // No courses feature yet
             } catch (error) {
                 console.error("Failed to fetch initial data:", error)
                 toast.error("Failed to load leads", { description: "Please refresh the page." })
@@ -399,11 +396,11 @@ export default function LeadsPage() {
             </div>
             {/* REFACTORED MODAL DIALOG (POPUP) */}
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogContent className="max-w-5xl w-full bg-[#0F131E] border border-white/10 text-slate-200 p-0 shadow-2xl max-h-[85vh] h-[85vh] flex flex-col gap-0 overflow-hidden">
+                <DialogContent className="max-w-md w-full bg-[#0B0F19] border border-white/10 text-slate-200 p-0 shadow-2xl max-h-[80vh] flex flex-col gap-0 overflow-hidden rounded-2xl">
                     {(selectedLead || isCreating) && (
                         <div className="flex flex-col h-full min-h-0">
                             {/* DIALOG HEADER */}
-                            <DialogHeader className="p-5 bg-[#181D2D] border-b border-white/5 space-y-1 shrink-0">
+                            <DialogHeader className="p-4 bg-[#181D2D] border-b border-white/5 space-y-1 shrink-0">
                                 <div className="flex items-start justify-between mb-3 pr-10">
                                     <div>
                                         <DialogTitle className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">
@@ -511,8 +508,8 @@ export default function LeadsPage() {
                             </DialogHeader>
 
                             {/* DIALOG BODY */}
-                            <ScrollArea className="h-[calc(85vh-130px)]">
-                                <div className="p-5 pb-20 space-y-5">
+                            <ScrollArea className="flex-1 min-h-0">
+                                <div className="p-4 pb-10 space-y-4">
 
                                     {/* 1. AI Notes */}
                                     <section>

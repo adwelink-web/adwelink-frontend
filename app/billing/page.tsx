@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { CreditCard, Download, Sparkles, ReceiptText, ShieldCheck, MessageSquare, Zap, AlertCircle, Plus, Clock, Building2, Phone, MapPin } from "lucide-react"
+import { CreditCard, Download, Sparkles, ReceiptText, ShieldCheck, MessageSquare, Zap, AlertCircle, Plus, Clock, Building2, Phone, MapPin, Users } from "lucide-react"
 import { getBillingData } from "./actions"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -17,10 +17,10 @@ const PLAN_PRICES: Record<string, number> = {
 }
 
 const PLAN_FEATURES: Record<string, string[]> = {
-    free: ["100 msgs", "1 Agent"],
-    starter: ["1k msgs", "All Agents", "Email Support"],
-    growth: ["5k msgs", "All Agents", "Priority"],
-    premium: ["15k msgs", "All Agents", "Dedicated"],
+    free: ["50 Leads", "1 Agent"],
+    starter: ["200 Leads", "All Agents", "Email Support"],
+    growth: ["1000 Leads", "All Agents", "Priority"],
+    premium: ["5000 Leads", "All Agents", "Dedicated"],
     enterprise: ["Unlimited", "All Agents", "24/7"]
 }
 
@@ -29,9 +29,10 @@ export default async function BillingPage() {
 
     const currentPlan = institute?.current_plan || "free"
     const subscriptionStatus = institute?.subscription_status || "active"
-    const messageLimit = institute?.message_limit || 100
-    const messagesUsed = institute?.messages_used || 0
-    const usagePercent = Math.min(100, Math.round((messagesUsed / messageLimit) * 100))
+    const leadLimit = institute?.lead_limit || 50
+    const leadsUsed = institute?.leads_used || 0
+    // Prevent division by zero
+    const usagePercent = leadLimit > 0 ? Math.min(100, Math.round((leadsUsed / leadLimit) * 100)) : 0
 
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('en-IN', {
@@ -54,8 +55,8 @@ export default async function BillingPage() {
     // const subscriptionStatus = 'active' // This was already declared above, keeping the existing one.
 
     const usage = {
-        requests: messagesUsed,
-        limit: messageLimit,
+        requests: leadsUsed,
+        limit: leadLimit,
         nextReset: "2024-07-01" // Placeholder
     }
 
@@ -126,10 +127,10 @@ export default async function BillingPage() {
                                 <CardHeader className="flex flex-row items-start justify-between pb-2 space-y-0">
                                     <div className="space-y-1">
                                         <CardTitle className="text-sm font-bold flex items-center gap-2 text-white">
-                                            <MessageSquare className="h-4 w-4 text-violet-500" />
-                                            Usage
+                                            <Users className="h-4 w-4 text-violet-500" />
+                                            Lead Usage
                                         </CardTitle>
-                                        <CardDescription className="text-[10px]">Current billing cycle</CardDescription>
+                                        <CardDescription className="text-[10px]">Active leads this month</CardDescription>
                                     </div>
                                     <Badge variant="secondary" className="bg-violet-500/10 text-violet-400 text-[10px] px-1.5">
                                         {Math.round((usage.requests / usage.limit) * 100)}%
@@ -139,7 +140,7 @@ export default async function BillingPage() {
                                     <div className="space-y-3">
                                         <div className="space-y-1">
                                             <div className="flex justify-between text-[10px] text-slate-400">
-                                                <span>Requests</span>
+                                                <span>Leads Captured</span>
                                                 <span className="text-white">{usage.requests.toLocaleString()} / {usage.limit.toLocaleString()}</span>
                                             </div>
                                             <div className="h-1.5 w-full bg-black/40 rounded-full overflow-hidden border border-white/5">
@@ -162,60 +163,59 @@ export default async function BillingPage() {
                             </Card>
                         </div>
 
-                        {/* 3. Institute Details (User Requested Simplification - "User/Institute Details") */}
-                        <Card className="md:flex-1 md:h-auto h-auto min-h-[250px] bg-gradient-to-br from-blue-500/5 to-transparent border-white/10 backdrop-blur-md shadow-lg flex flex-col">
-                            <CardHeader className="flex flex-col gap-4 pb-4">
+                        <Card className="md:flex-1 h-auto min-h-0 bg-gradient-to-br from-blue-500/5 to-transparent border-white/10 backdrop-blur-md shadow-lg flex flex-col">
+                            <CardHeader className="flex flex-col gap-2 pb-2 p-3">
                                 <div className="flex flex-row items-center justify-between w-full">
-                                    <div className="space-y-1">
-                                        <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
-                                            <Building2 className="h-4 w-4 text-blue-500" />
+                                    <div className="space-y-0.5">
+                                        <CardTitle className="text-sm font-bold flex items-center gap-2 text-white">
+                                            <Building2 className="h-3.5 w-3.5 text-blue-500" />
                                             Institute Details
                                         </CardTitle>
-                                        <CardDescription className="text-xs">Your registered billing information</CardDescription>
+                                        <CardDescription className="text-[10px]">Your registered billing information</CardDescription>
                                     </div>
                                 </div>
                             </CardHeader>
 
-                            <CardContent className="space-y-4 px-6 pb-6">
+                            <CardContent className="space-y-2 px-3 pb-3">
                                 {/* Simple Manual Payment / Details Display */}
-                                <div className="grid gap-3">
-                                    <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5">
-                                        <div className="h-10 w-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
-                                            <Building2 className="h-5 w-5 text-blue-400" />
+                                <div className="grid gap-2">
+                                    <div className="flex items-center gap-3 p-2 bg-white/5 rounded-lg border border-white/5">
+                                        <div className="h-8 w-8 rounded-md bg-blue-500/20 flex items-center justify-center">
+                                            <Building2 className="h-4 w-4 text-blue-400" />
                                         </div>
                                         <div>
-                                            <p className="text-xs text-muted-foreground">Institute Name</p>
-                                            <p className="text-sm font-medium text-white">{institute?.name || "Unknown Institute"}</p>
+                                            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Institute Name</p>
+                                            <p className="text-xs font-bold text-white truncate">{institute?.name || "Unknown Institute"}</p>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5">
-                                        <div className="h-10 w-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
-                                            <MapPin className="h-5 w-5 text-emerald-400" />
+                                    <div className="flex items-center gap-3 p-2 bg-white/5 rounded-lg border border-white/5">
+                                        <div className="h-8 w-8 rounded-md bg-emerald-500/20 flex items-center justify-center">
+                                            <MapPin className="h-4 w-4 text-emerald-400" />
                                         </div>
                                         <div>
-                                            <p className="text-xs text-muted-foreground">Location</p>
-                                            <p className="text-sm font-medium text-white">{institute?.city || "Unknown City"}</p>
+                                            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Location</p>
+                                            <p className="text-xs font-bold text-white truncate">{institute?.city || "Unknown City"}</p>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5">
-                                        <div className="h-10 w-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                                            <Phone className="h-5 w-5 text-purple-400" />
+                                    <div className="flex items-center gap-3 p-2 bg-white/5 rounded-lg border border-white/5">
+                                        <div className="h-8 w-8 rounded-md bg-purple-500/20 flex items-center justify-center">
+                                            <Phone className="h-4 w-4 text-purple-400" />
                                         </div>
                                         <div>
-                                            <p className="text-xs text-muted-foreground">Helpline / Contact</p>
-                                            <p className="text-sm font-medium text-white">{institute?.helpline_number || "-"}</p>
+                                            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Helpline</p>
+                                            <p className="text-xs font-bold text-white truncate">{institute?.helpline_number || institute?.email || "-"}</p>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="mt-2 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-                                    <p className="text-[10px] text-amber-200/80 mb-1 font-bold flex items-center gap-1">
-                                        <AlertCircle className="h-3 w-3" /> Manual Payment Note:
+                                <div className="mt-1 p-2 bg-amber-500/5 border border-amber-500/10 rounded-lg">
+                                    <p className="text-[9px] text-amber-200/80 mb-0.5 font-bold flex items-center gap-1">
+                                        <AlertCircle className="h-2.5 w-2.5" /> Manual Payment Note:
                                     </p>
-                                    <p className="text-[10px] text-amber-200/60">
-                                        We currently accept manual UPI payments. Please contact admin support for upgrades or billing queries.
+                                    <p className="text-[9px] text-amber-200/50 leading-tight">
+                                        For billing queries, please contact admin support. We currently accept manual UPI payments.
                                     </p>
                                 </div>
                             </CardContent>

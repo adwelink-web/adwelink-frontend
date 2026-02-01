@@ -10,12 +10,7 @@ export async function getStudents() {
 
     const { data, error } = await supabase
         .from("students")
-        .select(`
-            *,
-            batches:batch_id (
-                name
-            )
-        `)
+        .select('*')
         .eq("institute_id", institute_id)
         .order("name", { ascending: true })
 

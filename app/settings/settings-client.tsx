@@ -15,18 +15,40 @@ import {
     Lock,
     Loader2,
     RefreshCcw,
-    Info
+    Info,
+    Clock,
+    Share2,
+    FileText,
+    Globe
 } from "lucide-react"
 import { WorkspaceHeader } from "@/components/workspace-header"
 import { updateInstituteSettings } from "./actions"
 
 interface InstituteSettings {
     name?: string | null
+    director_name?: string | null
     city?: string | null
     address?: string | null
     helpline_number?: string | null
     phone_id?: string | null
     access_token?: string | null
+    logo?: string | null
+    email?: string | null
+    website?: string | null
+    google_map_link?: string | null
+    // Operational
+    business_hours_start?: string | null
+    business_hours_end?: string | null
+    institute_type?: string | null
+    founded_year?: string | null
+    brochure_url?: string | null
+    // Social
+    instagram_url?: string | null
+    facebook_url?: string | null
+    youtube_url?: string | null
+    linkedin_url?: string | null
+    // Legal
+    gstin?: string | null
 }
 
 interface SettingsClientProps {
@@ -45,9 +67,25 @@ export default function SettingsClient({ initialSettings }: SettingsClientProps)
         try {
             await updateInstituteSettings({
                 name: settings.name,
+                director_name: settings.director_name,
+                email: settings.email,
+                website: settings.website,
+                logo: settings.logo,
                 city: settings.city,
                 address: settings.address,
-                helpline_number: settings.helpline_number
+                google_map_link: settings.google_map_link,
+                helpline_number: settings.helpline_number,
+                // New Fields
+                business_hours_start: settings.business_hours_start,
+                business_hours_end: settings.business_hours_end,
+                institute_type: settings.institute_type,
+                founded_year: settings.founded_year,
+                brochure_url: settings.brochure_url,
+                gstin: settings.gstin,
+                instagram_url: settings.instagram_url,
+                facebook_url: settings.facebook_url,
+                youtube_url: settings.youtube_url,
+                linkedin_url: settings.linkedin_url
             })
             setOriginalSettings(settings)
             setIsEditing(false)
@@ -92,19 +130,26 @@ export default function SettingsClient({ initialSettings }: SettingsClientProps)
                                 </span>
                             }
                         />
-                        <TabsList className="bg-white/5 border border-white/10 p-1 mt-6 w-full justify-start h-12 rounded-xl backdrop-blur-md">
-                            <TabsTrigger value="general" className="data-[state=active]:bg-white data-[state=active]:text-black rounded-lg py-2 px-6 font-bold transition-all">
-                                <Building className="h-4 w-4 mr-2" /> General
-                            </TabsTrigger>
+                        <div className="overflow-x-auto pb-2 -mb-2">
+                            <TabsList className="bg-white/5 border border-white/10 p-1 mt-6 w-full md:w-auto justify-start h-12 rounded-xl backdrop-blur-md inline-flex mb-1">
+                                <TabsTrigger value="general" className="data-[state=active]:bg-white data-[state=active]:text-black rounded-lg py-2 px-6 font-bold transition-all">
+                                    <Building className="h-4 w-4 mr-2" /> General
+                                </TabsTrigger>
+                                <TabsTrigger value="operations" className="data-[state=active]:bg-white data-[state=active]:text-black rounded-lg py-2 px-6 font-bold transition-all">
+                                    <Clock className="h-4 w-4 mr-2" /> Operations
+                                </TabsTrigger>
+                                <TabsTrigger value="social" className="data-[state=active]:bg-white data-[state=active]:text-black rounded-lg py-2 px-6 font-bold transition-all">
+                                    <Share2 className="h-4 w-4 mr-2" /> Social
+                                </TabsTrigger>
+                                <TabsTrigger value="legal" className="data-[state=active]:bg-white data-[state=active]:text-black rounded-lg py-2 px-6 font-bold transition-all">
+                                    <FileText className="h-4 w-4 mr-2" /> Legal
+                                </TabsTrigger>
+                                <TabsTrigger value="integrations" className="data-[state=active]:bg-white data-[state=active]:text-black rounded-lg py-2 px-6 font-bold transition-all">
+                                    <Smartphone className="h-4 w-4 mr-2" /> Integrations
+                                </TabsTrigger>
 
-                            {/* Integrations & Security hidden - not implemented yet */}
-                            {/* <TabsTrigger value="integrations" className="data-[state=active]:bg-white data-[state=active]:text-black rounded-lg py-2 px-6 font-bold transition-all">
-                                <Smartphone className="h-4 w-4 mr-2" /> Integrations
-                            </TabsTrigger>
-                            <TabsTrigger value="security" className="data-[state=active]:bg-red-500 data-[state=active]:text-white rounded-lg py-2 px-6 font-bold transition-all">
-                                <ShieldAlert className="h-4 w-4 mr-2" /> Security
-                            </TabsTrigger> */}
-                        </TabsList>
+                            </TabsList>
+                        </div>
                     </div>
 
                     {/* Content Section - Fixed, No Page Scroll */}
@@ -141,56 +186,117 @@ export default function SettingsClient({ initialSettings }: SettingsClientProps)
                                         )}
                                     </div>
                                 </CardHeader>
-                                <CardContent className="space-y-4 flex-1 overflow-y-auto custom-scrollbar">
-                                    {/* Info Banner */}
-                                    <div className="flex items-center gap-3 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
-                                        <Info className="h-5 w-5 text-emerald-500 shrink-0" />
-                                        <p className="text-sm text-emerald-200/80">These settings are <strong>actively used</strong> by Aditi when talking to your leads. Changes take effect immediately.</p>
+                                <CardContent className="space-y-6 flex-1 overflow-y-auto custom-scrollbar">
+                                    <div className="space-y-4">
+                                        <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider border-b border-white/5 pb-2">Identity & Branding</h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <Label className="text-slate-300">Institute Name</Label>
+                                                <Input
+                                                    disabled={!isEditing}
+                                                    value={settings?.name || ""}
+                                                    onChange={(e) => setSettings({ ...settings, name: e.target.value })}
+                                                    className="bg-black/20 border-white/10 text-white disabled:opacity-50"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label className="text-slate-300">Director Name</Label>
+                                                <Input
+                                                    disabled={!isEditing}
+                                                    value={settings?.director_name || ""}
+                                                    onChange={(e) => setSettings({ ...settings, director_name: e.target.value })}
+                                                    placeholder="Dr. R.K. Verma"
+                                                    className="bg-black/20 border-white/10 text-white disabled:opacity-50"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label className="text-slate-300">Logo URL</Label>
+                                                <Input
+                                                    disabled={!isEditing}
+                                                    value={settings?.logo || ""}
+                                                    onChange={(e) => setSettings({ ...settings, logo: e.target.value })}
+                                                    placeholder="https://example.com/logo.png"
+                                                    className="bg-black/20 border-white/10 text-white disabled:opacity-50"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label className="text-slate-300">Website</Label>
+                                                <Input
+                                                    disabled={!isEditing}
+                                                    value={settings?.website || ""}
+                                                    onChange={(e) => setSettings({ ...settings, website: e.target.value })}
+                                                    placeholder="https://www.institute.com"
+                                                    className="bg-black/20 border-white/10 text-white disabled:opacity-50"
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label className="text-slate-300">Institute Name</Label>
-                                            <Input
-                                                disabled={!isEditing}
-                                                value={settings?.name || ""}
-                                                onChange={(e) => setSettings({ ...settings, name: e.target.value })}
-                                                className="bg-black/20 border-white/10 text-white disabled:opacity-50"
-                                            />
+
+                                    <div className="space-y-4">
+                                        <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider border-b border-white/5 pb-2">Contact Information</h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <Label className="text-slate-300">Helpline Number</Label>
+                                                <Input
+                                                    disabled={!isEditing}
+                                                    value={settings?.helpline_number || ""}
+                                                    onChange={(e) => setSettings({ ...settings, helpline_number: e.target.value })}
+                                                    placeholder="9999999999"
+                                                    className="bg-black/20 border-white/10 text-white disabled:opacity-50"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label className="text-slate-300">Email Address</Label>
+                                                <Input
+                                                    type="email"
+                                                    disabled={!isEditing}
+                                                    value={settings?.email || ""}
+                                                    onChange={(e) => setSettings({ ...settings, email: e.target.value })}
+                                                    placeholder="info@institute.com"
+                                                    className="bg-black/20 border-white/10 text-white disabled:opacity-50"
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="space-y-2">
-                                            <Label className="text-slate-300">Helpline Number</Label>
-                                            <Input
-                                                disabled={!isEditing}
-                                                value={settings?.helpline_number || ""}
-                                                onChange={(e) => setSettings({ ...settings, helpline_number: e.target.value })}
-                                                placeholder="9999999999"
-                                                className="bg-black/20 border-white/10 text-white disabled:opacity-50"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label className="text-slate-300">City</Label>
-                                            <Input
-                                                disabled={!isEditing}
-                                                value={settings?.city || ""}
-                                                onChange={(e) => setSettings({ ...settings, city: e.target.value })}
-                                                placeholder="Kota"
-                                                className="bg-black/20 border-white/10 text-white disabled:opacity-50"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label className="text-slate-300">Address</Label>
-                                            <Input
-                                                disabled={!isEditing}
-                                                value={settings?.address || ""}
-                                                onChange={(e) => setSettings({ ...settings, address: e.target.value })}
-                                                placeholder="Full Address"
-                                                className="bg-black/20 border-white/10 text-white disabled:opacity-50"
-                                            />
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider border-b border-white/5 pb-2">Location</h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <Label className="text-slate-300">City</Label>
+                                                <Input
+                                                    disabled={!isEditing}
+                                                    value={settings?.city || ""}
+                                                    onChange={(e) => setSettings({ ...settings, city: e.target.value })}
+                                                    placeholder="Kota"
+                                                    className="bg-black/20 border-white/10 text-white disabled:opacity-50"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label className="text-slate-300">Full Address</Label>
+                                                <Input
+                                                    disabled={!isEditing}
+                                                    value={settings?.address || ""}
+                                                    onChange={(e) => setSettings({ ...settings, address: e.target.value })}
+                                                    placeholder="123, Street Name, Area"
+                                                    className="bg-black/20 border-white/10 text-white disabled:opacity-50"
+                                                />
+                                            </div>
+                                            <div className="space-y-2 md:col-span-2">
+                                                <Label className="text-slate-300">Google Maps Link</Label>
+                                                <Input
+                                                    disabled={!isEditing}
+                                                    value={settings?.google_map_link || ""}
+                                                    onChange={(e) => setSettings({ ...settings, google_map_link: e.target.value })}
+                                                    placeholder="https://maps.google.com/..."
+                                                    className="bg-black/20 border-white/10 text-white disabled:opacity-50"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 
                                     {isEditing && (
-                                        <div className="flex gap-2 mt-2">
+                                        <div className="flex gap-2 mt-4 pt-4 border-t border-white/5">
                                             <Button
                                                 onClick={handleSave}
                                                 disabled={saving}
@@ -212,9 +318,199 @@ export default function SettingsClient({ initialSettings }: SettingsClientProps)
                             </Card>
                         </TabsContent>
 
+                        {/* TAB 2: OPERATIONS */}
+                        <TabsContent value="operations" className="h-full outline-none">
+                            <Card className="bg-gradient-to-br from-white/[0.03] to-transparent border-white/10 border-blue-500/10 backdrop-blur-md shadow-2xl rounded-2xl overflow-hidden h-full flex flex-col">
+                                <CardHeader className="flex flex-row items-center justify-between flex-shrink-0">
+                                    <div>
+                                        <CardTitle className="text-white flex items-center gap-2"><Clock className="h-5 w-5 text-blue-500" /> Operational Details</CardTitle>
+                                        <CardDescription>Manage your working hours and institute type.</CardDescription>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        {!isEditing && (
+                                            <Button onClick={() => setIsEditing(true)} variant="outline" className="border-white/10 text-slate-300 hover:bg-white/5">Edit Operations</Button>
+                                        )}
+                                    </div>
+                                </CardHeader>
+                                <CardContent className="space-y-6 flex-1 overflow-y-auto custom-scrollbar">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label className="text-slate-300">Institute Type</Label>
+                                            <Input
+                                                disabled={!isEditing}
+                                                value={settings?.institute_type || ""}
+                                                onChange={(e) => setSettings({ ...settings, institute_type: e.target.value })}
+                                                placeholder="e.g. Solution, School, College"
+                                                className="bg-black/20 border-white/10 text-white disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-slate-300">Founded Year</Label>
+                                            <Input
+                                                disabled={!isEditing}
+                                                value={settings?.founded_year || ""}
+                                                onChange={(e) => setSettings({ ...settings, founded_year: e.target.value })}
+                                                placeholder="2015"
+                                                className="bg-black/20 border-white/10 text-white disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4 md:col-span-2">
+                                            <div className="space-y-2">
+                                                <Label className="text-slate-300">Opening Time</Label>
+                                                <Input
+                                                    type="time"
+                                                    disabled={!isEditing}
+                                                    value={settings?.business_hours_start || "09:00"}
+                                                    onChange={(e) => setSettings({ ...settings, business_hours_start: e.target.value })}
+                                                    className="bg-black/20 border-white/10 text-white disabled:opacity-50"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label className="text-slate-300">Closing Time</Label>
+                                                <Input
+                                                    type="time"
+                                                    disabled={!isEditing}
+                                                    value={settings?.business_hours_end || "18:00"}
+                                                    onChange={(e) => setSettings({ ...settings, business_hours_end: e.target.value })}
+                                                    className="bg-black/20 border-white/10 text-white disabled:opacity-50"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2 md:col-span-2">
+                                            <Label className="text-slate-300">Brochure / Prospectus URL</Label>
+                                            <Input
+                                                disabled={!isEditing}
+                                                value={settings?.brochure_url || ""}
+                                                onChange={(e) => setSettings({ ...settings, brochure_url: e.target.value })}
+                                                placeholder="https://drive.google.com/..."
+                                                className="bg-black/20 border-white/10 text-white disabled:opacity-50"
+                                            />
+                                        </div>
+                                    </div>
+                                    {isEditing && (
+                                        <div className="flex gap-2 mt-4 pt-4 border-t border-white/5">
+                                            <Button onClick={handleSave} disabled={saving} className="bg-white text-black hover:bg-slate-200 min-w-[140px]">
+                                                {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+                                                {saving ? "Saving..." : "Save Changes"}
+                                            </Button>
+                                            <Button onClick={handleCancel} variant="ghost" className="text-slate-400 hover:text-white hover:bg-white/5">Cancel</Button>
+                                        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
 
+                        {/* TAB 3: SOCIAL */}
+                        <TabsContent value="social" className="h-full outline-none">
+                            <Card className="bg-gradient-to-br from-white/[0.03] to-transparent border-white/10 border-pink-500/10 backdrop-blur-md shadow-2xl rounded-2xl overflow-hidden h-full flex flex-col">
+                                <CardHeader className="flex flex-row items-center justify-between flex-shrink-0">
+                                    <div>
+                                        <CardTitle className="text-white flex items-center gap-2"><Share2 className="h-5 w-5 text-pink-500" /> Social Presence</CardTitle>
+                                        <CardDescription>Connect your social media accounts.</CardDescription>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        {!isEditing && (
+                                            <Button onClick={() => setIsEditing(true)} variant="outline" className="border-white/10 text-slate-300 hover:bg-white/5">Edit Socials</Button>
+                                        )}
+                                    </div>
+                                </CardHeader>
+                                <CardContent className="space-y-6 flex-1 overflow-y-auto custom-scrollbar">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label className="text-slate-300">Instagram URL</Label>
+                                            <Input
+                                                disabled={!isEditing}
+                                                value={settings?.instagram_url || ""}
+                                                onChange={(e) => setSettings({ ...settings, instagram_url: e.target.value })}
+                                                placeholder="https://instagram.com/..."
+                                                className="bg-black/20 border-white/10 text-white disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-slate-300">YouTube URL</Label>
+                                            <Input
+                                                disabled={!isEditing}
+                                                value={settings?.youtube_url || ""}
+                                                onChange={(e) => setSettings({ ...settings, youtube_url: e.target.value })}
+                                                placeholder="https://youtube.com/@..."
+                                                className="bg-black/20 border-white/10 text-white disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-slate-300">Facebook URL</Label>
+                                            <Input
+                                                disabled={!isEditing}
+                                                value={settings?.facebook_url || ""}
+                                                onChange={(e) => setSettings({ ...settings, facebook_url: e.target.value })}
+                                                placeholder="https://facebook.com/..."
+                                                className="bg-black/20 border-white/10 text-white disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-slate-300">LinkedIn URL</Label>
+                                            <Input
+                                                disabled={!isEditing}
+                                                value={settings?.linkedin_url || ""}
+                                                onChange={(e) => setSettings({ ...settings, linkedin_url: e.target.value })}
+                                                placeholder="https://linkedin.com/in/..."
+                                                className="bg-black/20 border-white/10 text-white disabled:opacity-50"
+                                            />
+                                        </div>
+                                    </div>
+                                    {isEditing && (
+                                        <div className="flex gap-2 mt-4 pt-4 border-t border-white/5">
+                                            <Button onClick={handleSave} disabled={saving} className="bg-white text-black hover:bg-slate-200 min-w-[140px]">
+                                                {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+                                                {saving ? "Saving..." : "Save Changes"}
+                                            </Button>
+                                            <Button onClick={handleCancel} variant="ghost" className="text-slate-400 hover:text-white hover:bg-white/5">Cancel</Button>
+                                        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
 
-                        {/* TAB 3: INTEGRATIONS */}
+                        {/* TAB 4: LEGAL */}
+                        <TabsContent value="legal" className="h-full outline-none">
+                            <Card className="bg-gradient-to-br from-white/[0.03] to-transparent border-white/10 border-amber-500/10 backdrop-blur-md shadow-2xl rounded-2xl overflow-hidden h-full flex flex-col">
+                                <CardHeader className="flex flex-row items-center justify-between flex-shrink-0">
+                                    <div>
+                                        <CardTitle className="text-white flex items-center gap-2"><FileText className="h-5 w-5 text-amber-500" /> Legal Information</CardTitle>
+                                        <CardDescription>Official business details.</CardDescription>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        {!isEditing && (
+                                            <Button onClick={() => setIsEditing(true)} variant="outline" className="border-white/10 text-slate-300 hover:bg-white/5">Edit Legal</Button>
+                                        )}
+                                    </div>
+                                </CardHeader>
+                                <CardContent className="space-y-6 flex-1 overflow-y-auto custom-scrollbar">
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            <Label className="text-slate-300">GSTIN / Tax ID</Label>
+                                            <Input
+                                                disabled={!isEditing}
+                                                value={settings?.gstin || ""}
+                                                onChange={(e) => setSettings({ ...settings, gstin: e.target.value })}
+                                                placeholder="22AAAAA0000A1Z5"
+                                                className="bg-black/20 border-white/10 text-white disabled:opacity-50 font-mono"
+                                            />
+                                        </div>
+                                    </div>
+                                    {isEditing && (
+                                        <div className="flex gap-2 mt-4 pt-4 border-t border-white/5">
+                                            <Button onClick={handleSave} disabled={saving} className="bg-white text-black hover:bg-slate-200 min-w-[140px]">
+                                                {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+                                                {saving ? "Saving..." : "Save Changes"}
+                                            </Button>
+                                            <Button onClick={handleCancel} variant="ghost" className="text-slate-400 hover:text-white hover:bg-white/5">Cancel</Button>
+                                        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        {/* TAB 5: INTEGRATIONS */}
                         <TabsContent value="integrations" className="h-full outline-none">
                             <Card className="bg-gradient-to-br from-white/[0.03] to-transparent border-white/10 border-emerald-500/10 backdrop-blur-md shadow-2xl rounded-2xl overflow-hidden h-full flex flex-col">
                                 <CardHeader className="flex-shrink-0">
@@ -246,21 +542,7 @@ export default function SettingsClient({ initialSettings }: SettingsClientProps)
                             </Card>
                         </TabsContent>
 
-                        {/* TAB 4: SECURITY */}
-                        <TabsContent value="security" className="h-full outline-none">
-                            <Card className="bg-gradient-to-br from-red-500/[0.03] to-transparent border-red-500/20 backdrop-blur-md shadow-2xl rounded-2xl overflow-hidden h-full flex flex-col">
-                                <CardHeader className="flex-shrink-0">
-                                    <CardTitle className="text-red-500 flex items-center gap-2">
-                                        <Lock className="h-5 w-5" /> Danger Zone
-                                    </CardTitle>
-                                    <CardDescription className="text-red-200/50">Irreversible actions.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="flex gap-4 flex-1 overflow-y-auto custom-scrollbar">
-                                    <Button variant="destructive">Pause All Agents</Button>
-                                    <Button variant="ghost" className="text-red-400 hover:bg-red-500/10 hover:text-red-500">Delete Institute Account</Button>
-                                </CardContent>
-                            </Card>
-                        </TabsContent>
+
                     </div>
                 </Tabs>
             </div>

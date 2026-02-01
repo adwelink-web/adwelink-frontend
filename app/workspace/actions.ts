@@ -27,8 +27,11 @@ export async function getDashboardData() {
         // Query 2: Today's Leads
         supabase.from("leads").select("*", { count: "exact", head: true }).eq("institute_id", institute_id).gte("created_at", today),
 
-        // Query 3: Hot Leads (status contains 'hot')
-        supabase.from("leads").select("*", { count: "exact", head: true }).eq("institute_id", institute_id).ilike("status", "%hot%"),
+        // Query 3: Hot Leads (from AI Chat History)
+        supabase.from("ai_chat_history")
+            .select("phone_number")
+            .eq("institute_id", institute_id)
+            .gt("admission_chances", 80),
 
         // Query 4: Visit Booked (status contains 'visit' or 'scheduled')
         supabase.from("leads").select("*", { count: "exact", head: true }).eq("institute_id", institute_id).or("status.ilike.%visit%,status.ilike.%scheduled%"),
@@ -47,7 +50,7 @@ export async function getDashboardData() {
         stats: {
             totalLeads: totalLeadsResult.count || 0,
             todayLeads: todayLeadsResult.count || 0,
-            hotLeads: hotLeadsResult.count || 0,
+            hotLeads: hotLeadsResult.data ? new Set(hotLeadsResult.data.map(item => item.phone_number)).size : 0,
             visitBooked: convertedLeadsResult.count || 0,
         },
         recentLeads: recentLeadsResult.data || []

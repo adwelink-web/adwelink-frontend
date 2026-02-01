@@ -142,33 +142,33 @@ export default async function AMSWorkspacePage() {
                         ) : (
                             recentLeads.map((lead) => (
                                 <Link key={lead.id} href={`/workspace/leads?phone=${lead.phone}`} className="block">
-                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-transparent border border-white/5 rounded-lg hover:bg-violet-500/10 transition-colors gap-2 group/item">
-                                {/* Left: Identity */}
-                                <div className="flex items-center gap-3 w-full sm:w-auto min-w-0">
-                                    <div className="h-10 w-10 shrink-0 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm shadow-inner ring-1 ring-white/20">
-                                        {lead.name ? lead.name.charAt(0).toUpperCase() : '?'}
-                                    </div>
-                                    <div className="min-w-0 flex-1">
-                                        <p className="text-sm font-medium text-white truncate">
-                                            {lead.name || "Unknown Caller"}
-                                        </p>
-                                        <p className="text-xs text-muted-foreground flex items-center gap-1.5 truncate">
-                                            <Phone className="h-3 w-3 shrink-0" />
-                                            <span className="truncate">{lead.phone}</span>
-                                        </p>
-                                    </div>
-                                </div>
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-transparent border border-white/5 rounded-lg hover:bg-violet-500/10 transition-colors gap-2 group/item">
+                                        {/* Left: Identity */}
+                                        <div className="flex items-center gap-3 w-full sm:w-auto min-w-0">
+                                            <div className="h-10 w-10 shrink-0 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm shadow-inner ring-1 ring-white/20">
+                                                {lead.name ? lead.name.charAt(0).toUpperCase() : '?'}
+                                            </div>
+                                            <div className="min-w-0 flex-1">
+                                                <p className="text-sm font-medium text-white truncate">
+                                                    {lead.name || "Unknown Caller"}
+                                                </p>
+                                                <p className="text-xs text-muted-foreground flex items-center gap-1.5 truncate">
+                                                    <Phone className="h-3 w-3 shrink-0" />
+                                                    <span className="truncate">{lead.phone}</span>
+                                                </p>
+                                            </div>
+                                        </div>
 
-                                {/* Right: Status */}
-                                <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto mt-2 sm:mt-0 pt-2 border-t border-white/5 sm:border-0 sm:pt-0">
-                                    <div className={`text-[10px] px-2.5 py-1 rounded-full border font-semibold uppercase tracking-wider whitespace-nowrap shrink-0 ${lead.status?.toLowerCase().includes('hot') ? 'bg-red-500/10 text-red-400 border-red-500/20' :
-                                        lead.status?.toLowerCase().includes('warm') ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
-                                            lead.status?.toLowerCase().includes('converted') ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
-                                                'bg-blue-500/10 text-blue-400 border-blue-500/20'}`}>
-                                        {lead.status?.replace(/_/g, ' ') || "NEW"}
+                                        {/* Right: Status */}
+                                        <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto mt-2 sm:mt-0 pt-2 border-t border-white/5 sm:border-0 sm:pt-0">
+                                            <div className={`text-[10px] px-2.5 py-1 rounded-full border font-semibold uppercase tracking-wider whitespace-nowrap shrink-0 ${lead.status?.toLowerCase().includes('hot') ? 'bg-red-500/10 text-red-400 border-red-500/20' :
+                                                lead.status?.toLowerCase().includes('warm') ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
+                                                    lead.status?.toLowerCase().includes('converted') ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
+                                                        'bg-blue-500/10 text-blue-400 border-blue-500/20'}`}>
+                                                {lead.status?.replace(/_/g, ' ') || "NEW"}
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
                                 </Link>
                             ))
                         )}

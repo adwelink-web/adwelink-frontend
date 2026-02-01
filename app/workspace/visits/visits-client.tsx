@@ -18,9 +18,14 @@ interface Visit {
 
 interface Props {
     visits: Visit[]
+    stats: {
+        conversionRate: number
+        totalVisits: number
+        convertedVisits: number
+    }
 }
 
-export default function VisitsClient({ visits }: Props) {
+export default function VisitsClient({ visits, stats }: Props) {
     const formatDate = (dateString: string) => {
         const date = new Date(dateString)
         return date.toLocaleDateString('en-IN', {
@@ -127,8 +132,15 @@ export default function VisitsClient({ visits }: Props) {
                             <ArrowRight className="h-3.5 w-3.5 text-amber-500" />
                         </CardHeader>
                         <CardContent className="p-3 pt-0">
-                            <div className="text-xl font-bold text-amber-400">--</div>
-                            <p className="text-[10px] text-amber-200/60">Visit to admission rate</p>
+                            <div className="text-xl font-bold text-amber-400">
+                                {stats.totalVisits > 0 ? `${stats.conversionRate}%` : "--"}
+                            </div>
+                            <p className="text-[10px] text-amber-200/60">
+                                {stats.totalVisits > 0
+                                    ? `${stats.convertedVisits} / ${stats.totalVisits} visits converted`
+                                    : "No visits recorded yet"
+                                }
+                            </p>
                         </CardContent>
                     </Card>
                 </div>

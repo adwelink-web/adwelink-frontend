@@ -10,7 +10,7 @@ export async function getBillingData() {
     // Fetch institute details (subscription info)
     const { data: institute } = await supabase
         .from("institutes")
-        .select("id, name, city, helpline_number, current_plan, subscription_status, message_limit, messages_used, created_at")
+        .select("id, name, director_name, email, city, helpline_number, current_plan, subscription_status, lead_limit, leads_used, created_at")
         .eq("id", institute_id)
         .single()
 

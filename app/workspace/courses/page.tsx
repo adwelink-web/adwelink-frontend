@@ -39,7 +39,9 @@ import {
 import { getCourses, createCourse, updateCourse, deleteCourse } from "./actions"
 import { WorkspaceHeader } from "@/components/workspace-header"
 
+
 type Course = Database["public"]["Tables"]["courses"]["Row"]
+
 
 export default function CoursesPage() {
     const [courses, setCourses] = React.useState<Course[]>([])
@@ -294,112 +296,112 @@ export default function CoursesPage() {
 
                 {/* Add/Edit Dialog */}
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                    <DialogContent className="bg-[#0B0F19] border-white/10 text-white max-w-lg p-0 overflow-hidden outline-none shadow-[0_0_100px_rgba(0,0,0,0.8)] rounded-3xl">
-                        <DialogHeader className="p-8 bg-gradient-to-b from-white/5 to-transparent border-b border-white/5">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className={`h-10 w-10 rounded-xl flex items-center justify-center border ${isEditing ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-sky-500/10 border-sky-500/20 text-sky-400'}`}>
-                                        {isEditing ? <Edit3 className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
-                                    </div>
-                                    <div className="space-y-0.5">
-                                        <DialogTitle className="text-xl font-bold tracking-tight">
-                                            {isEditing ? "Update Course" : "New Course Details"}
-                                        </DialogTitle>
-                                        <DialogDescription className="text-slate-500 text-xs">
-                                            {isEditing ? "Modify the course name, batch, or fee mapping." : "Enter the primary details for your new academic course."}
-                                        </DialogDescription>
-                                    </div>
+                    <DialogContent className="bg-[#0B0F19] border-white/10 text-white max-w-md p-0 overflow-hidden outline-none shadow-[0_0_100px_rgba(0,0,0,0.8)] rounded-2xl max-h-[80vh]">
+                        <DialogHeader className="p-4 bg-gradient-to-b from-white/5 to-transparent border-b border-white/5">
+                            <div className="flex items-center gap-3">
+                                <div className={`h-8 w-8 rounded-lg flex items-center justify-center border ${isEditing ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-sky-500/10 border-sky-500/20 text-sky-400'}`}>
+                                    {isEditing ? <Edit3 className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                                </div>
+                                <div>
+                                    <DialogTitle className="text-base font-bold">
+                                        {isEditing ? "Update Course" : "New Course"}
+                                    </DialogTitle>
+                                    <DialogDescription className="text-slate-500 text-[10px]">
+                                        {isEditing ? "Modify course details" : "Enter course details"}
+                                    </DialogDescription>
                                 </div>
                             </div>
                         </DialogHeader>
 
-                        <div className="p-8 space-y-6">
+                        <div className="p-4 space-y-4 overflow-y-auto max-h-[50vh]">
                             {/* Identity Controls */}
-                            <div className="space-y-4">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600 ml-1">Full Course Name</label>
+                            <div className="space-y-3">
+                                <div className="space-y-1">
+                                    <label className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Course Name</label>
                                     <Input
                                         placeholder="e.g. NEET Crash Course"
                                         value={formData.name || ""}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        className="bg-white/[0.03] border-white/10 text-white h-12 focus:ring-1 focus:ring-primary/40 text-sm font-bold rounded-xl"
+                                        className="bg-white/[0.03] border-white/10 text-white h-9 text-sm rounded-lg"
                                     />
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600 ml-1">Mode</label>
-                                    <Input
-                                        placeholder="e.g. Offline, Online, or Hybrid"
-                                        value={formData.mode || ""}
-                                        onChange={(e) => setFormData({ ...formData, mode: e.target.value })}
-                                        className="bg-white/[0.03] border-white/10 text-white h-12 text-sm font-medium rounded-xl"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600 ml-1">Target Class</label>
-                                    <Input
-                                        placeholder="e.g. 10th, 12th, Graduate"
-                                        value={formData.target_class || ""}
-                                        onChange={(e) => setFormData({ ...formData, target_class: e.target.value })}
-                                        className="bg-white/[0.03] border-white/10 text-white h-12 text-sm font-medium rounded-xl"
-                                    />
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="space-y-1">
+                                        <label className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Mode</label>
+                                        <Input
+                                            placeholder="Offline/Online"
+                                            value={formData.mode || ""}
+                                            onChange={(e) => setFormData({ ...formData, mode: e.target.value })}
+                                            className="bg-white/[0.03] border-white/10 text-white h-9 text-sm rounded-lg"
+                                        />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Target Class</label>
+                                        <Input
+                                            placeholder="e.g. 12th"
+                                            value={formData.target_class || ""}
+                                            onChange={(e) => setFormData({ ...formData, target_class: e.target.value })}
+                                            className="bg-white/[0.03] border-white/10 text-white h-9 text-sm rounded-lg"
+                                        />
+                                    </div>
                                 </div>
                             </div>
 
                             {/* Financials & Duration */}
-                            <div className="pt-6 border-t border-white/5">
-                                <h4 className="text-[10px] font-bold text-primary uppercase tracking-[0.3em] mb-5">Fees & Program Cycle</h4>
-                                <div className="grid grid-cols-2 gap-5">
-                                    <div className="space-y-2">
-                                        <label className="text-[9px] font-bold uppercase text-slate-600">Total Fee</label>
+                            <div className="pt-3 border-t border-white/5">
+                                <h4 className="text-[9px] font-bold text-emerald-400 uppercase tracking-wider mb-3">Fees & Duration</h4>
+                                <div className="grid grid-cols-3 gap-3">
+                                    <div className="space-y-1">
+                                        <label className="text-[8px] font-bold uppercase text-slate-500">Total Fee</label>
                                         <div className="relative">
-                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 font-mono text-xs">₹</span>
+                                            <span className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-600 font-mono text-xs">₹</span>
                                             <Input
                                                 type="number"
                                                 value={formData.total_fee || ""}
                                                 onChange={(e) => setFormData({ ...formData, total_fee: parseFloat(e.target.value) })}
-                                                className="bg-primary/5 border-primary/20 text-primary pl-7 h-11 font-mono font-black text-sm rounded-xl"
+                                                className="bg-primary/5 border-primary/20 text-primary pl-6 h-9 font-mono font-bold text-sm rounded-lg"
                                             />
                                         </div>
                                     </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[9px] font-bold uppercase text-slate-600">Registration Fee</label>
+                                    <div className="space-y-1">
+                                        <label className="text-[8px] font-bold uppercase text-slate-500">Registration</label>
                                         <div className="relative">
-                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 font-mono text-xs">₹</span>
+                                            <span className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-600 font-mono text-xs">₹</span>
                                             <Input
                                                 type="number"
                                                 value={formData.registration_fee || ""}
                                                 onChange={(e) => setFormData({ ...formData, registration_fee: parseFloat(e.target.value) })}
-                                                className="bg-emerald-500/10 border-emerald-500/20 text-emerald-400 pl-7 h-11 font-mono font-black text-sm rounded-xl"
+                                                className="bg-emerald-500/10 border-emerald-500/20 text-emerald-400 pl-6 h-9 font-mono font-bold text-sm rounded-lg"
                                             />
                                         </div>
                                     </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[9px] font-bold uppercase text-slate-600">Duration (months)</label>
+                                    <div className="space-y-1">
+                                        <label className="text-[8px] font-bold uppercase text-slate-500">Months</label>
                                         <Input
                                             type="number"
                                             value={formData.duration_months || ""}
                                             onChange={(e) => setFormData({ ...formData, duration_months: parseInt(e.target.value) })}
-                                            className="bg-white/[0.03] border-white/10 text-white h-11 font-mono font-bold text-sm rounded-xl"
+                                            className="bg-white/[0.03] border-white/10 text-white h-9 font-mono font-bold text-sm rounded-lg"
                                         />
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="p-8 bg-white/5 border-t border-white/5 flex gap-4">
+                        <div className="p-4 bg-white/5 border-t border-white/5 flex gap-3">
                             <Button
                                 onClick={handleSave}
-                                className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground h-12 font-bold rounded-2xl shadow-xl shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                                className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white h-9 font-bold rounded-xl text-sm flex items-center justify-center gap-2"
                             >
-                                <Save className="h-4 w-4" /> Save Changes
+                                <Save className="h-3.5 w-3.5" /> Save
                             </Button>
                             <Button
                                 variant="outline"
                                 onClick={() => setDialogOpen(false)}
-                                className="flex-1 border-white/10 bg-white/5 text-slate-400 hover:text-white h-12 rounded-2xl font-bold flex items-center justify-center gap-2"
+                                className="flex-1 border-white/10 bg-white/5 text-slate-400 hover:text-white h-9 rounded-xl text-sm font-medium flex items-center justify-center gap-2"
                             >
-                                <X className="h-4 w-4" /> Cancel
+                                <X className="h-3.5 w-3.5" /> Cancel
                             </Button>
                         </div>
                     </DialogContent>

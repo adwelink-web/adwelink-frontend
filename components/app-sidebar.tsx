@@ -25,7 +25,7 @@ import {
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { createClient } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
@@ -327,6 +327,7 @@ export function AppSidebar({ className, user, institute }: SidebarProps) {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-x-2">
                         <Avatar className="h-8 w-8 border border-white/10">
+                            {institute?.logo && <AvatarImage src={institute.logo} className="object-cover" />}
                             <AvatarFallback className="bg-white/10 text-xs">
                                 {user?.user_metadata?.first_name?.charAt(0) || user?.email?.charAt(0).toUpperCase() || "A"}
                             </AvatarFallback>

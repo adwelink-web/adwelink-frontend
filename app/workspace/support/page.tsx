@@ -64,7 +64,7 @@ export default function SupportPage() {
 
             // Get institute_id
             const { data: staffData }: any = await supabase
-                .from("staff_members" as any)
+                .from("staff_members")
                 .select("institute_id")
                 .eq("id", user.id)
                 .single()
@@ -72,7 +72,7 @@ export default function SupportPage() {
             if (!staffData?.institute_id) return
 
             const { data: ticketData, error: ticketError }: any = await supabase
-                .from("support_tickets" as any)
+                .from("support_tickets")
                 .select("*")
                 .eq("institute_id", staffData.institute_id)
                 .order("created_at", { ascending: false })
@@ -109,7 +109,7 @@ export default function SupportPage() {
 
             // Get institute_id from staff_members
             const { data: staffData, error: staffError } = await supabase
-                .from("staff_members" as any)
+                .from("staff_members")
                 .select("institute_id")
                 .eq("id", user.id)
                 .single()

@@ -27,3 +27,32 @@ export async function getScheduledVisits() {
 
     return data || []
 }
+
+export async function getVisitStats() {
+    const supabase = await createServerClient()
+    const institute_id = await getAuthenticatedInstituteId(supabase)
+
+    // Calculate conversion rate from visits
+    const { count: totalVisits } = await supabase
+        .from("leads")
+        .select("*", { count: 'exact', head: true })
+        .eq("institute_id", institute_id)
+        .not("visit_date", "is", null)
+
+    const { count: convertedVisits } = await supabase
+        .from("leads")
+        .select("*", { count: 'exact', head: true })
+        .eq("institute_id", institute_id)
+        .not("visit_date", "is", null)
+        .eq("status", "converted")
+
+    const conversionRate = totalVisits && totalVisits > 0
+        ? Math.round((convertedVisits || 0) / totalVisits * 100)
+        : 0
+
+    return {
+        conversionRate,
+        totalVisits: totalVisits || 0,
+        convertedVisits: convertedVisits || 0
+    }
+}
