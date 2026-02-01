@@ -137,12 +137,7 @@ export function AppSidebar({ className, user, institute }: SidebarProps) {
             color: "text-indigo-400",
             title: "Security"
         },
-        {
-            label: "Settings",
-            icon: Settings,
-            href: "/super-admin/settings",
-            color: "text-slate-400",
-        },
+
         {
             label: "Onboard Client",
             icon: Users,

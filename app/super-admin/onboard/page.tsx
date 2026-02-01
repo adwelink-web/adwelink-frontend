@@ -1,12 +1,21 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Building2, Phone, Key, CheckCircle, ArrowRight, Loader2, UserPlus, ArrowLeft } from "lucide-react"
-import { WorkspaceHeader } from "@/components/workspace-header"
+import {
+    CheckCircle,
+    ArrowLeft,
+    ArrowRight,
+    Loader2,
+    Sparkles,
+    Zap,
+    Building,
+    MapPin,
+    Smartphone
+} from "lucide-react"
 import { createClient } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
@@ -17,276 +26,362 @@ export default function OnboardPage() {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
 
-    // Form data
+    // Form Data
     const [formData, setFormData] = useState({
         name: "",
+        director_name: "",
+        admin_email: "", // User Login
+        email: "", // Institute Contact
+        website: "",
         city: "",
-        helpline_number: "",
         address: "",
+        google_map_link: "",
+        helpline_number: "",
         phone_id: "",
         access_token: "",
         current_plan: "trial"
     })
 
+    const totalSteps = 4
+
     const updateField = (field: string, value: string) => {
         setFormData(prev => ({ ...prev, [field]: value }))
     }
+
+    const nextStep = () => setStep(prev => Math.min(prev + 1, totalSteps))
+    const prevStep = () => setStep(prev => Math.max(prev - 1, 1))
 
     const handleSubmit = async () => {
         setLoading(true)
         setError("")
 
         try {
-            const supabase = createClient()
+            const response = await fetch('/api/onboard', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            })
 
-            const { error: insertError } = await supabase
-                .from("institutes")
-                .insert([{
-                    name: formData.name,
-                    city: formData.city,
-                    helpline_number: formData.helpline_number,
-                    address: formData.address,
-                    phone_id: formData.phone_id || null,
-                    access_token: formData.access_token || null,
-                    current_plan: formData.current_plan as "trial" | "starter" | "growth" | "domination",
-                    message_limit: formData.current_plan === "starter" ? 300 :
-                        formData.current_plan === "growth" ? 1000 :
-                            formData.current_plan === "domination" ? 5000 : 50,
-                    messages_used: 0
-                }])
+            const data = await response.json()
 
-            if (insertError) throw insertError
+            if (!response.ok) {
+                throw new Error(data.error || "Failed to onboard institute")
+            }
 
-            // Success!
-            setStep(4)
-            setTimeout(() => {
-                router.push("/super-admin/institutes")
-            }, 2000)
+            setStep(5)
+            setTimeout(() => router.push("/super-admin/institutes"), 2200)
 
-        } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+        } catch (err: any) {
             setError(err.message || "Failed to create institute")
-        } finally {
             setLoading(false)
         }
     }
 
+    // Validation
+    const isStep1Valid = formData.name && formData.director_name && formData.admin_email
+    const isStep2Valid = formData.city && formData.helpline_number
+    const isStep3Valid = formData.phone_id && formData.access_token
+
     return (
-        <div className="h-full w-full overflow-hidden flex flex-col relative">
-            {/* Main Scrollable Container */}
-            <div className="flex-1 w-full h-full overflow-y-auto custom-scrollbar relative z-10">
+        <div className="h-full w-full flex items-center justify-center relative bg-[#050505] text-white font-sans overflow-hidden">
 
-                {/* Sticky Blurred Header Section */}
-                <div className="sticky top-0 z-50 backdrop-blur-xl px-4 md:px-8 py-4 mb-2">
-                    <div className="relative z-10 max-w-2xl mx-auto">
-                        {/* Back Button */}
-                        <Link href="/super-admin/institutes" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors">
-                            <ArrowLeft className="h-4 w-4" /> Back to Institutes
-                        </Link>
+            {/* 🌌 Premium Ambient Effects */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-indigo-600/20 blur-[120px] rounded-full animate-pulse" />
+                <div className="absolute top-[20%] -right-[10%] w-[40%] h-[40%] bg-purple-600/20 blur-[120px] rounded-full" />
+                <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black via-black/50 to-transparent" />
+                <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay" />
+            </div>
 
-                        <WorkspaceHeader
-                            title="Onboard New Client"
-                            subtitle="Setup a new institute in Adwelink"
-                            icon={UserPlus}
-                            iconColor="text-primary"
-                            className="p-0" // Remove padding since container has padding
-                        />
-                    </div>
-                </div>
+            {/* Back Link */}
+            <div className="absolute top-6 left-6 z-20">
+                <Link href="/super-admin/institutes" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-xs font-medium tracking-wide uppercase hover:underline decoration-indigo-500 underline-offset-4">
+                    <ArrowLeft className="h-3 w-3" />
+                    Command Center
+                </Link>
+            </div>
 
-                {/* Content Section */}
-                <div className="pb-20 px-4 md:px-8 max-w-2xl mx-auto space-y-6">
-                    {/* Progress Steps */}
-                    <div className="flex items-center justify-center gap-4 py-4">
-                        {[1, 2, 3].map((s) => (
-                            <div key={s} className="flex items-center gap-2">
-                                <div className={`h-10 w-10 rounded-full flex items-center justify-center text-sm font-bold transition-all ${step >= s ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30 ring-2 ring-primary/50" : "bg-muted text-muted-foreground border border-border"
-                                    }`}>
-                                    {step > s ? <CheckCircle className="h-5 w-5" /> : s}
-                                </div>
-                                <span className={`text-sm hidden sm:block ${step >= s ? "text-foreground font-medium" : "text-muted-foreground"}`}>
-                                    {s === 1 ? "Basic Info" : s === 2 ? "WhatsApp" : "Plan"}
-                                </span>
-                                {s < 3 && <div className={`w-12 h-0.5 ${step > s ? "bg-primary" : "bg-muted"}`} />}
+            <div className="w-full max-w-[440px] px-4 relative z-10">
+                <AnimatePresence mode="wait">
+                    {step === 5 ? (
+                        <motion.div
+                            key="success"
+                            initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+                            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                            className="bg-black/60 border border-emerald-500/30 rounded-3xl p-8 text-center backdrop-blur-2xl shadow-[0_0_50px_rgba(16,185,129,0.1)] relative overflow-hidden"
+                        >
+                            <div className="absolute inset-0 bg-emerald-500/5 animate-pulse" />
+                            <div className="h-20 w-20 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/30">
+                                <CheckCircle className="h-10 w-10 text-black" />
                             </div>
-                        ))}
-                    </div>
+                            <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">System Online</h2>
+                            <p className="text-emerald-400/80 text-sm font-medium">Initializing Dashboard...</p>
+                        </motion.div>
+                    ) : (
+                        <motion.div
+                            key={step}
+                            initial={{ opacity: 0, y: 15 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -15 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                            className="group relative"
+                        >
+                            {/* Card Container - Compact & Premium */}
+                            <div className="bg-[#0f0f11]/80 border border-white/10 rounded-3xl shadow-2xl backdrop-blur-xl overflow-hidden relative">
 
-                    {/* Step 1: Basic Info */}
-                    {step === 1 && (
-                        <Card className="bg-gradient-to-br from-primary/10 to-transparent border-border backdrop-blur-md shadow-lg bg-card/50">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2 text-foreground">
-                                    <Building2 className="h-5 w-5 text-primary" />
-                                    Institute Details
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div>
-                                    <Label className="text-muted-foreground">Institute Name *</Label>
-                                    <Input
-                                        placeholder="e.g., Indore Academy of Excellence"
-                                        value={formData.name}
-                                        onChange={(e) => updateField("name", e.target.value)}
-                                        className="mt-1 bg-muted/50 border-border focus:border-primary/50"
-                                    />
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <Label className="text-muted-foreground">City</Label>
-                                        <Input
-                                            placeholder="e.g., Indore"
-                                            value={formData.city}
-                                            onChange={(e) => updateField("city", e.target.value)}
-                                            className="mt-1 bg-muted/50 border-border focus:border-primary/50"
-                                        />
-                                    </div>
-                                    <div>
-                                        <Label className="text-muted-foreground">Helpline Number</Label>
-                                        <Input
-                                            placeholder="e.g., 9876543210"
-                                            value={formData.helpline_number}
-                                            onChange={(e) => updateField("helpline_number", e.target.value)}
-                                            className="mt-1 bg-muted/50 border-border focus:border-primary/50"
-                                        />
-                                    </div>
-                                </div>
-                                <div>
-                                    <Label className="text-muted-foreground">Address</Label>
-                                    <Input
-                                        placeholder="Full address"
-                                        value={formData.address}
-                                        onChange={(e) => updateField("address", e.target.value)}
-                                        className="mt-1 bg-muted/50 border-border focus:border-primary/50"
-                                    />
-                                </div>
+                                {/* Header Stencil */}
+                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 opacity-50" />
 
-                                <Button
-                                    onClick={() => setStep(2)}
-                                    disabled={!formData.name}
-                                    className="w-full mt-4 font-bold shadow-lg shadow-primary/25"
-                                >
-                                    Next: WhatsApp Setup <ArrowRight className="h-4 w-4 ml-2" />
-                                </Button>
-                            </CardContent>
-                        </Card>
-                    )}
-
-                    {/* Step 2: WhatsApp */}
-                    {step === 2 && (
-                        <Card className="bg-gradient-to-br from-emerald-500/10 to-transparent border-border backdrop-blur-md shadow-lg bg-card/50">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2 text-foreground">
-                                    <Phone className="h-5 w-5 text-emerald-500" />
-                                    WhatsApp Business Setup
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-sm">
-                                    <p className="font-bold text-amber-400 flex items-center gap-2">⚠️ Optional</p>
-                                    <p className="text-xs text-amber-200/70 mt-1">Skip if client hasn&apos;t setup WhatsApp Business API yet. You can add later.</p>
-                                </div>
-
-                                <div>
-                                    <Label className="text-muted-foreground">WhatsApp Phone Number ID</Label>
-                                    <Input
-                                        placeholder="e.g., 123456789012345"
-                                        value={formData.phone_id}
-                                        onChange={(e) => updateField("phone_id", e.target.value)}
-                                        className="mt-1 bg-muted/50 border-border focus:border-emerald-500/50"
-                                    />
-                                </div>
-                                <div>
-                                    <Label className="text-muted-foreground">Access Token</Label>
-                                    <Input
-                                        type="password"
-                                        placeholder="Meta API Access Token"
-                                        value={formData.access_token}
-                                        onChange={(e) => updateField("access_token", e.target.value)}
-                                        className="mt-1 bg-muted/50 border-border focus:border-emerald-500/50"
-                                    />
-                                </div>
-
-                                <div className="flex gap-4 mt-4">
-                                    <Button variant="outline" onClick={() => setStep(1)} className="flex-1 hover:bg-muted/50">
-                                        Back
-                                    </Button>
-                                    <Button onClick={() => setStep(3)} className="flex-1 font-bold shadow-lg shadow-primary/25">
-                                        Next: Select Plan <ArrowRight className="h-4 w-4 ml-2" />
-                                    </Button>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    )}
-
-                    {/* Step 3: Plan */}
-                    {step === 3 && (
-                        <Card className="bg-gradient-to-br from-amber-500/10 to-transparent border-border backdrop-blur-md shadow-lg bg-card/50">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2 text-foreground">
-                                    <Key className="h-5 w-5 text-amber-500" />
-                                    Select Plan
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                {[
-                                    { id: "trial", name: "Trial", price: "₹0", limit: "50 messages", color: "slate" },
-                                    { id: "starter", name: "Starter", price: "₹7,999/mo", limit: "300 leads", color: "cyan" },
-                                    { id: "growth", name: "Growth", price: "₹14,999/mo", limit: "1,000 leads", color: "emerald" },
-                                    { id: "domination", name: "Domination", price: "₹29,999/mo", limit: "Unlimited*", color: "violet" },
-                                ].map((plan) => (
-                                    <div
-                                        key={plan.id}
-                                        onClick={() => updateField("current_plan", plan.id)}
-                                        className={`p-4 rounded-xl border cursor-pointer transition-all hover:scale-[1.01] ${formData.current_plan === plan.id
-                                            ? "border-primary bg-primary/10 shadow-[0_0_20px_rgba(var(--primary),0.15)] ring-1 ring-primary/30"
-                                            : "border-border bg-muted/50 hover:border-foreground/20"
-                                            }`}
-                                    >
-                                        <div className="flex items-center justify-between">
-                                            <div>
-                                                <p className="font-bold text-foreground">{plan.name}</p>
-                                                <p className="text-xs text-muted-foreground">{plan.limit}</p>
-                                            </div>
-                                            <p className={`text-lg font-bold ${formData.current_plan === plan.id ? "text-primary" : "text-foreground"}`}>{plan.price}</p>
+                                {/* Header */}
+                                <div className="px-6 py-5 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-lg bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                                            {step === 1 && <Building className="h-4 w-4 text-white" />}
+                                            {step === 2 && <MapPin className="h-4 w-4 text-white" />}
+                                            {step === 3 && <Smartphone className="h-4 w-4 text-white" />}
+                                            {step === 4 && <Zap className="h-4 w-4 text-white" />}
+                                        </div>
+                                        <div>
+                                            <h1 className="text-sm font-bold text-white tracking-wide">
+                                                {step === 1 && "Institute Profile"}
+                                                {step === 2 && "Location Data"}
+                                                {step === 3 && "Connectivity"}
+                                                {step === 4 && "Select Plan"}
+                                            </h1>
+                                            <p className="text-[10px] text-slate-400 font-medium">STEP {step} OF {totalSteps}</p>
                                         </div>
                                     </div>
-                                ))}
 
-                                {error && (
-                                    <p className="text-destructive text-sm text-center bg-destructive/10 border border-destructive/20 rounded-lg p-3">{error}</p>
-                                )}
-
-                                <div className="flex gap-4 mt-4">
-                                    <Button variant="outline" onClick={() => setStep(2)} className="flex-1 hover:bg-muted/50">
-                                        Back
-                                    </Button>
-                                    <Button
-                                        onClick={handleSubmit}
-                                        disabled={loading}
-                                        className="flex-1 font-bold shadow-lg shadow-primary/25"
-                                    >
-                                        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create Institute"}
-                                    </Button>
+                                    {/* Progress Bar */}
+                                    <div className="absolute bottom-0 left-0 w-full h-[2px] bg-white/5">
+                                        <motion.div
+                                            className="h-full bg-indigo-500 box-shadow-[0_0_10px_indigo]"
+                                            initial={{ width: `${((step - 1) / totalSteps) * 100}%` }}
+                                            animate={{ width: `${(step / totalSteps) * 100}%` }}
+                                            transition={{ duration: 0.3 }}
+                                        />
+                                    </div>
                                 </div>
-                            </CardContent>
-                        </Card>
-                    )}
 
-                    {/* Step 4: Success */}
-                    {step === 4 && (
-                        <Card className="bg-gradient-to-br from-emerald-500/10 to-transparent border-emerald-500/30 shadow-lg shadow-emerald-500/10 bg-card/50">
-                            <CardContent className="py-16 text-center">
-                                <div className="h-20 w-20 rounded-full bg-emerald-500 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/30 ring-4 ring-emerald-500/20">
-                                    <CheckCircle className="h-10 w-10 text-white" />
+                                <div className="p-6 space-y-5">
+
+                                    {/* Step 1: Identity */}
+                                    {step === 1 && (
+                                        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-4">
+                                            <div className="group/input relative">
+                                                <Label className="text-[10px] text-indigo-300/80 uppercase font-bold tracking-wider mb-1.5 block ml-1">Institute Name</Label>
+                                                <Input
+                                                    value={formData.name}
+                                                    onChange={(e) => updateField("name", e.target.value)}
+                                                    placeholder="e.g. Acme Academy"
+                                                    className="h-10 bg-black/40 border-white/10 text-sm focus:border-indigo-500 focus:bg-indigo-950/20 focus:ring-0 transition-all rounded-xl placeholder:text-slate-600"
+                                                    autoFocus
+                                                />
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <Label className="text-[10px] text-indigo-300/80 uppercase font-bold tracking-wider mb-1.5 block ml-1">Director Name</Label>
+                                                    <Input
+                                                        value={formData.director_name}
+                                                        onChange={(e) => updateField("director_name", e.target.value)}
+                                                        placeholder="Name"
+                                                        className="h-10 bg-black/40 border-white/10 text-sm focus:border-indigo-500 focus:bg-indigo-950/20 transition-all rounded-xl placeholder:text-slate-600"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <Label className="text-[10px] text-indigo-300/80 uppercase font-bold tracking-wider mb-1.5 block ml-1">Admin Login Email <span className="text-indigo-400">*</span></Label>
+                                                    <Input
+                                                        value={formData.admin_email}
+                                                        onChange={(e) => updateField("admin_email", e.target.value)}
+                                                        placeholder="Login Email"
+                                                        className="h-10 bg-black/40 border-white/10 text-sm focus:border-indigo-500 focus:bg-indigo-950/20 transition-all rounded-xl placeholder:text-slate-600"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <Label className="text-[10px] text-indigo-300/80 uppercase font-bold tracking-wider mb-1.5 block ml-1">Institute Email (Public)</Label>
+                                                    <Input
+                                                        value={formData.email}
+                                                        onChange={(e) => updateField("email", e.target.value)}
+                                                        placeholder="contact@institute.com"
+                                                        className="h-10 bg-black/40 border-white/10 text-sm focus:border-indigo-500 focus:bg-indigo-950/20 transition-all rounded-xl placeholder:text-slate-600"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <Label className="text-[10px] text-indigo-300/80 uppercase font-bold tracking-wider mb-1.5 block ml-1">Website</Label>
+                                                    <Input
+                                                        value={formData.website}
+                                                        onChange={(e) => updateField("website", e.target.value)}
+                                                        placeholder="https://"
+                                                        className="h-10 bg-black/40 border-white/10 text-sm focus:border-indigo-500 focus:bg-indigo-950/20 transition-all rounded-xl placeholder:text-slate-600"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    )}
+
+                                    {/* Step 2: Location */}
+                                    {step === 2 && (
+                                        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-4">
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <Label className="text-[10px] text-purple-300/80 uppercase font-bold tracking-wider mb-1.5 block ml-1">City</Label>
+                                                    <Input
+                                                        value={formData.city}
+                                                        onChange={(e) => updateField("city", e.target.value)}
+                                                        placeholder="City"
+                                                        className="h-10 bg-black/40 border-white/10 text-sm focus:border-purple-500 focus:bg-purple-950/20 transition-all rounded-xl placeholder:text-slate-600"
+                                                        autoFocus
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <Label className="text-[10px] text-purple-300/80 uppercase font-bold tracking-wider mb-1.5 block ml-1">Helpline</Label>
+                                                    <Input
+                                                        value={formData.helpline_number}
+                                                        onChange={(e) => updateField("helpline_number", e.target.value)}
+                                                        placeholder="+91..."
+                                                        className="h-10 bg-black/40 border-white/10 text-sm focus:border-purple-500 focus:bg-purple-950/20 transition-all rounded-xl placeholder:text-slate-600"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <Label className="text-[10px] text-purple-300/80 uppercase font-bold tracking-wider mb-1.5 block ml-1">Full Address</Label>
+                                                <Input
+                                                    value={formData.address}
+                                                    onChange={(e) => updateField("address", e.target.value)}
+                                                    placeholder="Address"
+                                                    className="h-10 bg-black/40 border-white/10 text-sm focus:border-purple-500 focus:bg-purple-950/20 transition-all rounded-xl placeholder:text-slate-600"
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label className="text-[10px] text-purple-300/80 uppercase font-bold tracking-wider mb-1.5 block ml-1">Maps Link</Label>
+                                                <Input
+                                                    value={formData.google_map_link}
+                                                    onChange={(e) => updateField("google_map_link", e.target.value)}
+                                                    placeholder="https://"
+                                                    className="h-10 bg-black/40 border-white/10 text-sm focus:border-purple-500 focus:bg-purple-950/20 transition-all rounded-xl placeholder:text-slate-600"
+                                                />
+                                            </div>
+                                        </motion.div>
+                                    )}
+
+                                    {/* Step 3: Tech */}
+                                    {step === 3 && (
+                                        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-4">
+
+                                            <div>
+                                                <Label className="text-[10px] text-indigo-300/80 uppercase font-bold tracking-wider mb-1.5 block ml-1">Phone Number ID</Label>
+                                                <Input
+                                                    value={formData.phone_id}
+                                                    onChange={(e) => updateField("phone_id", e.target.value)}
+                                                    placeholder="100234..."
+                                                    className="h-10 bg-black/40 border-white/10 text-sm font-mono focus:border-indigo-500 focus:bg-indigo-950/20 transition-all rounded-xl placeholder:text-slate-600"
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label className="text-[10px] text-indigo-300/80 uppercase font-bold tracking-wider mb-1.5 block ml-1">Access Token</Label>
+                                                <Input
+                                                    type="password"
+                                                    value={formData.access_token}
+                                                    onChange={(e) => updateField("access_token", e.target.value)}
+                                                    placeholder="EAAG..."
+                                                    className="h-10 bg-black/40 border-white/10 text-sm font-mono focus:border-indigo-500 focus:bg-indigo-950/20 transition-all rounded-xl placeholder:text-slate-600"
+                                                />
+                                            </div>
+                                        </motion.div>
+                                    )}
+
+                                    {/* Step 4: Plan */}
+                                    {step === 4 && (
+                                        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-2">
+                                            {[
+                                                { id: "trial", name: "TRIAL", price: "Free", limit: "50 Leads", bg: "hover:bg-slate-900/50" },
+                                                { id: "starter", name: "STARTER", price: "₹9,999", limit: "500 Leads/mo", bg: "hover:bg-cyan-900/20" },
+                                                { id: "growth", name: "GROWTH", price: "₹14,999", limit: "1,000 Leads/mo", bg: "hover:bg-emerald-900/20", rec: true },
+                                                { id: "domination", name: "DOMINATION", price: "₹29,999", limit: "5,000 Leads/mo", bg: "hover:bg-purple-900/20" },
+                                            ].map((plan) => (
+                                                <div
+                                                    key={plan.id}
+                                                    onClick={() => updateField("current_plan", plan.id)}
+                                                    className={`cursor-pointer border rounded-xl p-3 flex items-center justify-between transition-all duration-300 group ${formData.current_plan === plan.id
+                                                        ? "bg-gradient-to-r from-white/10 to-transparent border-white/40 shadow-lg shadow-white/5 scale-[1.02]"
+                                                        : `bg-black/20 border-white/5 ${plan.bg}`
+                                                        }`}
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        <div className={`h-4 w-4 rounded-full border-2 flex items-center justify-center transition-colors ${formData.current_plan === plan.id ? "bg-white border-white" : "border-slate-700 bg-transparent"}`}>
+                                                            {formData.current_plan === plan.id && <div className="h-1.5 w-1.5 bg-black rounded-full" />}
+                                                        </div>
+                                                        <div>
+                                                            <div className="flex items-center gap-2">
+                                                                <p className={`text-xs font-bold tracking-wide transition-colors ${formData.current_plan === plan.id ? "text-white" : "text-slate-400 group-hover:text-slate-200"}`}>{plan.name}</p>
+                                                                {plan.rec && <span className="bg-emerald-500/20 text-emerald-400 text-[9px] font-bold px-1.5 py-0.5 rounded border border-emerald-500/30">BEST</span>}
+                                                            </div>
+                                                            <p className="text-[10px] text-slate-500 font-medium">{plan.limit}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <p className={`text-sm font-bold transition-colors ${formData.current_plan === plan.id ? "text-white" : "text-slate-500"}`}>{plan.price}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            {error && <div className="text-red-400 text-xs text-center bg-red-950/30 p-2 rounded-lg border border-red-500/20">{error}</div>}
+                                        </motion.div>
+                                    )}
+
+                                    {/* Footer */}
+                                    <div className="pt-2 flex justify-between items-center">
+                                        <Button
+                                            variant="ghost"
+                                            onClick={prevStep}
+                                            disabled={step === 1 || loading}
+                                            className={`text-slate-500 hover:text-white hover:bg-white/5 transition-all text-xs font-semibold tracking-wide ${step === 1 ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+                                        >
+                                            BACK
+                                        </Button>
+
+                                        {step < 4 ? (
+                                            <Button
+                                                onClick={nextStep}
+                                                disabled={(step === 1 && !isStep1Valid) || (step === 2 && !isStep2Valid) || (step === 3 && !isStep3Valid)}
+                                                className="bg-white text-black hover:bg-slate-100 text-[10px] font-bold uppercase tracking-widest px-8 h-10 rounded-full transition-all duration-300 shadow-lg shadow-white/5 active:scale-95 border border-white/20"
+                                            >
+                                                Next
+                                            </Button>
+                                        ) : (
+                                            <div className="relative group cursor-pointer" onClick={handleSubmit}>
+                                                {/* Gradient Glow */}
+                                                <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full blur opacity-40 group-hover:opacity-100 transition duration-500 group-hover:duration-200"></div>
+
+                                                <Button
+                                                    disabled={loading}
+                                                    className="relative h-12 px-8 bg-[#0B0F19] hover:bg-[#0f1422] text-white border border-white/10 rounded-full overflow-hidden transition-all duration-300 group-hover:scale-[1.02] shadow-2xl flex items-center justify-center gap-3 active:scale-95"
+                                                >
+                                                    {/* Shimmer Effect */}
+                                                    <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent z-10" />
+
+                                                    {/* Tech Grid Background inside button */}
+                                                    <div className="absolute inset-0 opacity-20 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:10px_10px]"></div>
+
+                                                    <span className="relative z-20 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+                                                        {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : "Deploy System"}
+                                                        {!loading && (
+                                                            <div className="h-5 w-5 rounded-full bg-white/10 flex items-center justify-center border border-white/10 group-hover:bg-white group-hover:text-black transition-colors">
+                                                                <ArrowRight className="h-2 w-2" />
+                                                            </div>
+                                                        )}
+                                                    </span>
+                                                </Button>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                                <h2 className="text-2xl font-bold text-foreground mb-2">Institute Created!</h2>
-                                <p className="text-muted-foreground">{formData.name} is now onboarded.</p>
-                                <p className="text-xs text-emerald-400 mt-4 animate-pulse">Redirecting to institutes list...</p>
-                            </CardContent>
-                        </Card>
+                            </div>
+                        </motion.div>
                     )}
-                </div>
+                </AnimatePresence>
             </div>
-        </div>
+        </div >
     )
 }
