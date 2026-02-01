@@ -3,11 +3,20 @@
 import * as React from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-
-import { MessageSquare, Hand, Send, Check, CheckCheck, Users, Sparkles, Search, Smile, ThumbsDown, ChevronDown, Image as ImageIcon, ArrowLeft } from "lucide-react"
+import { MessageSquare, Hand, Send, Check, CheckCheck, Users, Sparkles, Search, Smile, ThumbsDown, ChevronDown, Image as ImageIcon, ArrowLeft, X } from "lucide-react"
 import { createClient } from "@/lib/supabase"
 import { Badge } from "@/components/ui/badge"
 import { WorkspaceHeader } from "@/components/workspace-header"
+import dynamic from 'next/dynamic'
+import { Theme } from 'emoji-picker-react';
+import { toast } from "sonner";
+
+const EmojiPicker = dynamic(() => import('emoji-picker-react'), {
+    ssr: false,
+    loading: () => <div className="flex items-center justify-center w-[300px] h-[400px] bg-[#111623] text-slate-400">Loading Picker...</div>
+});
+
+
 
 // Define the shape of our "Flat" DB row
 type ChatRow = {
@@ -64,272 +73,65 @@ const formatDateDivider = (dateString: string) => {
     });
 };
 
-export default function FeedPage() {
-    const [messages, setMessages] = React.useState<ChatRow[]>([])
-    const [sessions, setSessions] = React.useState<string[]>([])
-    const [selectedSession, setSelectedSession] = React.useState<string | null>(null)
-    const [loading, setLoading] = React.useState(true)
-    const [inputText, setInputText] = React.useState("")
-    const [isSending, setIsSending] = React.useState(false)
-    const [isAiPaused, setIsAiPaused] = React.useState(false)
-    const [sessionSearch, setSessionSearch] = React.useState("")
-    const scrollBottomRef = React.useRef<HTMLDivElement>(null)
-    const scrollContainerRef = React.useRef<HTMLDivElement>(null)
-    const sessionListRef = React.useRef<HTMLDivElement>(null) // Session list scroll container
-    const [showScrollButton, setShowScrollButton] = React.useState(false)
-    const [isChatSheetOpen, setIsChatSheetOpen] = React.useState(false)
+// Helper: Derived Visual Messages
+const getActiveVisualMessages = (messages: ChatRow[], selectedSession: string | null) => {
+    if (!selectedSession) return []
 
-    const [userMap, setUserMap] = React.useState<Record<string, string>>({})
+    const sessionRows = messages.filter(m =>
+        (m.phone_number === selectedSession) || (m.session_id === selectedSession)
+    );
 
-    // Fetch Chat History & Status
-    const fetchHistory = React.useCallback(async () => {
-        // 🔒 PRESERVE SCROLL POSITION (WhatsApp-like behavior)
-        const savedScrollTop = sessionListRef.current?.scrollTop ?? 0
+    const visual: VisualMessage[] = []
 
-        const supabase = createClient()
-
-        // 1. Get Messages
-        const { data: msgData, error: msgError } = await supabase
-            .from("ai_chat_history")
-            .select("*")
-            .order("created_at", { ascending: true })
-
-        if (msgError) {
-            console.error("Chat Fetch Error Detailed:", JSON.stringify(msgError, null, 2))
-        } else {
-            setMessages((msgData as ChatRow[]) || [])
-
-            const sessionMap: Record<string, string> = {}
-            msgData?.forEach((m) => {
-                const sid = (m.phone_number && m.phone_number.trim() !== "")
-                    ? m.phone_number
-                    : (m.session_id || "Unknown")
-                const mTime = m.created_at || "0"
-                if (!sessionMap[sid] || mTime > sessionMap[sid]) {
-                    sessionMap[sid] = mTime
-                }
+    sessionRows.forEach(row => {
+        if (row.user_message) {
+            visual.push({
+                id: `${row.id}_user`,
+                role: "user",
+                content: row.user_message,
+                timestamp: row.created_at || new Date().toISOString(),
+                status: row.status,
+                mediaUrl: (row.message_meta as unknown as MessageMeta)?.media_url || (row.message_meta as unknown as MessageMeta)?.image_url
             })
-
-            const sortedIds = Object.keys(sessionMap).sort((a, b) => {
-                return sessionMap[b].localeCompare(sessionMap[a])
+        }
+        if (row.ai_response) {
+            const isManual = row.intent === "Manual Override"
+            visual.push({
+                id: `${row.id}_ai`,
+                role: "assistant",
+                content: row.ai_response,
+                timestamp: row.created_at || new Date().toISOString(),
+                sentiment: row.sentiment || undefined,
+                isManual: isManual,
+                status: row.status,
+                mediaUrl: (row.message_meta as unknown as MessageMeta)?.media_url || (row.message_meta as unknown as MessageMeta)?.image_url
             })
-
-            setSessions(sortedIds)
-
-            if (sortedIds.length > 0) {
-                const { data: leadData } = await supabase
-                    .from("leads")
-                    .select("name, phone")
-                    .in("phone", sortedIds)
-
-                if (leadData) {
-                    const newMap: Record<string, string> = {}
-                    leadData.forEach((l: { phone: string | null; name: string | null }) => {
-                        if (l.phone && l.name) newMap[l.phone] = l.name
-                    })
-                    setUserMap(prev => ({ ...prev, ...newMap }))
-                }
-            }
-
-            if (sortedIds.length > 0 && !selectedSession) {
-                setSelectedSession(sortedIds[0])
-            }
         }
+    })
 
-        if (selectedSession) {
-            const { data: statusData } = await supabase
-                .from("conversation_states")
-                .select("is_ai_paused")
-                .eq("phone_number", selectedSession)
-                .single()
+    return visual
+}
 
-            setIsAiPaused(statusData?.is_ai_paused || false)
-        }
+// --- EXTRACTED COMPONENTS ---
 
-        setLoading(false)
+interface SessionListProps {
+    loading: boolean;
+    sessions: string[];
+    userMap: Record<string, string>;
+    sessionSearch: string;
+    messages: ChatRow[];
+    selectedSession: string | null;
+    onSessionClick: (sid: string) => void;
+}
 
-        // 🔒 RESTORE SCROLL POSITION after React re-render
-        requestAnimationFrame(() => {
-            if (sessionListRef.current) {
-                sessionListRef.current.scrollTop = savedScrollTop
-            }
-        })
-    }, [selectedSession])
+const SessionList = ({ loading, sessions, userMap, sessionSearch, messages, selectedSession, onSessionClick }: SessionListProps) => {
+    const scrollRef = React.useRef<HTMLDivElement>(null);
 
-    const handleResume = async () => {
-        if (!selectedSession) return;
-        try {
-            await fetch('/api/chat/resume', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone_number: selectedSession })
-            })
-            setIsAiPaused(false)
-            fetchHistory()
-        } catch (e) {
-            console.error("Resume Failed", e)
-        }
-    }
+    // We can't easily preserve scroll top across re-renders from parent if we don't lift the ref. 
+    // BUT since this component is now stable, it will hold its own ref and scroll state naturally!
 
-    const markAsRead = React.useCallback(async (sessionId: string) => {
-        const supabase = createClient()
-        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(sessionId);
-
-        let query = supabase
-            .from("ai_chat_history")
-            .update({
-                is_read: true,
-                updated_at: new Date().toISOString()
-            } as any) // eslint-disable-line @typescript-eslint/no-explicit-any
-            .eq("is_read", false);
-
-        if (isUuid) {
-            query = query.or(`phone_number.eq.${sessionId},session_id.eq.${sessionId}`);
-        } else {
-            query = query.eq("phone_number", sessionId);
-        }
-
-        const { error } = await query;
-
-        if (!error) {
-            fetchHistory()
-        } else {
-            console.error("MarkAsRead Error:", error)
-        }
-    }, [fetchHistory])
-
-    React.useEffect(() => {
-        fetchHistory()
-        // TEMPORARILY DISABLED - Testing scroll issue
-        // const interval = setInterval(fetchHistory, 5000)
-        // return () => clearInterval(interval)
-    }, [fetchHistory])
-
-    React.useEffect(() => {
-        if (selectedSession) {
-            markAsRead(selectedSession)
-        }
-    }, [selectedSession, markAsRead])
-
-    // Simple scroll to bottom function (manual trigger only)
-    const scrollToBottom = () => {
-        if (scrollContainerRef.current) {
-            // With flex-col-reverse, scrollTop = 0 is at bottom (latest)
-            scrollContainerRef.current.scrollTop = 0;
-        }
-    }
-
-    // Track if user has scrolled away from bottom
-    // Using ref to avoid re-render on every scroll
-    const scrollTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
-    const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-        // Capture scrollTop immediately (before setTimeout)
-        const currentScrollTop = e.currentTarget.scrollTop;
-
-        // Clear previous timeout
-        if (scrollTimeoutRef.current) {
-            clearTimeout(scrollTimeoutRef.current);
-        }
-        // Debounce: only update state after scroll stops
-        scrollTimeoutRef.current = setTimeout(() => {
-            // With flex-col-reverse, scrollTop near 0 = at bottom (latest)
-            const isAtBottom = currentScrollTop <= 100;
-            const shouldShowButton = !isAtBottom;
-            // Only update if value changed
-            if (showScrollButton !== shouldShowButton) {
-                setShowScrollButton(shouldShowButton);
-            }
-        }, 100);
-    }
-
-    const handleSend = async () => {
-        if (!selectedSession || !inputText.trim()) return
-
-        setIsSending(true)
-        const textToSend = inputText
-        setInputText("")
-
-        try {
-            const res = await fetch('/api/chat/send', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    phone_number: selectedSession,
-                    message: textToSend,
-                    session_id: selectedSession
-                })
-            })
-
-            const data = await res.json()
-
-            if (!res.ok) {
-                alert(`Message failed: ${data.error || "Unknown Error"}`)
-                setInputText(textToSend)
-            } else {
-                setIsAiPaused(true)
-                await fetchHistory()
-            }
-        } catch (error) {
-            console.error("Send Network Error", error)
-            alert("Network Error: Could not reach server.")
-            setInputText(textToSend)
-        } finally {
-            setIsSending(false)
-        }
-    }
-
-    const getActiveVisualMessages = () => {
-        if (!selectedSession) return []
-
-        const sessionRows = messages.filter(m =>
-            (m.phone_number === selectedSession) || (m.session_id === selectedSession)
-        );
-
-        const visual: VisualMessage[] = []
-
-        sessionRows.forEach(row => {
-            if (row.user_message) {
-                visual.push({
-                    id: `${row.id}_user`,
-                    role: "user",
-                    content: row.user_message,
-                    timestamp: row.created_at || new Date().toISOString(),
-                    status: row.status,
-                    mediaUrl: (row.message_meta as unknown as MessageMeta)?.media_url || (row.message_meta as unknown as MessageMeta)?.image_url
-                })
-            }
-            if (row.ai_response) {
-                const isManual = row.intent === "Manual Override"
-                visual.push({
-                    id: `${row.id}_ai`,
-                    role: "assistant",
-                    content: row.ai_response,
-                    timestamp: row.created_at || new Date().toISOString(),
-                    sentiment: row.sentiment || undefined,
-                    isManual: isManual,
-                    status: row.status,
-                    mediaUrl: (row.message_meta as unknown as MessageMeta)?.media_url || (row.message_meta as unknown as MessageMeta)?.image_url
-                })
-            }
-        })
-
-        return visual
-    }
-
-    const activeVisuals = getActiveVisualMessages()
-
-    // Get unread count for badge
-    const totalUnread = messages.filter(m => m.user_message && !m.is_read).length
-
-    // Handle mobile session click
-    const handleMobileSessionClick = (sessionId: string) => {
-        setSelectedSession(sessionId)
-        setIsChatSheetOpen(true)
-    }
-
-    // Session List Component
-    const SessionList = ({ onSessionClick }: { onSessionClick: (sid: string) => void }) => (
-        <div ref={sessionListRef} className="flex-1 min-h-0 w-full overflow-y-auto custom-scrollbar">
+    return (
+        <div ref={scrollRef} className="flex-1 min-h-0 w-full overflow-y-auto custom-scrollbar">
             <div className="p-2 space-y-1">
                 {loading ? (
                     <div className="py-12 text-center">
@@ -362,9 +164,10 @@ export default function FeedPage() {
                             const sessionMsgs = messages.filter(m => m.phone_number === sessionId || m.session_id === sessionId);
                             const latestMsg = sessionMsgs[sessionMsgs.length - 1];
                             const sentiment = latestMsg?.sentiment?.toLowerCase();
-                            const isUnread = sessionMsgs.some(m => m.user_message && !m.is_read);
-                            const unreadCount = sessionMsgs.filter(m => m.user_message && !m.is_read).length;
                             const isSelected = selectedSession === sessionId;
+                            // Only consider unread if not currently selected
+                            const isUnread = !isSelected && sessionMsgs.some(m => m.user_message && !m.is_read);
+                            const unreadCount = isSelected ? 0 : sessionMsgs.filter(m => m.user_message && !m.is_read).length;
                             const displayName = userMap[sessionId] || sessionId;
                             const isPhoneNumber = !userMap[sessionId] && sessionId.startsWith('+');
 
@@ -390,7 +193,6 @@ export default function FeedPage() {
                                             {displayName.charAt(0).toUpperCase()}
                                         </div>
                                         {/* Online/Sentiment indicator */}
-                                        {/* Online/Sentiment indicator - RESTORED */}
                                         <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-[#0F131E] 
                                             ${(sentiment === 'excited' || sentiment === 'happy') ? 'bg-emerald-500' :
                                                 (sentiment === 'sad' || sentiment === 'frustrated') ? 'bg-rose-500' :
@@ -447,9 +249,147 @@ export default function FeedPage() {
             </div>
         </div>
     )
+}
 
-    // Chat View Component (reusable for desktop and mobile sheet)
-    const ChatView = ({ inSheet = false }: { inSheet?: boolean }) => (
+interface ChatViewProps {
+    inSheet?: boolean;
+    setIsChatSheetOpen: (open: boolean) => void;
+    selectedSession: string | null;
+    userMap: Record<string, string>;
+    isAiPaused: boolean;
+    messages: ChatRow[];
+    loading: boolean;
+    inputText: string;
+    setInputText: (text: string) => void;
+    isSending: boolean;
+    handleResume: () => void;
+    handleSend: (text?: string, mediaUrl?: string) => Promise<void>;
+}
+
+const ChatView = ({
+    inSheet = false,
+    setIsChatSheetOpen,
+    selectedSession,
+    userMap,
+    isAiPaused,
+    messages,
+    loading,
+    inputText,
+    setInputText,
+    isSending,
+    handleResume,
+    handleSend
+}: ChatViewProps) => {
+    const scrollBottomRef = React.useRef<HTMLDivElement>(null)
+    const scrollContainerRef = React.useRef<HTMLDivElement>(null)
+    const scrollTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+    const [showScrollButton, setShowScrollButton] = React.useState(false)
+
+    // Compute active visuals for this view
+    const activeVisuals = React.useMemo(() =>
+        getActiveVisualMessages(messages, selectedSession),
+        [messages, selectedSession]
+    );
+
+    // Simple scroll to bottom function (manual trigger only)
+    const scrollToBottom = () => {
+        if (scrollContainerRef.current) {
+            // With flex-col-reverse, scrollTop = 0 is at bottom (latest)
+            scrollContainerRef.current.scrollTop = 0;
+        }
+    }
+
+    const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+        // Capture scrollTop immediately (before setTimeout)
+        const currentScrollTop = e.currentTarget.scrollTop;
+
+        // Clear previous timeout
+        if (scrollTimeoutRef.current) {
+            clearTimeout(scrollTimeoutRef.current);
+        }
+        // Debounce: only update state after scroll stops
+        scrollTimeoutRef.current = setTimeout(() => {
+            // With flex-col-reverse, scrollTop near 0 = at bottom (latest)
+            const isAtBottom = currentScrollTop <= 100;
+            const shouldShowButton = !isAtBottom;
+            // Only update if value changed
+            if (showScrollButton !== shouldShowButton) {
+                setShowScrollButton(shouldShowButton);
+            }
+        }, 100);
+    }
+
+
+    const [showEmojiPicker, setShowEmojiPicker] = React.useState(false)
+    const [isUploading, setIsUploading] = React.useState(false)
+    const fileInputRef = React.useRef<HTMLInputElement>(null)
+    const emojiPickerRef = React.useRef<HTMLDivElement>(null)
+
+    // Handle Click Outside to Close Picker
+    React.useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target as Node)) {
+                setShowEmojiPicker(false);
+            }
+        };
+
+        if (showEmojiPicker) {
+            document.addEventListener("mousedown", handleClickOutside);
+        } else {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [showEmojiPicker]);
+
+    // Handle Emoji Click
+    const onEmojiClick = (emojiData: any) => {
+        setInputText(inputText + emojiData.emoji)
+        // setShowEmojiPicker(false) // Optional: keep open for multiple emojis
+    }
+
+    // Handle File Upload
+    const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files || e.target.files.length === 0) return;
+        const file = e.target.files[0];
+
+        if (!selectedSession) return;
+
+        setIsUploading(true);
+        const supabase = createClient();
+
+        try {
+            // 1. Upload to Supabase Storage
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+            const filePath = `chat-attachments/${fileName}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('chat-attachments')
+                .upload(filePath, file);
+
+            if (uploadError) throw uploadError;
+
+            // 2. Get Public URL
+            const { data: { publicUrl } } = supabase.storage
+                .from('chat-attachments')
+                .getPublicUrl(filePath);
+
+            // 3. Send Message with Image
+            await handleSend(undefined, publicUrl);
+
+        } catch (error) {
+            console.error("Upload Error:", error);
+            toast.error("Failed to upload image");
+        } finally {
+            setIsUploading(false);
+            if (fileInputRef.current) fileInputRef.current.value = ""; // Reset input
+        }
+    }
+
+    return (
         <div className="flex-1 flex flex-col min-w-0 bg-[#0F131E] h-full relative">
             {/* Chat Header */}
             <div className={`${inSheet ? '' : 'absolute top-0 left-0 right-0'} h-14 md:h-16 border-b border-white/10 flex items-center justify-between px-4 md:px-6 bg-[#0F131E]/60 backdrop-blur-lg shrink-0 z-30`}>
@@ -464,7 +404,7 @@ export default function FeedPage() {
                             <div className="relative">
                                 <Avatar className="h-8 w-8 md:h-9 md:w-9 border border-white/10">
                                     <AvatarFallback className="bg-violet-600 text-white font-bold text-xs">
-                                        {userMap[selectedSession!]?.charAt(0) || selectedSession!.charAt(0)}
+                                        {userMap[selectedSession]?.charAt(0) || selectedSession.charAt(0)}
                                     </AvatarFallback>
                                 </Avatar>
                                 <span className={`absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5 rounded-full border-2 border-[#111623] ${isAiPaused ? "bg-red-500" : "bg-emerald-500"}`} />
@@ -472,7 +412,7 @@ export default function FeedPage() {
 
                             <div>
                                 <h3 className="text-xs md:text-sm font-bold text-white flex items-center gap-2">
-                                    {userMap[selectedSession!] || selectedSession}
+                                    {userMap[selectedSession] || selectedSession}
                                 </h3>
                                 <p className="text-[9px] md:text-[10px] font-medium flex items-center gap-1">
                                     {isAiPaused ? (
@@ -637,10 +577,44 @@ export default function FeedPage() {
             </div>
 
             {/* Input Area */}
-            <div className="p-2 md:p-4 bg-[#0B0F19] border-t border-white/10 shrink-0">
+            <div className="p-2 md:p-4 bg-[#0B0F19] border-t border-white/10 shrink-0 relative">
+                {/* Emoji Picker Popover */}
+                {showEmojiPicker && (
+                    <div ref={emojiPickerRef} className="absolute bottom-full left-4 mb-2 z-50 shadow-2xl rounded-2xl border border-white/20">
+                        <div className="relative">
+                            <EmojiPicker
+                                theme={Theme.DARK}
+                                onEmojiClick={onEmojiClick}
+                                searchDisabled={false}
+                                skinTonesDisabled
+                                width={300}
+                                height={400}
+                            />
+                            <button
+                                onClick={() => setShowEmojiPicker(false)}
+                                className="absolute -top-2 -right-2 bg-slate-800 rounded-full p-1 border border-white/10 hover:bg-red-500/20 hover:text-red-400 transition-colors"
+                            >
+                                <X className="h-4 w-4" />
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* Hidden File Input */}
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                />
+
                 <div className="max-w-4xl mx-auto flex items-center gap-2 md:gap-3">
                     <div className="flex-1 flex items-center bg-[#111623] border border-white/10 rounded-full px-3 md:px-4 min-h-[44px] md:min-h-[52px] focus-within:border-violet-500/50 transition-all">
-                        <button className="p-1.5 md:p-2 text-slate-500 hover:text-violet-400 transition-colors shrink-0">
+                        <button
+                            className={`p-1.5 md:p-2 transition-colors shrink-0 ${showEmojiPicker ? 'text-violet-400' : 'text-slate-500 hover:text-violet-400'}`}
+                            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                        >
                             <Smile className="h-5 w-5 md:h-6 md:w-6" />
                         </button>
 
@@ -653,18 +627,26 @@ export default function FeedPage() {
                             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                         />
 
-                        <button className="hidden sm:block p-1.5 md:p-2 text-slate-500 hover:text-violet-400 transition-colors shrink-0">
-                            <ImageIcon className="h-4 w-4 md:h-5 md:w-5" />
+                        <button
+                            className="hidden sm:block p-1.5 md:p-2 text-slate-500 hover:text-violet-400 transition-colors shrink-0"
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={!selectedSession || isUploading}
+                        >
+                            {isUploading ? (
+                                <div className="h-4 w-4 md:h-5 md:w-5 border-2 border-slate-500 border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                                <ImageIcon className="h-4 w-4 md:h-5 md:w-5" />
+                            )}
                         </button>
                     </div>
 
                     <Button
-                        disabled={!selectedSession || isSending || !inputText.trim()}
+                        disabled={!selectedSession || (isSending && !isUploading) || (!inputText.trim() && !isUploading)}
                         className={`rounded-full h-[44px] w-[44px] md:h-[52px] md:w-[52px] shrink-0 p-0 ${!inputText.trim()
                             ? "bg-[#111623] text-slate-600 cursor-not-allowed border border-white/5"
                             : "bg-violet-600 hover:bg-violet-700 text-white"
                             }`}
-                        onClick={handleSend}
+                        onClick={() => handleSend()}
                     >
                         {isSending ? (
                             <div className="h-4 w-4 md:h-5 md:w-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
@@ -676,10 +658,210 @@ export default function FeedPage() {
             </div>
         </div>
     )
+}
+
+export default function FeedPage() {
+    const [messages, setMessages] = React.useState<ChatRow[]>([])
+    const [sessions, setSessions] = React.useState<string[]>([])
+    const [selectedSession, setSelectedSession] = React.useState<string | null>(null)
+    const [loading, setLoading] = React.useState(true)
+    const [inputText, setInputText] = React.useState("")
+    const [isSending, setIsSending] = React.useState(false)
+    const [isAiPaused, setIsAiPaused] = React.useState(false)
+    const [sessionSearch, setSessionSearch] = React.useState("")
+    const [isChatSheetOpen, setIsChatSheetOpen] = React.useState(false)
+
+    const [userMap, setUserMap] = React.useState<Record<string, string>>({})
+
+    // Fetch Chat History & Status
+    const fetchHistory = React.useCallback(async () => {
+        const supabase = createClient()
+
+        // 1. Get Messages
+        const { data: msgData, error: msgError } = await supabase
+            .from("ai_chat_history")
+            .select("*")
+            .order("created_at", { ascending: true })
+
+        if (msgError) {
+            console.error("Chat Fetch Error Detailed:", JSON.stringify(msgError, null, 2))
+        } else {
+            setMessages((msgData as ChatRow[]) || [])
+
+            const sessionMap: Record<string, string> = {}
+            msgData?.forEach((m) => {
+                const sid = (m.phone_number && m.phone_number.trim() !== "")
+                    ? m.phone_number
+                    : (m.session_id || "Unknown")
+                const mTime = m.created_at || "0"
+                if (!sessionMap[sid] || mTime > sessionMap[sid]) {
+                    sessionMap[sid] = mTime
+                }
+            })
+
+            const sortedIds = Object.keys(sessionMap).sort((a, b) => {
+                return sessionMap[b].localeCompare(sessionMap[a])
+            })
+
+            setSessions(sortedIds)
+
+            if (sortedIds.length > 0) {
+                const { data: leadData } = await supabase
+                    .from("leads")
+                    .select("name, phone")
+                    .in("phone", sortedIds)
+
+                if (leadData) {
+                    const newMap: Record<string, string> = {}
+                    leadData.forEach((l: { phone: string | null; name: string | null }) => {
+                        if (l.phone && l.name) newMap[l.phone] = l.name
+                    })
+                    setUserMap(prev => ({ ...prev, ...newMap }))
+                }
+            }
+
+            if (sortedIds.length > 0 && !selectedSession) {
+                setSelectedSession(sortedIds[0])
+            }
+        }
+
+        if (selectedSession) {
+            const { data: statusData } = await supabase
+                .from("conversation_states")
+                .select("is_ai_paused")
+                .eq("phone_number", selectedSession)
+                .single()
+
+            setIsAiPaused(statusData?.is_ai_paused || false)
+        }
+
+        setLoading(false)
+    }, [selectedSession])
+
+    const handleResume = async () => {
+        if (!selectedSession) return;
+        try {
+            await fetch('/api/chat/resume', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone_number: selectedSession })
+            })
+            setIsAiPaused(false)
+            fetchHistory()
+        } catch (e) {
+            console.error("Resume Failed", e)
+        }
+    }
+
+    const markAsRead = React.useCallback(async (sessionId: string) => {
+        const supabase = createClient()
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(sessionId);
+
+        let query = supabase
+            .from("ai_chat_history")
+            .update({
+                is_read: true,
+                updated_at: new Date().toISOString()
+            } as any) // eslint-disable-line @typescript-eslint/no-explicit-any
+            .eq("is_read", false);
+
+        if (isUuid) {
+            query = query.or(`phone_number.eq.${sessionId},session_id.eq.${sessionId}`);
+        } else {
+            query = query.eq("phone_number", sessionId);
+        }
+
+        const { error } = await query;
+
+        if (!error) {
+            fetchHistory()
+        } else {
+            console.error("MarkAsRead Error:", error)
+        }
+    }, [fetchHistory])
+
+    React.useEffect(() => {
+        fetchHistory()
+
+        // Realtime Subscription
+        const supabase = createClient()
+
+        const channel = supabase
+            .channel('realtime_chats')
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'ai_chat_history' },
+                () => {
+                    fetchHistory()
+                }
+            )
+            .subscribe()
+
+        return () => {
+            supabase.removeChannel(channel)
+        }
+    }, [fetchHistory])
+
+    React.useEffect(() => {
+        if (selectedSession) {
+            markAsRead(selectedSession)
+        }
+    }, [selectedSession, markAsRead])
+
+
+    const handleSend = async (textOverride?: string, mediaUrl?: string) => {
+        if (!selectedSession) return
+
+        // If textOverride is provided, use it. Otherwise use inputText.
+        // If mediaUrl is provided, we might send without text.
+        const textToSend = textOverride !== undefined ? textOverride : inputText;
+
+        if (!textToSend.trim() && !mediaUrl) return
+
+        setIsSending(true)
+        if (!mediaUrl) setInputText("") // Clear input only if sending text manually
+
+        try {
+            const res = await fetch('/api/chat/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    phone_number: selectedSession,
+                    message: textToSend,
+                    session_id: selectedSession,
+                    media_url: mediaUrl
+                })
+            })
+
+            const data = await res.json()
+
+            if (!res.ok) {
+                alert(`Message failed: ${data.error || "Unknown Error"}`)
+                if (!mediaUrl) setInputText(textToSend) // Restore text on fail
+            } else {
+                setIsAiPaused(true)
+                await fetchHistory()
+            }
+        } catch (error) {
+            console.error("Send Network Error", error)
+            alert("Network Error: Could not reach server.")
+            if (!mediaUrl) setInputText(textToSend)
+        } finally {
+            setIsSending(false)
+        }
+    }
+
+    // Get unread count for badge
+    const totalUnread = messages.filter(m => m.user_message && !m.is_read).length
+
+    // Handle mobile session click
+    const handleMobileSessionClick = (sessionId: string) => {
+        setSelectedSession(sessionId)
+        setIsChatSheetOpen(true)
+    }
 
     return (
         <div className="h-full w-full flex flex-col overflow-hidden bg-transparent">
-            {/* Header */}
             {/* Header */}
             <WorkspaceHeader
                 title="Live Chat"
@@ -718,18 +900,52 @@ export default function FeedPage() {
                                 </div>
                             </div>
                         </div>
-                        <SessionList onSessionClick={(sid) => setSelectedSession(sid)} />
+                        <SessionList
+                            loading={loading}
+                            sessions={sessions}
+                            userMap={userMap}
+                            sessionSearch={sessionSearch}
+                            messages={messages}
+                            selectedSession={selectedSession}
+                            onSessionClick={(sid) => setSelectedSession(sid)}
+                        />
                     </div>
 
                     {/* Chat Area */}
-                    <ChatView />
+                    <ChatView
+                        inSheet={false}
+                        setIsChatSheetOpen={setIsChatSheetOpen}
+                        selectedSession={selectedSession}
+                        userMap={userMap}
+                        isAiPaused={isAiPaused}
+                        messages={messages}
+                        loading={loading}
+                        inputText={inputText}
+                        setInputText={setInputText}
+                        isSending={isSending}
+                        handleResume={handleResume}
+                        handleSend={handleSend}
+                    />
                 </div>
 
                 {/* Mobile Layout - List OR Chat in same container */}
                 <div className="md:hidden w-full h-full bg-[#0F131E] border border-white/10 rounded-xl overflow-hidden flex flex-col">
                     {isChatSheetOpen && selectedSession ? (
                         // Show Chat View
-                        <ChatView inSheet={true} />
+                        <ChatView
+                            inSheet={true}
+                            setIsChatSheetOpen={setIsChatSheetOpen}
+                            selectedSession={selectedSession}
+                            userMap={userMap}
+                            isAiPaused={isAiPaused}
+                            messages={messages}
+                            loading={loading}
+                            inputText={inputText}
+                            setInputText={setInputText}
+                            isSending={isSending}
+                            handleResume={handleResume}
+                            handleSend={handleSend}
+                        />
                     ) : (
                         // Show List View
                         <>
@@ -745,7 +961,15 @@ export default function FeedPage() {
                                     />
                                 </div>
                             </div>
-                            <SessionList onSessionClick={handleMobileSessionClick} />
+                            <SessionList
+                                loading={loading}
+                                sessions={sessions}
+                                userMap={userMap}
+                                sessionSearch={sessionSearch}
+                                messages={messages}
+                                selectedSession={selectedSession}
+                                onSessionClick={handleMobileSessionClick}
+                            />
                         </>
                     )}
                 </div>
