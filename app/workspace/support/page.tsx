@@ -62,8 +62,7 @@ export default function SupportPage() {
             const { data: { user } } = await supabase.auth.getUser()
             if (!user) return
 
-            // Get institute_id
-            const { data: staffData }: any = await supabase
+            const { data: staffData } = await supabase
                 .from("staff_members")
                 .select("institute_id")
                 .eq("id", user.id)
@@ -71,7 +70,7 @@ export default function SupportPage() {
 
             if (!staffData?.institute_id) return
 
-            const { data: ticketData, error: ticketError }: any = await supabase
+            const { data: ticketData, error: ticketError } = await supabase
                 .from("support_tickets")
                 .select("*")
                 .eq("institute_id", staffData.institute_id)
@@ -114,11 +113,11 @@ export default function SupportPage() {
                 .eq("id", user.id)
                 .single()
 
-            if (staffError || !(staffData as any)?.institute_id) {
+            if (staffError || !staffData?.institute_id) {
                 throw new Error("Could not find your institute. Please contact support.")
             }
 
-            const instituteId = (staffData as any).institute_id
+            const instituteId = staffData.institute_id
 
             // Insert support ticket
             const { error: insertError } = await supabase
@@ -138,8 +137,9 @@ export default function SupportPage() {
             setShowNewForm(false)
             fetchTickets() // Refresh the list
 
-        } catch (err: any) {
-            setError(err.message || "Failed to submit ticket")
+        } catch (err: unknown) {
+            const errorMessage = err instanceof Error ? err.message : "Failed to submit ticket"
+            setError(errorMessage)
         } finally {
             setLoading(false)
         }
@@ -213,7 +213,7 @@ export default function SupportPage() {
                             </div>
                             <ChevronRight className="h-4 w-4 text-slate-500 group-hover:text-white transition-colors shrink-0" />
                         </div>
-                        <p className="text-[10px] text-slate-400 line-clamp-1">"{ticket.description}"</p>
+                        <p className="text-[10px] text-slate-400 line-clamp-1">&quot;{ticket.description}&quot;</p>
                         <div className="flex items-center justify-between pt-1 border-t border-white/5">
                             <div className="flex items-center gap-1.5">
                                 <Badge className={`text-[8px] uppercase h-4 px-1 ${getStatusBadgeColor(ticket.status)}`}>

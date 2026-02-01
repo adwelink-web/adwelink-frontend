@@ -88,6 +88,7 @@ export default function SupportPage() {
         try {
             const supabase = createClient()
 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const updateData: any = {
                 status: newStatus,
                 updated_at: new Date().toISOString()

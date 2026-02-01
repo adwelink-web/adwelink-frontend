@@ -202,6 +202,7 @@ export default async function InstituteDetailPage({ params }: { params: Promise<
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-3">
+                                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                     {recentLeads.map((lead: any) => (
                                         <div key={lead.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-xl hover:bg-muted transition-all border border-border">
                                             <div className="flex items-center gap-3">

@@ -36,7 +36,7 @@ import {
     LayoutGrid,
     Layers
 } from "lucide-react"
-import { getCourses, createCourse, updateCourse, deleteCourse } from "./actions"
+import { getCourses, createCourse, updateCourse, deleteCourse, CourseCreateData } from "./actions"
 import { WorkspaceHeader } from "@/components/workspace-header"
 
 
@@ -129,8 +129,7 @@ export default function CoursesPage() {
                     alert("Course name is required")
                     return
                 }
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const response = await createCourse(payload as any) // Type assertion safe due to validation
+                const response = await createCourse(payload as CourseCreateData) // Type assertion safe due to validation
                 if (response.success && response.data) {
                     setCourses([...courses, response.data])
                 }

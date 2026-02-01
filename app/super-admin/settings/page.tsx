@@ -182,6 +182,7 @@ export default async function SettingsPage() {
                                         <p className="text-muted-foreground">No agents configured yet</p>
                                     </div>
                                 ) : (
+                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                     stats.agents.map((agent: any) => (
                                         <div key={agent.id} className="flex items-center justify-between p-4 bg-muted/50 rounded-xl border border-border">
                                             <div className="flex items-center gap-3">

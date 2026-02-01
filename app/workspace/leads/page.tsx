@@ -28,6 +28,8 @@ type Lead = Database["public"]["Tables"]["leads"]["Row"] & {
     tags?: string[] | null
 }
 
+type Course = Database["public"]["Tables"]["courses"]["Row"]
+
 export default function LeadsPage() {
     const [leads, setLeads] = React.useState<Lead[]>([])
     const [loading, setLoading] = React.useState(true)
@@ -35,7 +37,7 @@ export default function LeadsPage() {
     const [dialogOpen, setDialogOpen] = React.useState(false)
     const [isEditing, setIsEditing] = React.useState(false)
     const [isCreating, setIsCreating] = React.useState(false)
-    const [courses, setCourses] = React.useState<any[]>([])
+    const [courses, setCourses] = React.useState<Course[]>([])
     const [formData, setFormData] = React.useState<Partial<Lead>>({})
 
     const handleEditToggle = () => {
@@ -273,7 +275,7 @@ export default function LeadsPage() {
                                             <Users className="h-8 w-8 text-muted-foreground/50" />
                                         </div>
                                         <p className="text-white font-medium mt-2">No leads yet</p>
-                                        <p className="text-sm">Click "Add Lead" to create your first lead.</p>
+                                        <p className="text-sm">Click &quot;Add Lead&quot; to create your first lead.</p>
                                     </div>
                                 </div>
                             ) : (

@@ -20,6 +20,7 @@ import {
 } from "lucide-react"
 
 export default function InviteCodesPage() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [codes, setCodes] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const [newCode, setNewCode] = useState("")

@@ -4,7 +4,7 @@ import * as React from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 
-import { MessageSquare, Hand, Send, Check, CheckCheck, Users, Sparkles, Search, Smile, ThumbsDown, ChevronDown, Plus, Image as ImageIcon, ArrowLeft } from "lucide-react"
+import { MessageSquare, Hand, Send, Check, CheckCheck, Users, Sparkles, Search, Smile, ThumbsDown, ChevronDown, Image as ImageIcon, ArrowLeft } from "lucide-react"
 import { createClient } from "@/lib/supabase"
 import { Badge } from "@/components/ui/badge"
 import { WorkspaceHeader } from "@/components/workspace-header"
@@ -27,6 +27,12 @@ type ChatRow = {
     admission_chances?: number | null
     ai_notes?: string | null
     is_flagged?: boolean | null
+}
+
+interface MessageMeta {
+    media_url?: string;
+    image_url?: string;
+    [key: string]: unknown;
 }
 
 // Define the shape of a "Visual" message Bubble
@@ -91,10 +97,10 @@ export default function FeedPage() {
         if (msgError) {
             console.error("Chat Fetch Error Detailed:", JSON.stringify(msgError, null, 2))
         } else {
-            setMessages((msgData as any) || [])
+            setMessages((msgData as ChatRow[]) || [])
 
             const sessionMap: Record<string, string> = {}
-            msgData?.forEach((m: any) => {
+            msgData?.forEach((m) => {
                 const sid = (m.phone_number && m.phone_number.trim() !== "")
                     ? m.phone_number
                     : (m.session_id || "Unknown")
@@ -174,7 +180,7 @@ export default function FeedPage() {
             .update({
                 is_read: true,
                 updated_at: new Date().toISOString()
-            } as any)
+            } as any) // eslint-disable-line @typescript-eslint/no-explicit-any
             .eq("is_read", false);
 
         if (isUuid) {
@@ -289,7 +295,7 @@ export default function FeedPage() {
                     content: row.user_message,
                     timestamp: row.created_at || new Date().toISOString(),
                     status: row.status,
-                    mediaUrl: (row.message_meta as any)?.media_url || (row.message_meta as any)?.image_url
+                    mediaUrl: (row.message_meta as unknown as MessageMeta)?.media_url || (row.message_meta as unknown as MessageMeta)?.image_url
                 })
             }
             if (row.ai_response) {
@@ -302,7 +308,7 @@ export default function FeedPage() {
                     sentiment: row.sentiment || undefined,
                     isManual: isManual,
                     status: row.status,
-                    mediaUrl: (row.message_meta as any)?.media_url || (row.message_meta as any)?.image_url
+                    mediaUrl: (row.message_meta as unknown as MessageMeta)?.media_url || (row.message_meta as unknown as MessageMeta)?.image_url
                 })
             }
         })

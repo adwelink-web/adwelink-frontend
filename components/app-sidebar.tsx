@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { createClient } from "@/lib/supabase"
+import { Database } from "@/lib/database.types"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 
@@ -34,7 +35,7 @@ import { User } from "@supabase/supabase-js"
 
 interface SidebarProps extends React.ComponentProps<"div"> {
     user: User | null
-    institute: any
+    institute: Database["public"]["Tables"]["institutes"]["Row"] | null
 }
 
 export function AppSidebar({ className, user, institute }: SidebarProps) {

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import { createAdminClient } from "@/lib/supabase-server"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -177,7 +178,7 @@ export default async function InboundPage() {
                                                         </div>
                                                         <span className="text-xs text-muted-foreground">{new Date(item.created_at!).toLocaleDateString()}</span>
                                                     </div>
-                                                    <p className="text-foreground text-sm italic mb-4">"{item.message}"</p>
+                                                    <p className="text-foreground text-sm italic mb-4">&quot;{item.message}&quot;</p>
                                                     <div className="flex items-center gap-2 border-t border-border pt-3">
                                                         <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
                                                             {(item.name || "?").charAt(0)}

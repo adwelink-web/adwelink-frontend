@@ -104,7 +104,7 @@ export default function VisitsClient({ visits, stats }: Props) {
                     {/* 1. Today's Visits */}
                     <Card className="min-w-full md:min-w-0 snap-center bg-gradient-to-br from-emerald-500/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-emerald-500/20 hover:scale-[1.02] transition-all h-full">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 p-3 pb-1">
-                            <CardTitle className="text-xs font-medium text-slate-200">Today's Visits</CardTitle>
+                            <CardTitle className="text-xs font-medium text-slate-200">Today&apos;s Visits</CardTitle>
                             <Calendar className="h-3.5 w-3.5 text-emerald-500" />
                         </CardHeader>
                         <CardContent className="p-3 pt-0">

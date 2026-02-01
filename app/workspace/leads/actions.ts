@@ -111,19 +111,27 @@ export async function getLeadsWithAIStats() {
     const phoneNumbers = leads.map(l => l.phone).filter(Boolean)
 
     // Fetch AI stats from chat history
-    // @ts-ignore - TypeScript types are outdated, phone_number column exists
+    // Fetch AI stats from chat history
     const { data: aiStats } = await supabase
         .from("ai_chat_history")
         .select("phone_number, lead_score, admission_chances, created_at")
         .eq("institute_id", institute_id)
         .in("phone_number", phoneNumbers)
         .not("lead_score", "is", null)
-        .order("created_at", { ascending: false }) as any
+        .order("created_at", { ascending: false })
 
     // Create map of latest AI stats per phone number
     const statsMap = new Map()
     if (aiStats) {
-        (aiStats as any[]).forEach((stat: any) => {
+        // Define interface for AI Stats processing
+        interface AIStatsRow {
+            phone_number: string;
+            lead_score: number | null;
+            admission_chances: number | null;
+            created_at: string;
+        }
+
+        (aiStats as unknown as AIStatsRow[]).forEach((stat) => {
             if (!statsMap.has(stat.phone_number)) {
                 statsMap.set(stat.phone_number, {
                     lead_score: stat.lead_score,

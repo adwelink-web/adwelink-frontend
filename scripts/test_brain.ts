@@ -35,12 +35,14 @@ async function testBrain() {
     console.log("\n🔍 Querying agent_runtime_brain for 'sales' agent...");
 
     const { data: brainData, error: brainError } = await supabase
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .from('agent_runtime_brain' as any)
         .select('*')
         .eq('institute_id', institute.id)
         .eq('agent_slug', 'sales') // 'sales' is the slug for Counselor
         .single();
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const brain = brainData as any;
 
     if (brainError) {

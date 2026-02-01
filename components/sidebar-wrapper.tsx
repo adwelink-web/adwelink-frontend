@@ -15,11 +15,12 @@ import {
 } from "@/components/ui/dialog"
 
 import { User } from "@supabase/supabase-js"
+import { Database } from "@/lib/database.types"
 
 interface SidebarWrapperProps {
     children: React.ReactNode
     user: User | null
-    institute: any // Using any for now to avoid deep type investigation, but ideally we'd export the type
+    institute: Database["public"]["Tables"]["institutes"]["Row"] | null
 }
 
 export function SidebarWrapper({ children, user, institute }: SidebarWrapperProps) {

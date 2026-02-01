@@ -82,6 +82,7 @@ export default async function AllLeadsPage() {
                                 </div>
                             </div>
                         ) : (
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
                             leads.map((lead: any) => (
                                 <div key={lead.id} className="grid grid-cols-12 gap-4 items-center p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group text-xs border border-transparent hover:border-border">
                                     {/* Name */}

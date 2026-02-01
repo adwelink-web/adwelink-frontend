@@ -55,7 +55,7 @@ export default async function RootLayout({
       if (profile?.institute_id) {
         const { data: instData } = await supabase
           .from("institutes")
-          .select("id, name, current_plan, subscription_status, created_at")
+          .select("*")
           .eq("id", profile.institute_id)
           .single()
         institute = instData

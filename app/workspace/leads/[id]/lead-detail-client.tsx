@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ArrowLeft, Phone, Mail, Calendar, User, Users, GraduationCap, MapPin, MessageSquare, Edit3, Save, X, Clock, Globe, Activity, CalendarClock, History, Sparkles, LayoutList, MoreVertical, CheckCircle, UserCheck, GraduationCap as Admission } from "lucide-react"
+import { ArrowLeft, User, MessageSquare, Edit3, Save, X, Sparkles, LayoutList, MoreVertical, CheckCircle, UserCheck, Activity, Calendar } from "lucide-react"
 import Link from "next/link"
 import { updateLead } from "../actions"
 import { useRouter } from "next/navigation"
@@ -286,7 +286,7 @@ export default function LeadDetailClient({ lead, chatHistory }: Props) {
                             <div className="flex items-center justify-between mb-2">
                                 <div className="flex items-center gap-2">
                                     <Sparkles className="h-3.5 w-3.5 text-violet-400" />
-                                    <span className="text-[10px] font-bold uppercase tracking-wider text-violet-400">Aditi's Notes</span>
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-violet-400">Aditi&apos;s Notes</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <Badge className={`text-[9px] py-0 ${aiInsights.sentiment?.toLowerCase().includes('excited') || aiInsights.sentiment?.toLowerCase().includes('curious') ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-slate-500/20 text-slate-400 border-slate-500/30'}`}>

@@ -4,7 +4,7 @@ import { createServerClient } from "@/lib/supabase-server"
 import { revalidatePath } from "next/cache"
 import { getAuthenticatedInstituteId } from "@/lib/auth-utils"
 
-interface CourseCreateData {
+export interface CourseCreateData {
     name: string
     [key: string]: unknown
 }
@@ -35,6 +35,7 @@ export async function createCourse(data: CourseCreateData) {
     const { data: course, error } = await supabase
         .from("courses")
         .insert([{
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             ...(data as any),
             institute_id
         }])

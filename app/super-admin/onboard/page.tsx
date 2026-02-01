@@ -63,7 +63,7 @@ export default function OnboardPage() {
                 router.push("/super-admin/institutes")
             }, 2000)
 
-        } catch (err: any) {
+        } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
             setError(err.message || "Failed to create institute")
         } finally {
             setLoading(false)
@@ -183,7 +183,7 @@ export default function OnboardPage() {
                             <CardContent className="space-y-4">
                                 <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-sm">
                                     <p className="font-bold text-amber-400 flex items-center gap-2">⚠️ Optional</p>
-                                    <p className="text-xs text-amber-200/70 mt-1">Skip if client hasn't setup WhatsApp Business API yet. You can add later.</p>
+                                    <p className="text-xs text-amber-200/70 mt-1">Skip if client hasn&apos;t setup WhatsApp Business API yet. You can add later.</p>
                                 </div>
 
                                 <div>

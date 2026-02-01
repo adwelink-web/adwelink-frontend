@@ -301,6 +301,7 @@ export default async function SuperAdminDashboard() {
 
                                 {/* Scrollable Content */}
                                 <div className="flex-1 overflow-y-auto custom-scrollbar px-6 py-2 space-y-1 max-h-[350px]">
+                                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                     {metrics.recentLeads.map((lead: any) => (
                                         <div key={lead.id} className="grid grid-cols-12 items-center p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer border border-transparent hover:border-white/5">
                                             <div className="col-span-5 pl-2">
