@@ -23,13 +23,13 @@ export function WorkspaceHeader({
     return (
         <div className={`flex-none flex items-center justify-between z-10 ${className}`}>
             <div>
-                <h2 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
-                    {Icon && <Icon className={`h-5 w-5 ${iconColor}`} />}
+                <h2 className="text-lg md:text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
+                    {Icon && <Icon className={`h-4 w-4 md:h-5 md:w-5 ${iconColor}`} />}
                     {title}
                     {badge}
                 </h2>
                 {subtitle && (
-                    <p className="text-muted-foreground text-xs">{subtitle}</p>
+                    <p className="text-muted-foreground text-xs hidden md:block">{subtitle}</p>
                 )}
             </div>
             {children && (

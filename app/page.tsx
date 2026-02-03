@@ -1019,9 +1019,16 @@ function PartnershipApplicationDialog({ children }: { children: React.ReactNode 
         const { error } = await supabase.from('waitlist').insert([
             {
                 full_name: formData.full_name,
-                contact: formData.whatsapp_number, // Mapping to existing 'contact' column for now
-                source: formData.referral_source || 'Direct Application',
-                // Note: Other fields will be added to metadata or new columns once DB migration is run
+                email: formData.email,
+                contact: formData.whatsapp_number,
+                institute_name: formData.institute_name,
+                annual_admissions_scale: formData.annual_admissions_scale,
+                current_counseling_team_size: formData.current_counseling_team_size,
+                primary_admission_challenge: formData.primary_admission_challenge,
+                institute_full_address: formData.institute_address,
+                preferred_visit_time: formData.preferred_visit_time,
+                referral_source: formData.referral_source,
+                source: 'Direct Application',
             }
         ])
 
