@@ -21,34 +21,32 @@ export default async function InstitutesPage() {
     const institutes = await getInstitutes()
 
     return (
-        <div className="h-full w-full overflow-hidden flex flex-col relative">
-            {/* Main Scrollable Container */}
-            <div className="flex-1 w-full h-full overflow-y-auto custom-scrollbar relative z-10">
+        <div className="h-[calc(100vh-45px)] w-full overflow-hidden flex flex-col relative">
+            {/* Header Section - Fixed (Non-scrollable) */}
+            <div className="flex-none pt-4 px-4 md:px-8 pb-2">
+                <WorkspaceHeader
+                    title="Institutes"
+                    subtitle="Manage all your onboarded coaching institutes"
+                    icon={Store}
+                    iconColor="text-primary"
+                    className="max-w-7xl mx-auto"
+                    badge={
+                        <span className="flex items-center space-x-1.5 rounded-full border border-border bg-muted/50 px-3 py-1 text-xs font-normal whitespace-nowrap">
+                            <span className="text-muted-foreground">{institutes.length} clients</span>
+                        </span>
+                    }
+                >
+                    <Link href="/super-admin/onboard">
+                        <Button className="font-bold shadow-lg shadow-primary/25">
+                            <UserPlus className="mr-2 h-4 w-4" /> Onboard New Client
+                        </Button>
+                    </Link>
+                </WorkspaceHeader>
+            </div>
 
-                {/* Sticky Blurred Header Section */}
-                <div className="sticky top-0 z-50 backdrop-blur-xl px-4 md:px-8 py-4 mb-2">
-                    <WorkspaceHeader
-                        title="Institutes"
-                        subtitle="Manage all your onboarded coaching institutes"
-                        icon={Store}
-                        iconColor="text-primary"
-                        className="max-w-7xl mx-auto"
-                        badge={
-                            <span className="flex items-center space-x-1.5 rounded-full border border-border bg-muted/50 px-3 py-1 text-xs font-normal whitespace-nowrap">
-                                <span className="text-muted-foreground">{institutes.length} clients</span>
-                            </span>
-                        }
-                    >
-                        <Link href="/super-admin/onboard">
-                            <Button className="font-bold shadow-lg shadow-primary/25">
-                                <UserPlus className="mr-2 h-4 w-4" /> Onboard New Client
-                            </Button>
-                        </Link>
-                    </WorkspaceHeader>
-                </div>
-
-                {/* Content Section */}
-                <div className="pb-20 px-4 md:px-8 max-w-7xl mx-auto space-y-6">
+            {/* Main Scrollable Content Section */}
+            <div className="flex-1 min-h-0 flex flex-col px-4 md:px-8 pb-4 max-w-7xl mx-auto w-full overflow-y-auto custom-scrollbar">
+                <div className="w-full pt-2 pb-10">
                     {/* Institutes Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {institutes.map((inst) => {

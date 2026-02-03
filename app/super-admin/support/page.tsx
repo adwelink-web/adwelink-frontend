@@ -143,9 +143,9 @@ export default function SupportPage() {
     }
 
     return (
-        <div className="h-[calc(100vh-40px)] w-full overflow-hidden flex flex-col">
-            {/* Header - Fixed at top */}
-            <div className="flex-shrink-0 px-4 md:px-8 py-4">
+        <div className="h-[calc(100vh-45px)] w-full overflow-hidden flex flex-col relative">
+            {/* Header Section - Fixed (Non-scrollable) */}
+            <div className="flex-none pt-4 px-4 md:px-8 pb-2">
                 <WorkspaceHeader
                     title="Support Tickets"
                     subtitle="Manage client support requests and issues"

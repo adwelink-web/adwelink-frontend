@@ -18,19 +18,21 @@ export default async function BillingPage() {
     const payments = await getPayments()
 
     return (
-        <div className="h-full w-full overflow-hidden flex flex-col relative">
-            <div className="flex-1 w-full h-full overflow-y-auto custom-scrollbar relative z-10">
-                <div className="sticky top-0 z-50 backdrop-blur-xl px-4 md:px-8 py-4 mb-2">
-                    <WorkspaceHeader
-                        title="Billing & Revenue"
-                        subtitle="Track subscriptions and payment history"
-                        icon={CreditCard}
-                        iconColor="text-primary"
-                        className="max-w-7xl mx-auto"
-                    />
-                </div>
+        <div className="h-[calc(100vh-45px)] w-full overflow-hidden flex flex-col relative">
+            {/* Header Section - Fixed (Non-scrollable) */}
+            <div className="flex-none pt-4 px-4 md:px-8 pb-2">
+                <WorkspaceHeader
+                    title="Billing & Revenue"
+                    subtitle="Track subscriptions and payment history"
+                    icon={CreditCard}
+                    iconColor="text-primary"
+                    className="max-w-7xl mx-auto w-full"
+                />
+            </div>
 
-                <div className="pb-20 px-4 md:px-8 max-w-7xl mx-auto">
+            {/* Main Content Area - Scrollable */}
+            <div className="flex-1 min-h-0 flex flex-col px-4 md:px-8 pb-4 max-w-7xl mx-auto w-full overflow-y-auto custom-scrollbar">
+                <div className="w-full pt-2 pb-10">
                     {payments.length === 0 ? (
                         <div className="text-center py-20 bg-gradient-to-br from-primary/5 to-transparent rounded-3xl border border-border border-dashed">
                             <Wallet className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />

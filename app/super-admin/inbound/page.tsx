@@ -15,20 +15,21 @@ export default async function InboundPage() {
     const feedback = feedbackResults.data || []
 
     return (
-        <div className="h-full w-full overflow-hidden flex flex-col relative p-2 md:p-8">
+        <div className="h-[calc(100vh-45px)] w-full overflow-hidden flex flex-col relative">
             {/* Background Gradients - Matching Leads Page */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
                 <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[100px]" />
                 <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[100px]" />
             </div>
 
-            {/* Header Section */}
-            <div className="flex-none z-50 mb-4 max-w-7xl mx-auto w-full">
+            {/* Header Section - Fixed (Non-scrollable) */}
+            <div className="flex-none pt-4 px-4 md:px-8 pb-2">
                 <WorkspaceHeader
                     title="Inbound Requests"
                     subtitle="View waitlist signups and product feedback"
                     icon={Inbox}
                     iconColor="text-primary"
+                    className="max-w-7xl mx-auto w-full"
                     badge={
                         <span className="flex items-center space-x-1.5 rounded-full border border-border bg-muted/50 px-3 py-1 text-xs font-normal whitespace-nowrap">
                             <span className="text-muted-foreground">{waitlist.length + feedback.length} total</span>
@@ -37,9 +38,11 @@ export default async function InboundPage() {
                 />
             </div>
 
-            {/* Content Section - Fills remaining height */}
-            <div className="flex-1 min-h-0 max-w-7xl mx-auto w-full flex flex-col z-10">
-                <InboundClient waitlist={waitlist} feedback={feedback} />
+            {/* Main Content Area - Scrollable */}
+            <div className="flex-1 min-h-0 flex flex-col px-4 md:px-8 pb-4 max-w-7xl mx-auto w-full">
+                <div className="flex-1 min-h-0 flex flex-col z-10 w-full">
+                    <InboundClient waitlist={waitlist} feedback={feedback} />
+                </div>
             </div>
         </div>
     )

@@ -308,17 +308,19 @@ export function AppSidebar({ className, user, institute }: SidebarProps) {
 
             {/* 4. Footer (Plan & Profile) - Fixed at bottom */}
             <div className="shrink-0 p-4 border-t border-white/5 bg-black/20">
-                {/* Dynamic Plan Display */}
-                <div className="mb-4 rounded-md bg-gradient-to-r from-amber-500/10 to-transparent p-3 border border-amber-500/20">
-                    <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-bold text-amber-500 flex items-center gap-1">
-                            <Sparkles className="h-3 w-3" /> {(institute?.current_plan || "Free").toUpperCase()} PLAN
-                        </span>
-                        <span className="text-[10px] text-muted-foreground">
-                            {institute?.current_plan === 'free' ? 'No Expiry' : 'Active'}
-                        </span>
+                {/* Dynamic Plan Display - Hidden for Super Admin */}
+                {!isSuperAdminMode && (
+                    <div className="mb-4 rounded-md bg-gradient-to-r from-amber-500/10 to-transparent p-3 border border-amber-500/20">
+                        <div className="flex items-center justify-between mb-1">
+                            <span className="text-xs font-bold text-amber-500 flex items-center gap-1">
+                                <Sparkles className="h-3 w-3" /> {(institute?.current_plan || "Free").toUpperCase()} PLAN
+                            </span>
+                            <span className="text-[10px] text-muted-foreground">
+                                {institute?.current_plan === 'free' ? 'No Expiry' : 'Active'}
+                            </span>
+                        </div>
                     </div>
-                </div>
+                )}
 
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-x-2">

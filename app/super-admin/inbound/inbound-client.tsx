@@ -98,7 +98,7 @@ export function InboundClient({ waitlist, feedback }: InboundClientProps) {
                         </div>
 
                         {/* Scrollable Content */}
-                        <div className="flex-1 overflow-y-auto px-2 md:px-6 pt-3 pb-2 space-y-3 md:space-y-2">
+                        <div className="flex-1 overflow-y-auto custom-scrollbar px-2 md:px-6 pt-3 pb-2 space-y-3 md:space-y-2">
                             {waitlist.length === 0 ? (
                                 <div className="text-center py-16 text-muted-foreground">
                                     <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
@@ -198,8 +198,8 @@ export function InboundClient({ waitlist, feedback }: InboundClientProps) {
                         </CardTitle>
                         <CardDescription className="mt-0">Ratings and suggestions from users.</CardDescription>
                     </CardHeader>
-                    <CardContent className="flex-1 overflow-y-auto p-0 flex flex-col">
-                        <div className="flex-1 px-4 pt-3 pb-2 md:px-6 overflow-y-auto">
+                    <CardContent className="flex-1 overflow-y-auto custom-scrollbar p-0 flex flex-col">
+                        <div className="flex-1 px-4 pt-3 pb-2 md:px-6 overflow-y-auto custom-scrollbar">
                             {feedback.length === 0 ? (
                                 <div className="text-center py-16 text-muted-foreground">
                                     <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">

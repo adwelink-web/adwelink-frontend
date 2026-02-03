@@ -18,10 +18,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 // Plan prices for revenue calculation
 const PLAN_PRICES: Record<string, number> = {
-    trial: 0,
-    starter: 7999,
+    starter: 9999,
     growth: 14999,
-    domination: 29999
+    pro: 29999
 }
 
 async function getAnalyticsData() {
@@ -91,7 +90,8 @@ async function getAnalyticsData() {
 
     // Calculate MRR
     const mrr = institutes.reduce((sum, inst) => {
-        const plan = inst.current_plan || "trial"
+        let plan = inst.current_plan || "trial"
+        if (plan === "domination") plan = "pro"
         return sum + (PLAN_PRICES[plan] || 0)
     }, 0)
 
@@ -151,10 +151,9 @@ async function getAnalyticsData() {
         // Revenue
         mrr,
         planDistribution: {
-            trial: institutes.filter(i => (i.current_plan || "trial") === "trial").length,
             starter: institutes.filter(i => i.current_plan === "starter").length,
             growth: institutes.filter(i => i.current_plan === "growth").length,
-            domination: institutes.filter(i => i.current_plan === "domination").length,
+            pro: institutes.filter(i => i.current_plan === "pro" || i.current_plan === "domination").length,
         },
 
         // Top performers
@@ -229,193 +228,168 @@ export default async function AnalyticsPage() {
     }
 
     return (
-        <div className="h-full w-full overflow-hidden flex flex-col relative">
-            <div className="flex-1 w-full h-full overflow-y-auto custom-scrollbar relative z-10">
-                {/* Header */}
-                <div className="sticky top-0 z-50 backdrop-blur-xl px-4 md:px-8 py-4 mb-2">
-                    <WorkspaceHeader
-                        title="Analytics Dashboard"
-                        subtitle="Business performance metrics & insights"
-                        icon={BarChart3}
-                        iconColor="text-primary"
-                        className="max-w-7xl mx-auto"
-                        badge={
-                            <span className="flex items-center space-x-1.5 rounded-full border border-border bg-muted/50 px-3 py-1 text-xs font-normal whitespace-nowrap">
-                                <span className="relative flex h-2 w-2">
-                                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75"></span>
-                                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
-                                </span>
-                                <span className="text-muted-foreground">Live</span>
+        <div className="h-[calc(100vh-45px)] w-full overflow-hidden flex flex-col relative">
+            {/* Header Section - Fixed (Non-scrollable) */}
+            <div className="flex-none pt-4 px-3 md:px-8 pb-2">
+                <WorkspaceHeader
+                    title="Analytics Dashboard"
+                    subtitle="Business performance metrics & insights"
+                    icon={BarChart3}
+                    iconColor="text-primary"
+                    className="max-w-7xl mx-auto"
+                    badge={
+                        <span className="flex items-center space-x-1.5 rounded-full border border-border bg-muted/50 px-3 py-1 text-xs font-normal whitespace-nowrap">
+                            <span className="relative flex h-2 w-2">
+                                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75"></span>
+                                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
                             </span>
-                        }
-                    />
+                            <span className="text-muted-foreground">Live</span>
+                        </span>
+                    }
+                />
+            </div>
+
+            {/* Main Content Area - Fixed layout with internal scrolls */}
+            <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar flex flex-col px-3 md:px-8 pb-8 md:pb-4 max-w-7xl mx-auto w-full space-y-4">
+                {/* 1. Primary Stats - Fixed */}
+                <div className="flex-none grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {mainStats.map((stat, i) => (
+                        <Card
+                            key={i}
+                            className={`bg-gradient-to-br ${colorClasses[stat.color].gradient} ${colorClasses[stat.color].border} backdrop-blur-md shadow-lg hover:scale-[1.02] transition-all bg-card/50`}
+                        >
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3 px-4">
+                                <CardTitle className="text-[11px] font-medium text-foreground/80 lowercase">{stat.label}</CardTitle>
+                                <stat.icon className={`h-3 w-3 ${colorClasses[stat.color].icon}`} />
+                            </CardHeader>
+                            <CardContent className="pb-3 pt-0 px-4">
+                                <div className="text-xl font-bold text-foreground">{stat.value}</div>
+                                <div className="flex items-center gap-2 mt-0.5">
+                                    <Badge variant="secondary" className={`text-[9px] uppercase px-1 h-4 ${stat.trendUp ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500'} border border-transparent`}>
+                                        {stat.trend}
+                                    </Badge>
+                                    <p className="text-[10px] text-muted-foreground whitespace-nowrap">{stat.subtext}</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))}
                 </div>
 
-                {/* Content */}
-                <div className="pb-20 px-4 md:px-8 max-w-7xl mx-auto space-y-6">
-                    {/* Main Stats Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {mainStats.map((stat, i) => (
-                            <Card
-                                key={i}
-                                className={`bg-gradient-to-br ${colorClasses[stat.color].gradient} ${colorClasses[stat.color].border} backdrop-blur-md shadow-lg hover:scale-[1.02] transition-all bg-card/50`}
-                            >
-                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium text-muted-foreground">{stat.label}</CardTitle>
-                                    <stat.icon className={`h-4 w-4 ${colorClasses[stat.color].icon}`} />
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-2xl font-bold text-foreground">{stat.value}</div>
-                                    <div className="flex items-center gap-2 mt-1">
-                                        <Badge variant="secondary" className={`text-[10px] uppercase px-1.5 h-5 ${stat.trendUp ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500'} border border-transparent`}>
-                                            {stat.trendUp ? <TrendingUp className="h-3 w-3 mr-1" /> : <TrendingDown className="h-3 w-3 mr-1" />}
-                                            {stat.trend}
-                                        </Badge>
-                                        <p className="text-xs text-muted-foreground">{stat.subtext}</p>
+                {/* 2. Secondary Stats - Fixed */}
+                <div className="flex-none grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    {[
+                        { label: "Total Clients", value: data.totalInstitutes, icon: Building2, color: "violet" },
+                        { label: "Active Clients", value: data.activeInstitutes, icon: Zap, color: "emerald" },
+                        { label: "Messages Sent", value: data.totalMessagesUsed.toLocaleString(), icon: MessageSquare, color: "cyan" },
+                        { label: "Hot Leads", value: data.hotLeads, icon: Target, color: "amber" }
+                    ].map((stat, i) => (
+                        <Card key={i} className={`bg-gradient-to-br ${colorClasses[stat.color].gradient.replace('10', '5')} ${colorClasses[stat.color].border.replace('border-', 'border-opacity-10 ')} bg-card/50`}>
+                            <CardContent className="pt-4 pb-4 px-4">
+                                <div className="flex items-center gap-3">
+                                    <div className={`h-8 w-8 rounded-lg ${colorClasses[stat.color].icon.replace('text-', 'bg-')}/10 flex items-center justify-center`}>
+                                        <stat.icon className={`h-4 w-4 ${colorClasses[stat.color].icon}`} />
                                     </div>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
+                                    <div>
+                                        <p className="text-lg font-bold text-foreground leading-none">{stat.value}</p>
+                                        <p className="text-[10px] text-muted-foreground mt-1">{stat.label}</p>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
 
-                    {/* Secondary Stats */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                        <Card className="bg-gradient-to-br from-violet-500/5 to-transparent border-violet-500/20 bg-card/50">
-                            <CardContent className="pt-6">
-                                <div className="flex items-center gap-3">
-                                    <div className="h-10 w-10 rounded-lg bg-violet-500/10 flex items-center justify-center">
-                                        <Building2 className="h-5 w-5 text-violet-500" />
-                                    </div>
-                                    <div>
-                                        <p className="text-2xl font-bold text-foreground">{data.totalInstitutes}</p>
-                                        <p className="text-xs text-muted-foreground">Total Clients</p>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                        <Card className="bg-gradient-to-br from-emerald-500/5 to-transparent border-emerald-500/20 bg-card/50">
-                            <CardContent className="pt-6">
-                                <div className="flex items-center gap-3">
-                                    <div className="h-10 w-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-                                        <Zap className="h-5 w-5 text-emerald-500" />
-                                    </div>
-                                    <div>
-                                        <p className="text-2xl font-bold text-foreground">{data.activeInstitutes}</p>
-                                        <p className="text-xs text-muted-foreground">Active Clients</p>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                        <Card className="bg-gradient-to-br from-cyan-500/5 to-transparent border-cyan-500/20 bg-card/50">
-                            <CardContent className="pt-6">
-                                <div className="flex items-center gap-3">
-                                    <div className="h-10 w-10 rounded-lg bg-cyan-500/10 flex items-center justify-center">
-                                        <MessageSquare className="h-5 w-5 text-cyan-500" />
-                                    </div>
-                                    <div>
-                                        <p className="text-2xl font-bold text-foreground">{data.totalMessagesUsed.toLocaleString()}</p>
-                                        <p className="text-xs text-muted-foreground">Messages Sent</p>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                        <Card className="bg-gradient-to-br from-amber-500/5 to-transparent border-amber-500/20 bg-card/50">
-                            <CardContent className="pt-6">
-                                <div className="flex items-center gap-3">
-                                    <div className="h-10 w-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
-                                        <Target className="h-5 w-5 text-amber-500" />
-                                    </div>
-                                    <div>
-                                        <p className="text-2xl font-bold text-foreground">{data.hotLeads}</p>
-                                        <p className="text-xs text-muted-foreground">Hot Leads</p>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </div>
+                {/* 3. Deep Insights - Side-by-Side Horizontal Scroll Rows */}
+                <div className="flex-none grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 pb-20 md:pb-2">
+                    {/* Plan Distribution */}
+                    <div className="min-w-0 flex flex-col space-y-3">
+                        <div className="flex items-center justify-between px-1">
+                            <div className="flex items-center gap-2">
+                                <IndianRupee className="h-4 w-4 text-primary" />
+                                <h3 className="text-sm font-bold text-foreground">Subscriptions</h3>
+                                <Badge variant="secondary" className="text-[10px] uppercase font-bold px-1.5 h-4">Plans</Badge>
+                            </div>
+                        </div>
 
-                    {/* Two Column Layout */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* Plan Distribution */}
-                        <Card className="bg-gradient-to-br from-primary/5 to-transparent border-border backdrop-blur-md shadow-lg bg-card/50">
-                            <CardHeader>
-                                <CardTitle className="text-foreground flex items-center gap-2">
-                                    <IndianRupee className="h-4 w-4 text-primary" />
-                                    Plan Distribution
-                                </CardTitle>
-                                <CardDescription>Client breakdown by subscription tier</CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                {[
-                                    { name: "Trial", count: data.planDistribution.trial, price: "₹0", color: "slate" },
-                                    { name: "Starter", count: data.planDistribution.starter, price: "₹7,999", color: "cyan" },
-                                    { name: "Growth", count: data.planDistribution.growth, price: "₹14,999", color: "emerald" },
-                                    { name: "Domination", count: data.planDistribution.domination, price: "₹29,999", color: "violet" }
-                                ].map((plan) => (
-                                    <div key={plan.name} className="flex items-center justify-between p-3 bg-muted/50 rounded-xl border border-border">
-                                        <div className="flex items-center gap-3">
-                                            <div className={`h-3 w-3 rounded-full bg-primary`}></div>
+                        <div className="flex gap-4 overflow-x-auto custom-scrollbar pb-3 snap-x snap-mandatory touch-pan-x -mx-1 px-1">
+                            {[
+                                { name: "Starter", limit: "500 Leads", count: data.planDistribution.starter, price: "₹9,999" },
+                                { name: "Growth", limit: "1,000 Leads", count: data.planDistribution.growth, price: "₹14,999" },
+                                { name: "Pro", limit: "3,000 Leads", count: data.planDistribution.pro, price: "₹29,999" }
+                            ].map((plan) => (
+                                <Card key={plan.name} className="flex-none w-full snap-start bg-gradient-to-br from-primary/10 to-transparent border-white/10 backdrop-blur-md shadow-lg bg-card/50 overflow-hidden group">
+                                    <CardContent className="p-4 flex flex-col justify-between h-32">
+                                        <div className="flex justify-between items-start">
                                             <div>
-                                                <p className="text-foreground font-medium">{plan.name}</p>
-                                                <p className="text-xs text-muted-foreground">{plan.price}/mo</p>
-                                            </div>
-                                        </div>
-                                        <div className="text-right">
-                                            <p className="text-xl font-bold text-foreground">{plan.count}</p>
-                                            <p className="text-xs text-muted-foreground">clients</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </CardContent>
-                        </Card>
-
-                        {/* Top Performing Institutes */}
-                        <Card className="bg-gradient-to-br from-primary/5 to-transparent border-border backdrop-blur-md shadow-lg bg-card/50">
-                            <CardHeader>
-                                <CardTitle className="text-foreground flex items-center gap-2">
-                                    <TrendingUp className="h-4 w-4 text-primary" />
-                                    Top Performing Clients
-                                </CardTitle>
-                                <CardDescription>Ranked by total leads generated</CardDescription>
-                            </CardHeader>
-                            <CardContent className="p-0 flex flex-col relative">
-                                {/* Fixed Header */}
-                                <div className="flex-none -mt-4 z-20 mx-6 mb-2">
-                                    <div className="grid grid-cols-12 px-2 py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                                        <div className="col-span-2 pl-6">Rank</div>
-                                        <div className="col-span-7">Institute</div>
-                                        <div className="col-span-3 text-right pr-6">Leads</div>
-                                    </div>
-                                </div>
-
-                                {/* Scrollable Content */}
-                                <div className="flex-1 overflow-y-auto custom-scrollbar px-6 py-2 space-y-1 max-h-[350px]">
-                                    {data.topInstitutes.length === 0 ? (
-                                        <div className="text-center py-8 text-muted-foreground text-sm">
-                                            No data yet
-                                        </div>
-                                    ) : (
-                                        data.topInstitutes.map((inst, i) => (
-                                            <div key={inst.id} className="grid grid-cols-12 items-center p-2 rounded-lg hover:bg-muted/50 transition-colors border border-transparent hover:border-border">
-                                                <div className="col-span-2 pl-6">
-                                                    <Badge variant={i === 0 ? "default" : "secondary"} className="text-[10px] h-5 px-1.5">
-                                                        #{i + 1}
-                                                    </Badge>
-                                                </div>
-                                                <div className="col-span-7 font-medium text-foreground text-sm">
-                                                    {inst.name}
-                                                </div>
-                                                <div className="col-span-3 text-right pr-6 font-bold text-emerald-500 text-sm">
-                                                    {inst.count}
+                                                <p className="text-sm font-bold text-foreground">{plan.name}</p>
+                                                <div className="flex items-center gap-1.5 mt-0.5">
+                                                    <p className="text-[10px] text-muted-foreground">{plan.price}/mo</p>
+                                                    <span className="text-[10px] text-primary/40">•</span>
+                                                    <p className="text-[10px] font-bold text-emerald-500/80">{plan.limit}</p>
                                                 </div>
                                             </div>
-                                        ))
-                                    )}
+                                            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                                <IndianRupee className="h-4 w-4 text-primary" />
+                                            </div>
+                                        </div>
+                                        <div className="mt-auto flex items-end justify-between">
+                                            <p className="text-3xl font-black text-foreground">{plan.count}</p>
+                                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Active Users</p>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Top Performing Clients */}
+                    <div className="min-w-0 flex flex-col space-y-3">
+                        <div className="flex items-center justify-between px-1">
+                            <div className="flex items-center gap-2">
+                                <TrendingUp className="h-4 w-4 text-primary" />
+                                <h3 className="text-sm font-bold text-foreground">Top Performing</h3>
+                                <Badge variant="secondary" className="text-[10px] uppercase font-bold px-1.5 h-4">Clients</Badge>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-4 overflow-x-auto custom-scrollbar pb-3 snap-x snap-mandatory touch-pan-x -mx-1 px-1">
+                            {data.topInstitutes.length === 0 ? (
+                                <div className="py-8 text-center text-muted-foreground text-xs font-medium w-full bg-muted/20 rounded-xl border border-dashed border-border h-32 flex items-center justify-center">
+                                    No data available
                                 </div>
-                            </CardContent>
-                        </Card>
+                            ) : (
+                                data.topInstitutes.map((inst, i) => (
+                                    <Card key={inst.id} className="flex-none w-full snap-start bg-gradient-to-br from-emerald-500/10 to-transparent border-white/10 backdrop-blur-md shadow-lg border-emerald-500/20 bg-card/50 overflow-hidden group">
+                                        <CardContent className="p-4 relative h-32 flex flex-col justify-between">
+                                            <div className="absolute top-3 right-3">
+                                                <Badge variant={i === 0 ? "default" : "secondary"} className="text-[10px] font-black w-7 h-7 rounded-full flex items-center justify-center p-0">
+                                                    #{i + 1}
+                                                </Badge>
+                                            </div>
+
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-10 w-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                                                    <Building2 className="h-5 w-5 text-emerald-500" />
+                                                </div>
+                                                <h4 className="text-sm font-bold text-foreground truncate max-w-[200px]">{inst.name}</h4>
+                                            </div>
+
+                                            <div className="flex items-center justify-between border-t border-white/5 pt-3">
+                                                <div className="flex items-center gap-1.5">
+                                                    <Users className="h-3.5 w-3.5 text-emerald-500" />
+                                                    <span className="text-[10px] font-bold text-muted-foreground uppercase">Leads Generated</span>
+                                                </div>
+                                                <span className="text-2xl font-black text-emerald-500">{inst.count}</span>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                ))
+                            )}
+                        </div>
                     </div>
                 </div>
+                {/* Mobile Bottom Spacer */}
+                <div className="h-20 lg:hidden flex-none" />
             </div>
         </div>
     )

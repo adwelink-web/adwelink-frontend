@@ -98,43 +98,41 @@ export default async function InstituteDetailPage({ params }: { params: Promise<
 
     return (
         <div className="h-full w-full overflow-hidden flex flex-col relative">
-            {/* Main Scrollable Container */}
-            <div className="flex-1 w-full h-full overflow-y-auto custom-scrollbar relative z-10">
+            {/* Sticky Blurred Header Section */}
+            <div className="flex-none backdrop-blur-xl border-b border-border px-4 md:px-8 py-5 z-50 bg-background/80">
+                <div className="relative z-10 max-w-7xl mx-auto">
+                    {/* Back Button */}
+                    <Link href="/super-admin/institutes" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors">
+                        <ArrowLeft className="h-4 w-4" /> Back to Institutes
+                    </Link>
 
-                {/* Sticky Blurred Header Section */}
-                <div className="sticky top-0 z-50 backdrop-blur-xl border-b border-border px-4 md:px-8 py-6 mb-2 bg-background/80">
-                    <div className="relative z-10 max-w-7xl mx-auto">
-                        {/* Back Button */}
-                        <Link href="/super-admin/institutes" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors">
-                            <ArrowLeft className="h-4 w-4" /> Back to Institutes
-                        </Link>
-
-                        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                            <div>
-                                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground flex flex-wrap items-center gap-3">
-                                    <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center ring-1 ring-primary/30">
-                                        <Building2 className="h-5 w-5 text-primary" />
-                                    </div>
-                                    {institute.name}
-                                    <Badge variant="outline" className="uppercase text-xs tracking-wider">
-                                        {institute.current_plan || "trial"}
-                                    </Badge>
-                                </h2>
-                                <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-                                    <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {institute.city || "No city"}</span>
-                                    <span className="flex items-center gap-1"><Phone className="h-3 w-3" /> {institute.helpline_number || "No helpline"}</span>
+                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                        <div>
+                            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground flex flex-wrap items-center gap-3">
+                                <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center ring-1 ring-primary/30">
+                                    <Building2 className="h-5 w-5 text-primary" />
                                 </div>
+                                {institute.name}
+                                <Badge variant="outline" className="uppercase text-xs tracking-wider">
+                                    {institute.current_plan || "trial"}
+                                </Badge>
+                            </h2>
+                            <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                                <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {institute.city || "No city"}</span>
+                                <span className="flex items-center gap-1"><Phone className="h-3 w-3" /> {institute.helpline_number || "No helpline"}</span>
                             </div>
-
-                            <Button variant="outline" size="sm" className="hover:bg-primary/10 hover:text-primary hover:border-primary/30">
-                                <Settings className="mr-2 h-4 w-4" /> Edit Settings
-                            </Button>
                         </div>
+
+                        <Button variant="outline" size="sm" className="hover:bg-primary/10 hover:text-primary hover:border-primary/30">
+                            <Settings className="mr-2 h-4 w-4" /> Edit Settings
+                        </Button>
                     </div>
                 </div>
+            </div>
 
-                {/* Content Section */}
-                <div className="pb-20 px-4 md:px-8 max-w-7xl mx-auto space-y-6">
+            {/* Main Content Area - Scrollable */}
+            <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-4 md:px-8 py-6">
+                <div className="max-w-7xl mx-auto space-y-6 pb-10">
                     {/* Stats Row */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         {stats.map((stat, i) => (
@@ -237,6 +235,6 @@ export default async function InstituteDetailPage({ params }: { params: Promise<
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }

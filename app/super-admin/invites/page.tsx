@@ -91,106 +91,112 @@ export default function InviteCodesPage() {
     }
 
     return (
-        <div className="h-full w-full overflow-hidden flex flex-col relative p-6">
-            <WorkspaceHeader
-                title="Invite Engine"
-                subtitle="Generate and manage private access keys for founders"
-                icon={Ticket}
-                iconColor="text-indigo-400"
-                className="mb-8"
-            />
+        <div className="h-[calc(100vh-45px)] w-full overflow-hidden flex flex-col relative">
+            {/* Header Section - Fixed (Non-scrollable) */}
+            <div className="flex-none pt-4 px-4 md:px-8 pb-2">
+                <WorkspaceHeader
+                    title="Invite Engine"
+                    subtitle="Generate and manage private access keys for founders"
+                    icon={Ticket}
+                    iconColor="text-indigo-400"
+                    className="max-w-7xl mx-auto w-full"
+                />
+            </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Generator Section */}
-                <Card className="bg-white/5 border-white/10 backdrop-blur-xl">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <Plus className="h-4 w-4 text-indigo-400" /> Generate New Key
-                        </CardTitle>
-                        <CardDescription>Create a unique invite for a new partner</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <form onSubmit={handleGenerate} className="space-y-4">
-                            <div className="space-y-2">
-                                <label className="text-[10px] uppercase font-bold text-slate-500 px-1">Access Code</label>
-                                <Input
-                                    value={newCode}
-                                    onChange={(e) => setNewCode(e.target.value.toUpperCase())}
-                                    placeholder="e.g. INDORE-VIP"
-                                    className="bg-white/5 border-white/10 h-12 uppercase font-mono tracking-widest"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] uppercase font-bold text-slate-500 px-1">Max Uses</label>
-                                <Input
-                                    type="number"
-                                    value={maxUses}
-                                    onChange={(e) => setMaxUses(parseInt(e.target.value))}
-                                    min={1}
-                                    className="bg-white/5 border-white/10 h-12"
-                                />
-                            </div>
-                            <Button disabled={generating || !newCode} className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 font-bold">
-                                {generating ? "Generating..." : "Generate Key"}
-                            </Button>
-                        </form>
-                    </CardContent>
-                </Card>
-
-                {/* List Section */}
-                <Card className="lg:col-span-2 bg-white/5 border-white/10 backdrop-blur-xl flex flex-col">
-                    <CardHeader className="flex flex-row items-center justify-between">
-                        <div>
+            {/* Main Content Area - Scrollable */}
+            <div className="flex-1 min-h-0 flex flex-col px-4 md:px-8 pb-4 max-w-7xl mx-auto w-full overflow-y-auto custom-scrollbar">
+                <div className="w-full pt-2 pb-10 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Generator Section */}
+                    <Card className="bg-white/5 border-white/10 backdrop-blur-xl">
+                        <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <RefreshCcw className="h-4 w-4 text-emerald-400" /> Active Keys
+                                <Plus className="h-4 w-4 text-indigo-400" /> Generate New Key
                             </CardTitle>
-                            <CardDescription>View and monitor access token usage</CardDescription>
-                        </div>
-                        <Button variant="ghost" size="icon" onClick={fetchCodes} disabled={loading}>
-                            <RefreshCcw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-                        </Button>
-                    </CardHeader>
-                    <CardContent className="flex-1 overflow-y-auto max-h-[500px] custom-scrollbar">
-                        <div className="space-y-3">
-                            {codes.map((code) => (
-                                <div key={code.id} className="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/[0.08] transition-all group">
-                                    <div className="flex items-center gap-4">
-                                        <div className="h-10 w-10 rounded-xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
-                                            <Crown className="h-5 w-5 text-indigo-400" />
-                                        </div>
-                                        <div>
-                                            <div className="flex items-center gap-2">
-                                                <p className="font-mono font-bold text-lg tracking-wider text-white">{code.code}</p>
-                                                <button onClick={() => copyToClipboard(code.code)} className="text-slate-500 hover:text-white transition-colors">
-                                                    {copiedCode === code.code ? <CopyCheck className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
-                                                </button>
+                            <CardDescription>Create a unique invite for a new partner</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <form onSubmit={handleGenerate} className="space-y-4">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] uppercase font-bold text-slate-500 px-1">Access Code</label>
+                                    <Input
+                                        value={newCode}
+                                        onChange={(e) => setNewCode(e.target.value.toUpperCase())}
+                                        placeholder="e.g. INDORE-VIP"
+                                        className="bg-white/5 border-white/10 h-12 uppercase font-mono tracking-widest"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] uppercase font-bold text-slate-500 px-1">Max Uses</label>
+                                    <Input
+                                        type="number"
+                                        value={maxUses}
+                                        onChange={(e) => setMaxUses(parseInt(e.target.value))}
+                                        min={1}
+                                        className="bg-white/5 border-white/10 h-12"
+                                    />
+                                </div>
+                                <Button disabled={generating || !newCode} className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 font-bold">
+                                    {generating ? "Generating..." : "Generate Key"}
+                                </Button>
+                            </form>
+                        </CardContent>
+                    </Card>
+
+                    {/* List Section */}
+                    <Card className="lg:col-span-2 bg-white/5 border-white/10 backdrop-blur-xl flex flex-col">
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <div>
+                                <CardTitle className="flex items-center gap-2">
+                                    <RefreshCcw className="h-4 w-4 text-emerald-400" /> Active Keys
+                                </CardTitle>
+                                <CardDescription>View and monitor access token usage</CardDescription>
+                            </div>
+                            <Button variant="ghost" size="icon" onClick={fetchCodes} disabled={loading}>
+                                <RefreshCcw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+                            </Button>
+                        </CardHeader>
+                        <CardContent className="flex-1">
+                            <div className="space-y-3">
+                                {codes.map((code) => (
+                                    <div key={code.id} className="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/[0.08] transition-all group">
+                                        <div className="flex items-center gap-4">
+                                            <div className="h-10 w-10 rounded-xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
+                                                <Crown className="h-5 w-5 text-indigo-400" />
                                             </div>
-                                            <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Created {new Date(code.created_at).toLocaleDateString()}</p>
+                                            <div>
+                                                <div className="flex items-center gap-2">
+                                                    <p className="font-mono font-bold text-lg tracking-wider text-white">{code.code}</p>
+                                                    <button onClick={() => copyToClipboard(code.code)} className="text-slate-500 hover:text-white transition-colors">
+                                                        {copiedCode === code.code ? <CopyCheck className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+                                                    </button>
+                                                </div>
+                                                <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Created {new Date(code.created_at).toLocaleDateString()}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-6">
+                                            <div className="text-right">
+                                                <p className="text-sm font-bold text-white">{code.usage_count} / {code.max_uses}</p>
+                                                <p className="text-[10px] text-slate-500 uppercase font-bold">Usage</p>
+                                            </div>
+                                            <Badge variant={code.usage_count >= code.max_uses ? "secondary" : "default"} className={code.usage_count >= code.max_uses ? "bg-red-500/20 text-red-400 border-red-500/20" : "bg-emerald-500/20 text-emerald-400 border-emerald-500/20"}>
+                                                {code.usage_count >= code.max_uses ? "EXHAUSTED" : "ACTIVE"}
+                                            </Badge>
+                                            <Button variant="ghost" size="icon" onClick={() => handleDelete(code.id)} className="text-slate-500 hover:text-red-400 hover:bg-red-400/10 opacity-0 group-hover:opacity-100 transition-all">
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-6">
-                                        <div className="text-right">
-                                            <p className="text-sm font-bold text-white">{code.usage_count} / {code.max_uses}</p>
-                                            <p className="text-[10px] text-slate-500 uppercase font-bold">Usage</p>
-                                        </div>
-                                        <Badge variant={code.usage_count >= code.max_uses ? "secondary" : "default"} className={code.usage_count >= code.max_uses ? "bg-red-500/20 text-red-400 border-red-500/20" : "bg-emerald-500/20 text-emerald-400 border-emerald-500/20"}>
-                                            {code.usage_count >= code.max_uses ? "EXHAUSTED" : "ACTIVE"}
-                                        </Badge>
-                                        <Button variant="ghost" size="icon" onClick={() => handleDelete(code.id)} className="text-slate-500 hover:text-red-400 hover:bg-red-400/10 opacity-0 group-hover:opacity-100 transition-all">
-                                            <Trash2 className="h-4 w-4" />
-                                        </Button>
+                                ))}
+                                {codes.length === 0 && !loading && (
+                                    <div className="text-center py-12">
+                                        <AlertCircle className="h-12 w-12 text-slate-700 mx-auto mb-4" />
+                                        <p className="text-slate-500">No active invite codes found.</p>
                                     </div>
-                                </div>
-                            ))}
-                            {codes.length === 0 && !loading && (
-                                <div className="text-center py-12">
-                                    <AlertCircle className="h-12 w-12 text-slate-700 mx-auto mb-4" />
-                                    <p className="text-slate-500">No active invite codes found.</p>
-                                </div>
-                            )}
-                        </div>
-                    </CardContent>
-                </Card>
+                                )}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         </div>
     )
