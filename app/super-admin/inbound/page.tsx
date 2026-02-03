@@ -15,29 +15,31 @@ export default async function InboundPage() {
     const feedback = feedbackResults.data || []
 
     return (
-        <div className="h-full w-full overflow-hidden flex flex-col relative">
-            {/* Main Container - No Scroll here, fixed height */}
-            <div className="flex-1 w-full h-full relative z-10 flex flex-col">
-                {/* Sticky Blurred Header Section */}
-                <div className="flex-none z-50 backdrop-blur-xl px-2 md:px-8 py-1 md:py-4">
-                    <WorkspaceHeader
-                        title="Inbound Requests"
-                        subtitle="View waitlist signups and product feedback"
-                        icon={Inbox}
-                        iconColor="text-primary"
-                        className="max-w-7xl mx-auto"
-                        badge={
-                            <span className="flex items-center space-x-1.5 rounded-full border border-border bg-muted/50 px-3 py-1 text-xs font-normal whitespace-nowrap">
-                                <span className="text-muted-foreground">{waitlist.length + feedback.length} total</span>
-                            </span>
-                        }
-                    />
-                </div>
+        <div className="h-full w-full overflow-hidden flex flex-col relative p-2 md:p-8">
+            {/* Background Gradients - Matching Leads Page */}
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[100px]" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[100px]" />
+            </div>
 
-                {/* Content Section - Full height, flexible */}
-                <div className="flex-1 min-h-0 px-2 md:px-8 pb-2 md:pb-8 max-w-7xl mx-auto w-full">
-                    <InboundClient waitlist={waitlist} feedback={feedback} />
-                </div>
+            {/* Header Section */}
+            <div className="flex-none z-50 mb-4 max-w-7xl mx-auto w-full">
+                <WorkspaceHeader
+                    title="Inbound Requests"
+                    subtitle="View waitlist signups and product feedback"
+                    icon={Inbox}
+                    iconColor="text-primary"
+                    badge={
+                        <span className="flex items-center space-x-1.5 rounded-full border border-border bg-muted/50 px-3 py-1 text-xs font-normal whitespace-nowrap">
+                            <span className="text-muted-foreground">{waitlist.length + feedback.length} total</span>
+                        </span>
+                    }
+                />
+            </div>
+
+            {/* Content Section - Fills remaining height */}
+            <div className="flex-1 min-h-0 max-w-7xl mx-auto w-full flex flex-col z-10">
+                <InboundClient waitlist={waitlist} feedback={feedback} />
             </div>
         </div>
     )

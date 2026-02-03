@@ -4,6 +4,34 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Users, MessageSquare, Star, Mail, Phone } from "lucide-react"
+import { useEffect, useState } from "react"
+
+function ClientDate({ date, className, includeYear = false }: { date: string | null, className?: string, includeYear?: boolean }) {
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+
+    if (!mounted) {
+        return <span className={className}>...</span>
+    }
+
+    if (!date) {
+        return <span className={className}>N/A</span>
+    }
+
+    return (
+        <span className={className}>
+            {new Date(date).toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: includeYear ? 'numeric' : undefined,
+                timeZone: 'UTC'
+            })}
+        </span>
+    )
+}
 
 interface WaitlistEntry {
     id: string
@@ -48,18 +76,18 @@ export function InboundClient({ waitlist, feedback }: InboundClientProps) {
             </TabsList>
 
             {/* Waitlist Tab */}
-            <TabsContent value="waitlist" className="flex-1 flex flex-col min-h-0 mt-1 md:mt-6 data-[state=inactive]:hidden">
-                <Card className="flex-1 flex flex-col bg-gradient-to-br from-primary/5 to-transparent border-0 md:border border-border backdrop-blur-md shadow-lg bg-card/50 overflow-hidden">
-                    <CardHeader className="flex-none pb-2 hidden md:flex">
+            <TabsContent value="waitlist" className="flex-1 min-h-0 data-[state=inactive]:hidden flex flex-col mt-0">
+                <Card className="flex-1 flex flex-col bg-gradient-to-br from-primary/5 to-transparent border border-border backdrop-blur-md shadow-lg bg-card/50 overflow-hidden min-h-0">
+                    <CardHeader className="flex-none pt-0 pb-0 hidden md:flex">
                         <CardTitle className="text-foreground flex items-center gap-2">
                             <Users className="h-4 w-4 text-primary" />
                             Alpha Access Requests
                         </CardTitle>
                         <CardDescription>People asking for Early Access keys.</CardDescription>
                     </CardHeader>
-                    <CardContent className="flex-1 flex flex-col min-h-0 p-0 relative">
+                    <CardContent className="flex-1 flex flex-col min-h-0 p-0 relative overflow-hidden">
                         {/* Fixed Header - Desktop Only */}
-                        <div className="flex-none z-20 mx-4 md:mx-6 mb-2 border-b border-border/40 pb-2 hidden md:block">
+                        <div className="flex-none z-20 mx-4 md:mx-6 mb-0 border-b border-border/40 pb-2 hidden md:block">
                             <div className="grid grid-cols-12 px-2 text-xs font-bold text-muted-foreground uppercase tracking-wider gap-4">
                                 <div className="col-span-3">Institute / Director</div>
                                 <div className="col-span-2">Scale</div>
@@ -70,7 +98,7 @@ export function InboundClient({ waitlist, feedback }: InboundClientProps) {
                         </div>
 
                         {/* Scrollable Content */}
-                        <div className="flex-1 overflow-y-auto custom-scrollbar px-2 md:px-6 py-2 space-y-3 md:space-y-2">
+                        <div className="flex-1 overflow-y-auto px-2 md:px-6 pt-3 pb-2 space-y-3 md:space-y-2">
                             {waitlist.length === 0 ? (
                                 <div className="text-center py-16 text-muted-foreground">
                                     <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
@@ -106,9 +134,7 @@ export function InboundClient({ waitlist, feedback }: InboundClientProps) {
                                                     <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 text-[9px] h-4 px-1.5">
                                                         NEW
                                                     </Badge>
-                                                    <span className="text-[9px] text-muted-foreground font-mono">
-                                                        {new Date(item.created_at!).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                                                    </span>
+                                                    <ClientDate date={item.created_at} className="text-[9px] text-muted-foreground font-mono" />
                                                 </div>
                                             </div>
                                         </div>
@@ -147,9 +173,7 @@ export function InboundClient({ waitlist, feedback }: InboundClientProps) {
                                         </div>
 
                                         <div className="col-span-1 md:col-span-2 text-right hidden md:block">
-                                            <span className="text-muted-foreground text-xs font-mono">
-                                                {new Date(item.created_at!).toLocaleDateString()}
-                                            </span>
+                                            <ClientDate date={item.created_at} includeYear className="text-muted-foreground text-xs font-mono" />
                                             <div className="mt-1">
                                                 <Badge className="bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 border-emerald-500/20 text-[10px] h-5">
                                                     NEW
@@ -165,17 +189,17 @@ export function InboundClient({ waitlist, feedback }: InboundClientProps) {
             </TabsContent>
 
             {/* Feedback Tab */}
-            <TabsContent value="feedback" className="flex-1 flex flex-col min-h-0 mt-1 md:mt-6 data-[state=inactive]:hidden">
-                <Card className="flex-1 flex flex-col bg-gradient-to-br from-primary/5 to-transparent border-0 md:border border-border backdrop-blur-md shadow-lg bg-card/50 overflow-hidden">
-                    <CardHeader className="flex-none pb-2 hidden md:flex">
-                        <CardTitle className="text-foreground flex items-center gap-2">
+            <TabsContent value="feedback" className="flex-1 min-h-0 data-[state=inactive]:hidden flex flex-col mt-0">
+                <Card className="flex-1 flex flex-col bg-gradient-to-br from-primary/5 to-transparent border border-border backdrop-blur-md shadow-lg bg-card/50 overflow-hidden min-h-0">
+                    <CardHeader className="flex-none pt-2 pb-0 hidden md:flex space-y-0">
+                        <CardTitle className="text-foreground flex items-center gap-2 mb-0">
                             <MessageSquare className="h-4 w-4 text-primary" />
                             User Feedback
                         </CardTitle>
-                        <CardDescription>Ratings and suggestions from users.</CardDescription>
+                        <CardDescription className="mt-0">Ratings and suggestions from users.</CardDescription>
                     </CardHeader>
-                    <CardContent className="flex-1 overflow-y-auto custom-scrollbar p-0 flex flex-col">
-                        <div className="flex-1 p-4 md:p-6 overflow-y-auto custom-scrollbar">
+                    <CardContent className="flex-1 overflow-y-auto p-0 flex flex-col">
+                        <div className="flex-1 px-4 pt-3 pb-2 md:px-6 overflow-y-auto">
                             {feedback.length === 0 ? (
                                 <div className="text-center py-16 text-muted-foreground">
                                     <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
@@ -197,7 +221,7 @@ export function InboundClient({ waitlist, feedback }: InboundClientProps) {
                                                         />
                                                     ))}
                                                 </div>
-                                                <span className="text-xs text-muted-foreground">{new Date(item.created_at!).toLocaleDateString()}</span>
+                                                <ClientDate date={item.created_at} includeYear className="text-xs text-muted-foreground" />
                                             </div>
                                             <p className="text-foreground text-sm italic mb-4">&quot;{item.message}&quot;</p>
                                             <div className="flex items-center gap-2 border-t border-border pt-3">
