@@ -484,7 +484,7 @@ export default function ClientLandingPage() {
                                 </div>
                                 <h3 className="text-xl font-bold mb-3">Instant Engagement</h3>
                                 <p className="text-sm text-slate-400 leading-relaxed">
-                                    Aditi responds in under 3 seconds, 24/7. Capture student interest at the peak moment of intent, significantly increasing conversion rates.
+                                    Aditi responds in under 60 seconds. Fast enough to prevent drop-offs, yet naturally paced to feel like a thoughtful human response—building subconscious trust.
                                 </p>
                             </motion.div>
 
@@ -694,7 +694,7 @@ export default function ClientLandingPage() {
                                     <span className="text-slate-500 text-sm">/mo</span>
                                 </div>
                                 <ul className="space-y-4 mb-8 text-sm text-slate-400">
-                                    <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-purple-400 shrink-0" /> <span className="font-bold text-white">5,000</span> Leads/mo</li>
+                                    <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-purple-400 shrink-0" /> <span className="font-bold text-white">3,000</span> Leads/mo</li>
                                     <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-purple-400 shrink-0" /> Aditi AI Employee (Enterprise)</li>
                                     <li className="flex items-center gap-3"><CheckCircle className="h-4 w-4 text-purple-400 shrink-0" /> Priority Support</li>
                                 </ul>
