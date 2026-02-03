@@ -228,7 +228,7 @@ export default async function AnalyticsPage() {
     }
 
     return (
-        <div className="h-[calc(100vh-45px)] w-full overflow-hidden flex flex-col relative">
+        <div className="h-full w-full overflow-hidden flex flex-col relative uppercase-none">
             {/* Header Section - Fixed (Non-scrollable) */}
             <div className="flex-none pt-4 px-3 md:px-8 pb-2">
                 <WorkspaceHeader
@@ -250,7 +250,7 @@ export default async function AnalyticsPage() {
             </div>
 
             {/* Main Content Area - Fixed layout with internal scrolls */}
-            <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar flex flex-col px-3 md:px-8 pb-8 md:pb-4 max-w-7xl mx-auto w-full space-y-4">
+            <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar flex flex-col px-3 md:px-8 pt-6 pb-4 max-w-7xl mx-auto w-full space-y-4">
                 {/* 1. Primary Stats - Fixed */}
                 <div className="flex-none grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {mainStats.map((stat, i) => (
@@ -388,8 +388,6 @@ export default async function AnalyticsPage() {
                         </div>
                     </div>
                 </div>
-                {/* Mobile Bottom Spacer */}
-                <div className="h-20 lg:hidden flex-none" />
             </div>
         </div>
     )
